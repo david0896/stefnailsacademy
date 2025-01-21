@@ -76,7 +76,7 @@ const Hero = () => {
                             </div>
                         </div>
                     </div> 
-                    <div className={`${isVisible ? "opacity-100" : "opacity-0"} transition-opacity duration-1000 ease-in-out absolute px-8 py-10 grid lg:hidden content-end z-20 bottom-32`}>
+                    <div className={`${isVisible ? "opacity-100" : "opacity-0"} transition-opacity duration-1000 ease-in-out absolute px-8 py-10 grid lg:hidden content-end z-20 bottom-28`}>
                         <div className="grid grid-cols-5 rounded-lg">
                             <div className="col-span-2 bg-[#ff5a5f]/60 backdrop-blur-sm">
                                 <div className="bg-[#ff5a5f] p-2 h-full border-solid border-2 border-[#ffffff] rounded-lg">
@@ -89,7 +89,7 @@ const Hero = () => {
                     <img
                     src="https://i.postimg.cc/KjJrYrk3/instructor.png"
                     alt="Instructora"
-                    className={clsx("relative w-[32em] h-[26em] lg:w-[40vw] lg:h-[40vw] z-10", styles.heroFadeinLeft)}
+                    className={clsx("relative w-[72vw] h-[76vw] lg:w-[40vw] lg:h-[40vw] z-10", styles.heroFadeinLeft)}
                     />
 
                     {/* SVGs detrás */}

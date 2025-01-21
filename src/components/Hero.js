@@ -64,7 +64,7 @@ const Hero = () => {
                         <div className="grid grid-cols-5 rounded-lg border-solid border-2 border-[#ff5a5f]">
                             <div className="col-span-2 bg-[#ff5a5f]/60 backdrop-blur-sm">
                             <div className="bg-[#ff5a5f] p-2 h-full border-solid border-2 border-[#ffffff] rounded-lg">
-                                <p className=" text-white font-bold text-center text-3xl">Enero 18 <span className="block font-normal text-base">Siguiente clase</span></p>
+                                <p className=" text-white font-bold text-center text-3xl">Enero 31 <span className="block font-normal text-base">Siguiente clase</span></p>
                             </div>
                             </div>
                             <div className=" col-span-3 p-2 bg-[#ff5a5f]/60 backdrop-blur-sm">
@@ -76,11 +76,11 @@ const Hero = () => {
                             </div>
                         </div>
                     </div> 
-                    <div className={`${isVisible ? "opacity-100" : "opacity-0"} transition-opacity duration-1000 ease-in-out absolute px-8 py-10 grid lg:hidden content-end z-20 bottom-28`}>
+                    <div className={`${isVisible ? "opacity-100" : "opacity-0"} transition-opacity duration-1000 ease-in-out absolute -left-5 px-8 py-10 grid lg:hidden content-start z-20 bottom-28`}>
                         <div className="grid grid-cols-5 rounded-lg">
-                            <div className="col-span-2 bg-[#ff5a5f]/60 backdrop-blur-sm">
+                            <div className="col-span-3 bg-[#ff5a5f]/60 backdrop-blur-sm rounded-lg">
                                 <div className="bg-[#ff5a5f] p-2 h-full border-solid border-2 border-[#ffffff] rounded-lg">
-                                    <p className=" text-white font-bold text-center text-3xl">Julio 15 <span className="block font-normal text-base">Siguiente clase</span></p>
+                                    <p className=" text-white font-bold text-center text-2xl">Enero 31 <span className="block font-normal text-base">Siguiente clase</span></p>
                                 </div>
                             </div>                        
                         </div>

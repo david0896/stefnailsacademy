@@ -1,0 +1,65 @@
+/* components/Hero.module.css https://i.postimg.cc/dt8kbWsV/first-banner.jpg */
+
+/* Fade-in animation for text and image */
+/* Definición de la animación */
+@keyframes heroImg-fadein-left {
+    0% {
+      transform: translateX(-10%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes heroSvg1-fadein-left {
+    0% {
+      transform: translateX(-20%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes heroSvg2-fadein-left {
+    0% {
+      transform: translateX(-30%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  /* Clase que utiliza la animación */
+  .heroFadeinLeft {
+    animation: heroImg-fadein-left 1s ease-out forwards;
+  }
+
+  .heroSvg1FadeinLeft {
+    animation: heroSvg1-fadein-left 1s ease-out forwards;
+  }
+
+  .heroSvg2FadeinLeft {
+    animation: heroSvg2-fadein-left 2s ease-out forwards;
+  }
+
+  @keyframes hero-float {
+    0% {
+      transform: translateY(0); /* Posición inicial */
+    }
+    50% {
+      transform: translateY(10px); /* Mover hacia abajo 10px */
+    }
+    100% {
+      transform: translateY(0); /* Regresar a la posición inicial */
+    }
+  }
+  
+  .heroFloat {
+    animation: hero-float 2s ease-in-out infinite; /* Duración 2s, suave y en bucle */
+  }

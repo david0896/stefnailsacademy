@@ -1,0 +1,72 @@
+.carousel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .testimonialContainer {
+    display: flex;
+    gap: 46px;
+    transition: transform 0.8s ease-in-out;
+  }
+  
+  .card {
+    flex: 1 0 calc(100% / 3 - 16px);
+    max-width: calc(70% / 3 - 16px);
+    background-color: #383838;
+    padding: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    transition: transform 0.3s ease;
+  }
+  
+  .card:hover {
+    transform: scale(1.05);
+  }
+  
+  .text {
+    font-size: 16px;
+    color: #ffffff;
+  }
+  
+  .author {
+    font-size: 14px;
+    color: #ffffff;
+    margin-top: 8px;
+  }
+  
+  .pagination {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  
+  .dot {
+    width: 12px;
+    height: 12px;
+    background-color: #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .dot.active {
+    background-color: #333;
+  }
+  
+  @media (max-width: 768px) {
+    .card {
+      flex: 1 0 calc(100% / 2 - 16px);
+      max-width: calc(100% / 2 - 16px);
+    }
+  }
+  

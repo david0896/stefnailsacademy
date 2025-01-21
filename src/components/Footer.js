@@ -22,8 +22,14 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Enlaces de Servicio */}
         <div>
+        </div>
+
+        <div className=" col-span-2">
+          <div className=" grid grid-cols-2">
+            <div>
+{/* Enlaces de Servicio */}
+<div>
           <h4 className="font-bold mb-4">Servicio</h4>
           <ul className="space-y-2 text-sm">
             <li className="hover:underline cursor-pointer">Cursos</li>
@@ -32,12 +38,13 @@ const Footer = () => {
 
         {/* Enlaces de Productos */}
         <div>
-          <h4 className="font-bold mb-4">Productos</h4>
+          <h4 className="font-bold mb-4 mt-6">Productos</h4>
           <ul className="space-y-2 text-sm">
             <li className="hover:underline cursor-pointer">Tienda</li>
           </ul>
         </div>
-
+            </div>
+            <div>
         {/* Enlaces de Compañía y Soporte */}
         <div>
           <h4 className="font-bold mb-4">Compañía</h4>
@@ -50,6 +57,9 @@ const Footer = () => {
           <ul className="space-y-2 text-sm">
             <li className="hover:underline cursor-pointer">Preguntas frecuentes</li>
           </ul>
+        </div>
+            </div>
+          </div>
         </div>
       </div>
 

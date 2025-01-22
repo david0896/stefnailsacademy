@@ -3,6 +3,7 @@ import clsx from "clsx";
 import Hero from "@/components/Hero";
 import PolaroidCarousel from "@/components/PolaroidCarousel";
 import CarouselTestimonials from "@/components/CarouselTestimonials";
+import ModalHome from "@/components/ModalHome";
 import styles from '../styles/Home.module.css';
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
   const ref1 = useRef(null);
   const ref2 = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
   const observer = new IntersectionObserver(
@@ -79,6 +81,7 @@ return () => {
               <a
                 href="#"
                 className="inline-block w-fit bg-[#383838] text-white px-4 py-2 pr-6 rounded-[25px] font-normal hover:bg-[#212121] transition"
+                onClick={() => setIsOpen(true)}
               >
                 Próxima clase
               </a>
@@ -240,6 +243,8 @@ return () => {
           </div>
         </div>
       </div>
+      {/* Modal */}
+      <ModalHome isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </div>
   );
 }

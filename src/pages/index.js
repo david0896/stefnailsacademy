@@ -14,6 +14,19 @@ export default function Home() {
     "https://i.postimg.cc/FHZqLpjC/flyer-curso-soft-gel.jpg",
     "https://i.postimg.cc/FHZqLpjC/flyer-curso-soft-gel.jpg",
     "https://i.postimg.cc/FHZqLpjC/flyer-curso-soft-gel.jpg",
+    "https://i.postimg.cc/FHZqLpjC/flyer-curso-soft-gel.jpg",
+    "https://i.postimg.cc/FHZqLpjC/flyer-curso-soft-gel.jpg",
+  ];
+
+  const imagesDos = [
+    "https://i.postimg.cc/K8pxGWTD/tecnico-aplicador.jpg",
+    "https://i.postimg.cc/K8pxGWTD/tecnico-aplicador.jpg",
+    "https://i.postimg.cc/K8pxGWTD/tecnico-aplicador.jpg",
+    "https://i.postimg.cc/K8pxGWTD/tecnico-aplicador.jpg",
+    "https://i.postimg.cc/K8pxGWTD/tecnico-aplicador.jpg",
+    "https://i.postimg.cc/K8pxGWTD/tecnico-aplicador.jpg",
+    "https://i.postimg.cc/K8pxGWTD/tecnico-aplicador.jpg",
+    "https://i.postimg.cc/K8pxGWTD/tecnico-aplicador.jpg",
   ];
 
   const ref1 = useRef(null);
@@ -73,7 +86,7 @@ return () => {
             </p>
             <div className="flex flex-row space-x-2">
               <a
-                href="#"
+                href="/AboutUs"
                 className="inline-block w-fit bg-[#ff5a5f] text-white px-4 py-2 pr-6 rounded-[25px] font-normal hover:bg-[#ff3b3f] transition"
               >
                 Leer más
@@ -104,12 +117,12 @@ return () => {
                     perspiciatis unde omnis iste natus error sit voluptatem
                     accusantium.Lorem ipsum dolor sit amet
             </p>            
-            <a
+            <p
               href="#"
-              className="inline-block w-fit bg-[#383838] text-white px-4 py-2 pr-6 rounded-[25px] font-normal hover:bg-[#212121] transition"
+              className="inline-block w-fit bg-[#383838] text-white px-4 py-2 pr-6 rounded-[25px] font-normal hover:bg-[#383838] transition"
             >
-              Ver más productos
-            </a>
+              Proximamente
+            </p>
           </div>
           <div className="overflow-hidden h-52 flex justify-end">
             <img src="https://i.postimg.cc/2jTJ8XDL/snail-colors.png" alt="Pinturas de uñas" className=" w-11/12 lg:w-9/12 h-fit lg:-mt-10 -mr-10 lg:mr-0"/>
@@ -130,6 +143,7 @@ return () => {
             <a
               href="#"
               className="inline-block w-fit bg-[#ff5a5f] text-white px-4 py-2 pr-6 rounded-[25px] font-normal hover:bg-[#ff3b3f] transition"
+              onClick={() => setIsOpen(true)}
             >
               Inscribirse ahora en la proxima clase
             </a>
@@ -213,7 +227,7 @@ return () => {
                       </div>
                       <div className={clsx("hidden lg:flex",styles.cinta)}>
                         <div className={styles.cintaCarrilInvertido}>
-                          {images.map((src, index) => (
+                          {imagesDos.map((src, index) => (
                             <img key={index} src={src} alt={`Imagen ${index + 1}`} className={styles.cintaImagen} />
                           ))}
                         </div>

@@ -11,7 +11,7 @@ const Countdown = () => {
       });
   
       useEffect(() => {
-        const countDownEndDate = 'January 31, 2025 09:00:00';
+        const countDownEndDate = 'February 28, 2025 09:00:00';
         const endDate = new Date(countDownEndDate).getTime();
   
         const interval = setInterval(() => {

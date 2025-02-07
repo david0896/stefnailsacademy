@@ -4,11 +4,13 @@ import { FaPercent } from 'react-icons/fa';
 import clsx from "clsx";
 import styles from '../styles/Hero.module.css';
 import Countdown from "./Countdown";
+import ModalHome from "@/components/ModalHome";
 
 
 const Hero = () => {
 
     const [isVisible, setIsVisible] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
         // Activa la animación al cargar el componente
@@ -50,6 +52,7 @@ const Hero = () => {
                     <a
                     href="#"
                     className="inline-block w-fit bg-[#ff5a5f] text-white px-4 py-2 pr-6 rounded-[25px] text-lg font-medium hover:bg-[#ff3b3f] transition"
+                    onClick={() => setIsOpen(true)}
                     >
                     Inscribirse ahora en la próxima clase
                     </a>
@@ -64,14 +67,14 @@ const Hero = () => {
                         <div className="grid grid-cols-5 rounded-lg border-solid border-2 border-[#ff5a5f]">
                             <div className="col-span-2 bg-[#ff5a5f]/60 backdrop-blur-sm">
                             <div className="bg-[#ff5a5f] p-2 h-full border-solid border-2 border-[#ffffff] rounded-lg">
-                                <p className=" text-white font-bold text-center text-3xl">Enero 31 <span className="block font-normal text-base">Siguiente clase</span></p>
+                                <p className=" text-white font-bold text-center text-3xl">Febrero 28 <span className="block font-normal text-base">Siguiente clase</span></p>
                             </div>
                             </div>
                             <div className=" col-span-3 p-2 bg-[#ff5a5f]/60 backdrop-blur-sm">
                             <Countdown/>
                             </div>
                             <div className=" col-span-5 p-2 bg-[#ff5a5f]/60 backdrop-blur-sm border-t-2 border-solid border-[#ff5a5f]">
-                            <p className=" text-white font-medium">Próxima clase: Febrero 12</p>
+                            <p className=" text-white font-medium">Próxima clase: Marzo 12</p>
                             <p className=" text-white font-normal text-sm uppercase">soft gel nivel 2</p>
                             </div>
                         </div>
@@ -142,6 +145,8 @@ const Hero = () => {
                 </div>
             </div>
         </div>
+        {/* Modal */}
+        <ModalHome isOpen={isOpen} onClose={() => setIsOpen(false)} />
         </section>
     );
 };

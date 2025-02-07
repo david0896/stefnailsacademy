@@ -24,11 +24,11 @@ const Navbar = () => {
       </div>
       <nav className={`${styles.navLinks} ${isMenuOpen ? styles.showMenu : ""}`}>
         <ul>
-          <li><a href="#inicio">Inicio</a></li>
-          <li><a href="#nosotros">Nosotros</a></li>
-          <li><a href="#cursos">Cursos</a></li>
-          <li><a href="#tienda">Tienda</a></li>
-          <li><a href="#contacto">Contacto</a></li>
+          <li><a href="/">Inicio</a></li>
+          <li><a href="/AboutUs">Nosotros</a></li>
+          <li><a href="/Courses">Cursos</a></li>
+          {/* <li><a href="#tienda">Tienda</a></li> */}
+          <li><a href="/ContactUs">Contacto</a></li>
         </ul>
       </nav>
       <div className={styles.whatsappButton}>

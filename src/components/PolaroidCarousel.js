@@ -8,15 +8,15 @@ const PolaroidCarousel = () => {
   const images = [
     {
       id: 1,
-      url: "https://bcw-media.s3.ap-northeast-1.amazonaws.com/text_to_image_v6_poster_01_f038887d26.jpg",
+      url: "https://i.postimg.cc/QdpHV0f9/stefail-graduacion-curso-de-u-as.png",
     },
     {
       id: 2,
-      url: "https://img.freepik.com/fotos-premium/arte-fondo-retrato-mujer-paisaje-urbano-neon_862994-83628.jpg",
+      url: "https://i.postimg.cc/9XKMpvSw/stefail-academia-instructoras.png",
     },
     {
       id: 3,
-      url: "https://img.freepik.com/fotos-premium/arte-fondo-retrato-mujer-paisaje-urbano-neon_862994-83706.jpg",
+      url: "https://i.postimg.cc/cH8HyhtL/stefail-academia-diploma.png",
     },
   ];
 

@@ -40,8 +40,8 @@ const Footer = () => {
         <div>
           <h4 className="font-bold mb-4 mt-6">Productos</h4>
           <ul className="space-y-2 text-sm">
-            <li className="hover:underline cursor-pointer">Tienda</li>
-          </ul>
+            <li className="hover:underline cursor-pointer">Tienda ( Proximamente )</li>
+          </ul>;
         </div>
             </div>
             <div>
@@ -55,7 +55,9 @@ const Footer = () => {
           </ul>
           <h4 className="font-bold mt-6 mb-4">Soporte</h4>
           <ul className="space-y-2 text-sm">
-            <li className="hover:underline cursor-pointer">Preguntas frecuentes</li>
+            <li className="hover:underline cursor-pointer">
+              <a href="/PreguntasFrecuentes">Preguntas frecuentes</a>
+            </li>
           </ul>
         </div>
             </div>

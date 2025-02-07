@@ -41,7 +41,7 @@ const Footer = () => {
           <h4 className="font-bold mb-4 mt-6">Productos</h4>
           <ul className="space-y-2 text-sm">
             <li className="hover:underline cursor-pointer">Tienda ( Proximamente )</li>
-          </ul>;
+          </ul>
         </div>
             </div>
             <div>

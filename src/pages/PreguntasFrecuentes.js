@@ -38,46 +38,50 @@ const PreguntasFrecuentes = () => {
   ];
 
   return (
-    <div className="bg-gradient-to-b from-[#ff5a601c] to-white min-h-screen flex items-center justify-center">
-      <div className="min-h-screen flex items-center justify-center p-4 mt-20">
-      <div className="w-full max-w-2xl bg-white rounded-lg shadow-lg p-6">
-        <h1 className="text-3xl font-bold text-center mb-8">
-          Preguntas Frecuentes
-        </h1>
-        {faqData.map((item, index) => (
-          <div key={index} className="mb-4">
-            <button
-              onClick={() => toggleAccordion(index)}
-              className="w-full flex justify-between items-center p-4 bg-gray-200 rounded-lg focus:outline-none"
-            >
-              <span className="font-medium">{item.question}</span>
-              <svg
-                className={`w-6 h-6 transition-transform transform ${
-                  activeIndex === index ? "rotate-180" : ""
-                }`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-            {activeIndex === index && (
-              <div className="p-4 bg-gray-50 rounded-b-lg mt-2">
-                <p>{item.answer}</p>
+    <>
+      <div className="relative w-full h-[30vw] bg-[#fdebeb]">
+        <div className="min-h-screen w-9/12 mx-auto absolute inset-0 flex items-center justify-center p-4 mt-12">
+          <div className="w-full bg-white rounded-lg shadow-lg p-6">
+            <h1 className="text-3xl font-bold text-center mb-8">
+              Preguntas Frecuentes
+            </h1>
+            {faqData.map((item, index) => (
+              <div key={index} className="mb-4">
+                <button
+                  onClick={() => toggleAccordion(index)}
+                  className="w-full flex justify-between items-center p-4 bg-gray-200 rounded-lg focus:outline-none"
+                >
+                  <span className="font-medium">{item.question}</span>
+                  <svg
+                    className={`w-6 h-6 transition-transform transform ${
+                      activeIndex === index ? "rotate-180" : ""
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+                {activeIndex === index && (
+                  <div className="p-4 bg-gray-50 rounded-b-lg mt-2">
+                    <p>{item.answer}</p>
+                  </div>
+                )}
               </div>
-            )}
+            ))}
           </div>
-        ))}
+        </div>                                 
       </div>
-    </div>
-    </div>
+      <div className=" bg-white h-[20vw] p-5">
+      </div>
+    </>
   )
 }
 

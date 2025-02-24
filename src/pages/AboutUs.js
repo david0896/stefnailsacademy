@@ -6,7 +6,7 @@ const AboutUs = () => {
   return (
     <div className=''>
         <HeroAboutUs/>
-        <div className="h-40 flex flex-col lg:flex-row gap-3 -mt-10 lg:-mt-20 w-9/12 mx-auto justify-center items-center relative">
+        <div className="h-40 flex flex-col lg:flex-row gap-3 -mt-[15vw] lg:-mt-20 w-9/12 mx-auto justify-center items-center relative">
           <img src="https://i.postimg.cc/9Q3JyTk9/charla-de-entrega-de-diplomas-stef-nails-academia.png" alt="Stef Nails academia" className=" w-60 h-44 hidden lg:block rounded-md aspect-square object-cover"/>
           <img src="https://i.postimg.cc/VLsbpNbh/certificado-curso-stef-nails.png" alt="Stef Nails academia" className="w-52 h-36 rounded-md hidden lg:block aspect-square object-cover"/>
           <div className="flex space-x-4">
@@ -64,7 +64,7 @@ const AboutUs = () => {
         </div>
         <div className="w-9/12 mx-auto">
           <div className="col-span-2 lg:text-center flex flex-col justify-center lg:w-7/12 mb-10 mx-auto">
-              <h2 className="text-[#ff5a5f] text-4xl font-semibold mb-3">We make sure yout idea and creation delivered properly</h2>
+              <h2 className="text-[#ff5a5f] text-4xl font-semibold pb-10">We make sure yout idea and creation delivered properly</h2>
               <p className="text-lg text-[#383838] mx-auto lg:mx-0">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut
                   perspiciatis unde omnis iste natus error sit voluptatem

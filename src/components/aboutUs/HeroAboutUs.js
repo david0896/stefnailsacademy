@@ -17,7 +17,7 @@ const HeroAboutUs = () => {
 
     return (
         <section
-            className="relative w-full h-[90vw] lg:h-[30vw] bg-[#fdebeb]"
+            className="relative w-full h-[110vw] lg:h-[30vw] bg-[#fdebeb]"
         >
             <div className="relative lg:absolute inset-0 flex items-center">
                 {/* **************** card **************** */}

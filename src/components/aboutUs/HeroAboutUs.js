@@ -37,9 +37,7 @@ const HeroAboutUs = () => {
                             Conoce más sobre nosotros
                         </h1>
                         <p className="text-lg text-[#383838] max-w-2xl lg:text-center mx-auto lg:mx-0">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut
-                            perspiciatis unde omnis iste natus error sit voluptatem
-                            accusantium.
+                        Desde nuestros inicios, fusionamos teoría y práctica con las últimas tendencias, guiados por marcas líderes y profesionales del sector
                         </p>                                
                     </div>
                 </div>

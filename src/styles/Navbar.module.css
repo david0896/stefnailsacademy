@@ -1,6 +1,6 @@
 /* General Styles */
 .navbar {
-    position: fixed;
+    position:fixed;
     top: 0;
     width: 100%;
     display: flex;
@@ -8,7 +8,7 @@
     align-items: center;
     padding: 1rem 2rem;
     transition: background-color 0.3s ease;
-    z-index: 1000;
+    z-index: 10;
     background-color: transparent;
   }
   
@@ -25,10 +25,8 @@
   }
   
   .logoText {
-    font-size: 1.5rem;
-    font-weight: bold;
-    font-family: "Montserrat", sans-serif;
-    color: #383838;
+    width: 7rem;
+    display: block;
   }
   
   .logoSubtext {
@@ -141,7 +139,7 @@
       flex-direction: column;
       justify-content: space-between;
       padding: 2rem;
-      z-index: 1000;
+      z-index: 999;
       animation: slideIn 0.5s ease;
     }
   

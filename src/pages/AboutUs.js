@@ -1,6 +1,7 @@
 import { FaHandSparkles, FaHandPaper, FaPalette, FaGem } from 'react-icons/fa';
 import { GiNailedFoot, GiNails } from "react-icons/gi";
 import HeroAboutUs from '@/components/aboutUs/HeroAboutUs'
+import BlurImage from "@/components/BlurImage";
 
 const AboutUs = () => {
   return (
@@ -16,93 +17,65 @@ const AboutUs = () => {
         </div>
         <div className="w-9/12 mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 pt-10 lg:pt-20 pb-10 lg:gap-5">
-            <div className="col-span-2">
-              <h2 className="text-[#ff5a5f] text-4xl font-semibold lg:w-8/12 mb-3">We make sure yout idea and creation delivered properly</h2>
+            <div className="col-span-2 lg:w-7/12">
+              <h2 className="text-[#ff5a5f] text-4xl font-semibold mb-3">Convertimos tu pasión en una carrera profesional real</h2>
+              <p>Desde hace más de 13 años, formando técnicos y líderes en la industria del Nail Art en Venezuela y Latinoamérica</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 pb-10 gap-5">
             <div className="col-span-1">
               <p className="text-[#383838]">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut
-                      perspiciatis unde omnis iste natus error sit voluptatem
-                      accusantium.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut
-                      perspiciatis unde omnis iste natus error sit voluptatem
-                      accusantium.Lorem ipsum dolor sit amet
+              Comenzamos hace 13 años con un sueño: lograr independencia y brindar educación a mi hija. Iniciamos en un pequeño espacio en la estación de Artigas, ofreciendo clases en condiciones precarias. Tres años después, tuvimos que decidir entre atender clientas o enfocarnos en formar profesionales... Apostamos por la educación
               </p>
             </div>
             <div className="col-span-1">
               <p className="text-[#383838]">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut
-                      perspiciatis unde omnis iste natus error sit voluptatem
-                      accusantium.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut
-                      perspiciatis unde omnis iste natus error sit voluptatem
-                      accusantium.Lorem ipsum dolor sit amet
+              Desde entonces, nos trasladamos al C.C. Galerías Paraíso, ampliando espacios y formando técnicos iniciales, técnicos profesionales, master de salón y master duales. Hoy, proyectamos academias en todo el país y presencia en Latinoamérica
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 pb-10 lg:gap-5">
             <div className="col-span-1">
-              <img src="https://i.postimg.cc/1XwMd3nX/estefanie-instructora-stef-nails-academia.png" alt="Stef Nails academia" className=" w-10/12 h-auto lg:h-[25vw] rounded-md aspect-square object-cover"/>    
+              <BlurImage
+                  lowQualitySrc="https://i.postimg.cc/QC7TBQTm/Stef-Nails-blur.jpg"
+                  fullQualitySrc="https://i.postimg.cc/kMR8hmpS/Stef-Nails.jpg"
+                  alt="Instructora profesional Stef"
+                  className={"w-10/12 h-auto lg:h-[25vw] rounded-md aspect-square object-cover"}
+              />
             </div>
             <div className="col-span-1 mt-10 space-y-5 flex flex-col ">
-              <h3 className="text-[#ff5a5f] text-2xl font-semibold ">We empower small business owners</h3>
-              <p className="text-[#383838]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut
-                      perspiciatis unde omnis iste natus error sit voluptatem
-                      accusantium.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut
-                      perspiciatis unde omnis iste natus error sit voluptatem
-                      accusantium.Lorem ipsum dolor sit amet</p>
-              <p className="text-[#383838] border-l-4 border-[#ff5a5f] p-2 italic ml-2">
-              "consectetur adipiscing elit. Sed ut
-                      perspiciatis unde omnis iste natus error sit voluptatem
-                      accusantium.Lorem ipsum dolor sit amet"
-              </p>
+              <h3 className="text-[#ff5a5f] text-2xl font-semibold lg:w-7/12">Más de 10.000 egresados, formando líderes cada año</h3>
+              <p className="text-[#383838]">Formamos más de 1.500 estudiantes al año, con más de 10.000 egresados aproximadamente. Nuestra comunidad de egresadas lidera salones, academias y negocios en todo el país</p>
+              <p className="text-[#383838] border-l-4 border-[#ff5a5f] p-2 italic bg-gray-50">"Cada alumna es una historia de éxito, independencia y empoderamiento"</p>
           </div>
             
           </div>
         </div>
         <div className="w-9/12 mx-auto">
-          <div className="col-span-2 lg:text-center flex flex-col justify-center lg:w-7/12 mb-10 mx-auto">
-              <h2 className="text-[#ff5a5f] text-4xl font-semibold pb-10">We make sure yout idea and creation delivered properly</h2>
-              <p className="text-lg text-[#383838] mx-auto lg:mx-0">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut
-                  perspiciatis unde omnis iste natus error sit voluptatem
-                  accusantium.
-              </p> 
+          <div className="col-span-2 lg:text-center flex flex-col justify-center lg:w-7/12 mb-10 mx-auto space-y-4">
+              <h2 className="text-[#ff5a5f] text-4xl font-semibold">Formadas por los mejores, reconocidas por los grandes</h2>
+              <p className="text-lg text-[#383838] mx-auto lg:mx-0 ">Somos Master Instructores certificados y avalados por las marcas más importantes de la industria a nivel nacional e internacional: TONES, ANTARTYC, STALEKS, MIS COCO, SUPERCRISTAL, LATIN NAILS, NAILSHOP, entre otras</p> 
+              <p className="text-lg text-[#383838] mx-auto lg:mx-0">Formadas por los mejores instructores europeos, seguimos los lineamientos de los más exigentes estándares internacionales</p>
           </div>
         </div>
         <div className="w-9/12 mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-3 text-center pb-20 gap-5">
             <div className=" flex flex-col justify-center items-center space-y-3">
-              <FaHandSparkles className=" text-3xl"/>
-              <h3 className="text-[#ff5a5f] text-2xl font-semibold ">We empower small business owners</h3>
-              <p className="text-[#383838]">
-              iste natus error sit voluptatem
-                      accusantium.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut
-                      perspiciatis unde omnis iste natus error sit voluptatem
-                      accusantium.Lorem ipsum dolor sit amet
-              </p> 
+              <FaHandPaper className=" text-3xl"/>
+              <h3 className="text-[#ff5a5f] text-2xl font-semibold ">Misión</h3>
+              <p className="text-[#383838]">Empoderar a nuestras estudiantes con habilidades y conocimientos de excelencia para que destaquen como técnicas, educadoras o emprendedoras</p> 
             </div>
             <div className="flex flex-col justify-center items-center space-y-3">
-              <FaHandSparkles className=" text-3xl"/>
-              <h3 className="text-[#ff5a5f] text-2xl font-semibold ">We empower small business owners</h3>
-              <p className="text-[#383838]">
-              iste natus error sit voluptatem
-                      accusantium.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut
-                      perspiciatis unde omnis iste natus error sit voluptatem
-                      accusantium.Lorem ipsum dolor sit amet  
-              </p> 
+              <FaGem className=" text-3xl"/>
+              <h3 className="text-[#ff5a5f] text-2xl font-semibold ">Valores</h3>
+              <p className="text-[#383838]">Creatividad, profesionalismo, pasión por el arte, excelencia educativa, actualización constante y visión internacional</p> 
             </div>
             <div className="flex flex-col justify-center items-center space-y-3">
-              <FaHandSparkles className=" text-3xl"/>
-              <h3 className="text-[#ff5a5f] text-2xl font-semibold ">We empower small business owners</h3>
-              <p className="text-[#383838]">
-              iste natus error sit voluptatem
-                      accusantium.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut
-                      perspiciatis unde omnis iste natus error sit voluptatem
-                      accusantium.Lorem ipsum dolor sit amet  
-              </p> 
+              <FaPalette className=" text-3xl"/>
+              <h3 className="text-[#ff5a5f] text-2xl font-semibold ">Enfoque educativo</h3>
+              <p className="text-[#383838]">Metodología práctica, personalizada, con atención individualizada y alineada a las últimas tendencias internacionales del Nail Art</p> 
             </div>
           </div>
         </div>

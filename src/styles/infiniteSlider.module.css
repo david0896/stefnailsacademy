@@ -1,0 +1,107 @@
+.marco {
+    position: relative;
+    width: 100%; /* Ajustar tamaño del marco */
+    height: 260px;
+    overflow: hidden; /* Oculta contenido que se desborde */
+    border-radius: 16px; /* Bordes redondeados */
+    display: flex;
+    justify-content: center; /* Centra horizontalmente las cintas */
+    align-items: center; /* Centra verticalmente las cintas */
+    background-color: #f9f9f9; /* Opcional: color de fondo del marco */
+    overflow: hidden;
+  }
+
+  @media (max-width: 768px) {
+    .marco {
+        position: relative;
+        width: 100%; /* Ajustar tamaño del marco */
+        height: 160px;
+        overflow: hidden; /* Oculta contenido que se desborde */
+        border-radius: 16px; /* Bordes redondeados */
+        display: center;
+        justify-content: right; /* Centra horizontalmente las cintas */
+        align-items: center; /* Centra verticalmente las cintas */
+        background-color: #f9f9f9; /* Opcional: color de fondo del marco */
+        overflow: hidden;
+      }
+  }
+  
+  .cintaWrapper {
+    display: flex;
+    justify-content: center;
+    transform: rotate(-30deg); /* Inclina las cintas dentro del marco */
+  }
+
+  @media (max-width: 768px) {
+    .cintaWrapper {
+        transform: rotate(0deg); /* Inclina las cintas dentro del marco */
+      }
+  }
+  
+  .cinta {
+    position: relative;
+    width: 15vw;
+    height: 34vw;
+    overflow: hidden;
+  }
+
+  @media (max-width: 768px) {
+    .cinta {
+        position: relative;
+        width: 45vw;
+        height: 60vw;
+        overflow: hidden;
+      }
+  }
+  
+  .cintaCarril {
+    display: flex;
+    flex-direction: column;
+    animation: scrollCinta 12s linear infinite;
+  }
+  
+  .cintaCarrilInvertido {
+    display: flex;
+    flex-direction: column;
+    animation: scrollCintaInvertido 12s linear infinite;
+  }
+  
+  .cintaImagen {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .flotar{
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  /* Animación hacia arriba */
+  @keyframes scrollCinta {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-50%);
+    }
+  }
+  
+  /* Animación hacia abajo */
+  @keyframes scrollCintaInvertido {
+    0% {
+      transform: translateY(-50%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  
+   /* Animación flotante*/
+   @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }

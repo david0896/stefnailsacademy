@@ -1,5 +1,5 @@
 import React from 'react'
-import { FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaWhatsapp } from "react-icons/fa";
 
 const ContactUs = () => {
   return (
@@ -19,20 +19,18 @@ const ContactUs = () => {
             </p>
             <ul className="space-y-2">
               <li className="flex items-center space-x-3">
-                <FaPhone /> <span className="material-icons mr-2">Telefono</span>
-                <span>+800177017666</span>
+                <FaWhatsapp /> <strong className="material-icons mr-2">WhatsApp:</strong>
+                <span>+58 426-4091983</span>
               </li>
               <li className="flex items-center space-x-3">
-                <FaPhone /> <span className="material-icons mr-2">Telefono</span>
-                <span>+908678363686</span>
-              </li>
-              <li className="flex items-center space-x-3">
-                <FaEnvelope /> <span className="material-icons mr-2">Correo</span>
+                <FaEnvelope /> <strong className="material-icons mr-2">Correo:</strong>
                 <span>Support@uprankly.com</span>
               </li>
-              <li className="flex items-center space-x-3">
-                <FaMapMarkerAlt /> <span className="material-icons mr-2">Ubicación</span>
-                <span>New York, USA</span>
+              <li className="flex items-start space-x-3">
+                <div className='flex items-center space-x-3'>
+                  <FaMapMarkerAlt /> <strong className="material-icons mr-2">Ubicación:</strong>
+                </div>
+                <a href='https://maps.app.goo.gl/QTKCQePBkegPj4Zm7' target='blank'>C.C. Galerías El Paraiso, Final Av. Paéz, con Ohiggins, Frente a la Redoma La India, El Paraíso, Caracas</a>
               </li>
             </ul>
           </div>
@@ -60,7 +58,7 @@ const ContactUs = () => {
                     type="email"
                     id="email"
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#ff5a5f] focus:ring-[#ff5a5f] p-4"
-                    placeholder="hello@nurency.com"
+                    placeholder="hello@gmail.com"
                   />
                 </div>
               </div>
@@ -73,7 +71,7 @@ const ContactUs = () => {
                   type="text"
                   id="subject"
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#ff5a5f] focus:ring-[#ff5a5f] p-4"
-                  placeholder="I want to hire you quickly"
+                  placeholder="Solicitud de inscripción"
                 />
               </div>
 
@@ -85,7 +83,7 @@ const ContactUs = () => {
                   id="message"
                   rows="4"
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#ff5a5f] focus:ring-[#ff5a5f] p-4"
-                  placeholder="Write here your message"
+                  placeholder="Escribe aqui tu mensaje"
                 ></textarea>
               </div>
 

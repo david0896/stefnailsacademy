@@ -1,4 +1,4 @@
-import { FaWhatsapp, FaYoutube, FaInstagram } from "react-icons/fa";
+import { FaWhatsapp, FaTiktok, FaInstagram, FaFacebook} from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -12,13 +12,13 @@ const Footer = () => {
             className="w-24 mb-4"
           />
           <p className="text-sm leading-relaxed">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt.
+            Donde el arte de las uñas se convierte en tu profesión. Transforma tu talento en un negocio de éxito
           </p>
           <div className="flex space-x-4 mt-4">
-            <FaWhatsapp className="text-xl hover:text-green-500 cursor-pointer" />
-            <FaYoutube className="text-xl hover:text-red-500 cursor-pointer" />
-            <FaInstagram className="text-xl hover:text-pink-500 cursor-pointer" />
+            <a href="https://wa.link/pxwwz5" target="blank"><FaWhatsapp className="text-xl hover:text-green-500 cursor-pointer" /></a>
+            <a href="https://www.facebook.com/profile.php?id=61561978680089" target="blank"><FaFacebook className="text-xl hover:text-blue-500 cursor-pointer" /></a>
+            <a href="https://www.tiktok.com/@stefnail" target="blank"><FaTiktok className="text-xl hover:text-red-500 cursor-pointer" /></a>
+            <a href="https://www.instagram.com/stefnails/" target="blank"><FaInstagram className="text-xl hover:text-pink-500 cursor-pointer" /></a>
           </div>
         </div>
 
@@ -32,7 +32,7 @@ const Footer = () => {
 <div>
           <h4 className="font-bold mb-4">Servicio</h4>
           <ul className="space-y-2 text-sm">
-            <li className="hover:underline cursor-pointer">Cursos</li>
+            <li className="hover:underline cursor-pointer"><a href="/Courses">Cursos</a></li>
           </ul>
         </div>
 
@@ -49,14 +49,13 @@ const Footer = () => {
         <div>
           <h4 className="font-bold mb-4">Compañía</h4>
           <ul className="space-y-2 text-sm">
-            <li className="hover:underline cursor-pointer">Nosotros</li>
-            <li className="hover:underline cursor-pointer">Galería</li>
-            <li className="hover:underline cursor-pointer">Contacto</li>
+            <li className="hover:underline cursor-pointer"><a href="/AboutUs">Nosotros</a></li>
+            <li className="hover:underline cursor-pointer"><a href="ContactUs">Contacto</a></li>
           </ul>
           <h4 className="font-bold mt-6 mb-4">Soporte</h4>
           <ul className="space-y-2 text-sm">
             <li className="hover:underline cursor-pointer">
-              <a href="/PreguntasFrecuentes">Preguntas frecuentes</a>
+              <a href="/Faq">Preguntas frecuentes</a>
             </li>
           </ul>
         </div>
@@ -71,7 +70,7 @@ const Footer = () => {
       {/* Texto inferior */}
       <div className="text-center text-sm">
         <p>
-          Stef Nails 2025 | Power By: <span className="font-semibold">codemallow</span>
+          Stef Nails © 2025 | Power By: <span className="font-semibold"><a href="https://www.instagram.com/codemallow/">Codemallow</a></span>
         </p>
       </div>
     </footer>

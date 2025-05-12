@@ -5,23 +5,23 @@ import clsx from "clsx"; // Importar clsx para manejar clases condicionales
 const CarrucelCharacteristics = () => {
   const slides = [
     {
-      title: "Prepárate para conseguir tu certificado",
+      title: "Certificación Profesional en Uñas",
       description:
-        "Explora el futuro de la TI. Empieza a aprender para obtener las certificaciones de AWS, CompTIA A+ y muchas más.",
+        "Domina técnicas premium (gel, acrílico, nail art) con cursos prácticos avalados por Expertos y Marca la Diferencia",
       backgroundColor: "bg-yellow-300",
       image: "https://i.postimg.cc/Pq6P5DJB/stef-nails-stef-removebg-preview.png",
     },
     {
-      title: "Avanza en tu carrera profesional",
+      title: "Cursos de Uñas con Certificado",
       description:
-        "Descubre habilidades en demanda y cómo aplicarlas en el mundo real.",
+        "Aprende las últimas tendencias del sector, usa materiales profesionales y certifica tus habilidades para destacar en salones o emprender tu negocio",
       backgroundColor: "bg-blue-300",
       image: "https://i.postimg.cc/yNygMNwb/stef-nails-instructora-de-unas-decoradas.png",
     },
     {
-      title: "Construye tu futuro con nosotros",
+      title: "Técnicas Exclusivas y Herramientas de Alta Gama",
       description:
-        "Conéctate con expertos y una comunidad global de estudiantes.",
+        "Capacítate con métodos innovadores, accede a productos premium. ¡Transforma tu creatividad en ingresos!",
       backgroundColor: "bg-green-300",
       image: "https://i.postimg.cc/wjSZCqhL/stef-nails-instructora-de-unas-decoradas-profesionales-removebg-preview.png",
     },
@@ -86,13 +86,7 @@ const CarrucelCharacteristics = () => {
           <h2 className="text-2xl font-bold mb-4">{slides[currentIndex].title}</h2>
           <p className="text-base text-gray-700">
             {slides[currentIndex].description}
-          </p>
-          <a
-            href="#"
-            className="mt-4 inline-block text-indigo-600 hover:text-indigo-800 underline"
-          >
-            Explora el futuro con Stef Nails Academy
-          </a>
+          </p>          
         </div>
         <div className="w-full lg:w-1/2 h-[45vw] lg:h-auto flex justify-center relative">
           <img

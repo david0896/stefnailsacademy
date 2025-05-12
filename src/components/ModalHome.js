@@ -6,7 +6,7 @@ const ModalHome = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-80">
+    <div className={"fixed top-0 left-0 inset-0 flex items-center justify-center bg-black bg-opacity-80 z-[999]"}>
       <div
         className={clsx(
           "bg-white w-full max-w-5xl rounded-lg shadow-lg overflow-hidden relative",

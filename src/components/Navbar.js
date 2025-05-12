@@ -17,10 +17,11 @@ const Navbar = () => {
   }, []);
 
   return (
-    <header className={`${styles.navbar} ${isScrolled ? styles.scrolled : ""} border-b-[1px] border-[#242424] transition-all duration-300`}>
+    <div className={`${styles.navbar} ${isScrolled ? styles.scrolled : ""} border-b-[1px] border-[#242424] transition-all duration-300`}>
       <div className={styles.logoContainer}>
-        <span className={styles.logoText}>Stef</span>
-        <span className={styles.logoSubtext}>Nails Academy</span>
+        <a href="/">
+          <img src="https://i.postimg.cc/pdhQfKMg/steflogo-1.png" className={styles.logoText}/>
+        </a>
       </div>
       <nav className={`${styles.navLinks} ${isMenuOpen ? styles.showMenu : ""}`}>
         <ul>
@@ -32,7 +33,7 @@ const Navbar = () => {
         </ul>
       </nav>
       <div className={styles.whatsappButton}>
-        <a href="https://wa.me/" target="_blank" rel="noopener noreferrer">
+        <a href="https://wa.link/pxwwz5" target="_blank" rel="noopener noreferrer">
           <FaWhatsapp className={styles.whatsappIcon} /> WhatsApp
         </a>
       </div>
@@ -71,7 +72,7 @@ const Navbar = () => {
           </div>
         </div>
       )}
-    </header>
+    </div>
   );
 };
 

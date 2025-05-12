@@ -1,52 +1,58 @@
 .carouselContainer {
-    position: relative;
-    width: 350px; /* Ajusta al tamaño del carrusel */
-    height: 450px;
-    margin: 0;
-    perspective: 1000px;
-    z-index: 1; /* Asegura que el carrusel esté al frente */
-  }
-  
-  .cardPosition0 {
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform: translateZ(50px) rotate(0deg); /* Tarjeta más visible */
-    z-index: 3;
-    transition: transform 0.5s ease-in-out, z-index 0.5s ease-in-out;
-  }
-  
-  .cardPosition1 {
-    position: absolute;
-    top: 20px;
-    left: 10px;
-    transform: translateZ(0px) rotate(-10deg); /* Tarjeta intermedia */
-    z-index: 2;
-    transition: transform 0.5s ease-in-out, z-index 0.5s ease-in-out;
-  }
-  
-  .cardPosition2 {
-    position: absolute;
-    top: 40px;
-    left: 20px;
-    transform: translateZ(-50px) rotate(10deg); /* Tarjeta más al fondo */
-    z-index: 1;
-    transition: transform 0.5s ease-in-out, z-index 0.5s ease-in-out;
-  }
-  
-  .decorativeC {
-    position: absolute;
-    top: 90%;
-    left: 10%;
-    transform: translate(-50%, -50%);
-    width: 450px;
-    height: 450px;
-    z-index: 0; /* Envía la "C" detrás del carrusel */
-    opacity: 0.8; /* Ajusta la visibilidad según sea necesario */
-  }
+  position: relative;
+  width: 350px;
+  height: 450px;
+  margin: 0;
+  perspective: 1000px;
+  z-index: 1;
+}
+
+/* Tarjeta central (visible) */
+.cardPosition0 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  transform: scale(1) translateX(0) rotate(0deg);
+  opacity: 1;
+  transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+}
+
+/* Tarjeta izquierda (previa) */
+.cardPosition1 {
+  position: absolute;
+  top: 20px;
+  left: -60px;
+  z-index: 2;
+  transform: scale(0.75) translateX(-10%) rotate(-8deg);
+  opacity: 0.6;
+  transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+}
+
+/* Tarjeta derecha (siguiente) */
+.cardPosition2 {
+  position: absolute;
+  top: 20px;
+  left: 60px;
+  z-index: 1;
+  transform: scale(0.75) translateX(10%) rotate(8deg);
+  opacity: 0.6;
+  transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+}
+
+.decorativeC {
+  position: absolute;
+  top: 90%;
+  left: 10%;
+  transform: translate(-50%, -50%);
+  width: 450px;
+  height: 450px;
+  z-index: 0;
+  opacity: 0.8;
+}
 
 .decorativeImage {
-    position: absolute;
-    width: 8em;
-    height: 8em;
-  }
+  position: absolute;
+  width: 8em;
+  height: 8em;
+}

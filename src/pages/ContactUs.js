@@ -1,5 +1,6 @@
 import React from 'react'
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaWhatsapp } from "react-icons/fa";
+import FormContact from '@/components/ContactUs/FormContact';
 
 const ContactUs = () => {
   return (
@@ -37,63 +38,7 @@ const ContactUs = () => {
 
           {/* Contact Form */}
           <div className="bg-white p-6">
-            <form>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                    Tu nombre
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#ff5a5f] focus:ring-[#ff5a5f] p-4"
-                    placeholder="John Trangelo"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Tu correo
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#ff5a5f] focus:ring-[#ff5a5f] p-4"
-                    placeholder="hello@gmail.com"
-                  />
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-700">
-                  Asunto
-                </label>
-                <input
-                  type="text"
-                  id="subject"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#ff5a5f] focus:ring-[#ff5a5f] p-4"
-                  placeholder="Solicitud de inscripción"
-                />
-              </div>
-
-              <div className="mb-6">
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700">
-                  Mensaje
-                </label>
-                <textarea
-                  id="message"
-                  rows="4"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#ff5a5f] focus:ring-[#ff5a5f] p-4"
-                  placeholder="Escribe aqui tu mensaje"
-                ></textarea>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-[#ff5a5f] text-white py-2 px-4 rounded-md hover:bg-[#bb3d41] focus:outline-none focus:ring-2 focus:ring-[#ff5a5f] focus:ring-offset-2"
-              >
-                Enviar Mensaje
-              </button>
-            </form>
+            <FormContact/>
           </div>
         </div>
       </div>

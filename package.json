@@ -9,12 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@svgr/webpack": "^8.1.0",
-    "clsx": "^2.1.1",
+    "@hookform/resolvers": "5.0.1",
+    "@svgr/webpack": "8.1.0",
+    "@tanstack/react-query": "5.76.1",
+    "clsx": "2.1.1",
+    "googleapis": "148.0.0",
     "next": "15.1.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-icons": "^5.4.0"
+    "nodemailer": "^7.0.3",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-hook-form": "7.56.4",
+    "react-icons": "5.4.0",
+    "zod": "3.24.4"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

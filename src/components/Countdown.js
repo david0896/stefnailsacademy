@@ -1,42 +1,58 @@
 "use client"
 import { useState, useEffect } from 'react';
 
-const Countdown = () => {
+function formatearFechaIngles(fechaStr) {
+  const [day, month, year] = fechaStr.split('/').map(Number);
+  const fechaObj = new Date(year, month - 1, day, 0, 0, 0);
 
-      const [countdown, setCountdown] = useState({
-        days: '00',
-        hours: '00',
-        minutes: '00',
-        seconds: '00',
-      });
-  
-      useEffect(() => {
-        const countDownEndDate = 'February 28, 2025 09:00:00';
-        const endDate = new Date(countDownEndDate).getTime();
-  
-        const interval = setInterval(() => {
-          const timeNow = new Date().getTime();
-          const timeLeft = endDate - timeNow;
-  
-          if (timeLeft > 0) {
-            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-            const hours = Math.floor(
-              (timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-            );
-            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-  
-            setCountdown({
-              days: days < 10 ? `0${days}` : days.toString(),
-              hours: hours < 10 ? `0${hours}` : hours.toString(),
-              minutes: minutes < 10 ? `0${minutes}` : minutes.toString(),
-              seconds: seconds < 10 ? `0${seconds}` : seconds.toString(),
-            });
-          }
-        }, 1000);
-  
-        return () => clearInterval(interval);
-      }, []);
+  const opciones = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC'
+  };
+
+  const fechaFormateada = new Intl.DateTimeFormat('en-US', opciones).format(fechaObj);
+  return `${fechaFormateada} 00:00:00`;
+}
+
+const Countdown = ({fecha}) => {
+  const fechaCurso = formatearFechaIngles(fecha);
+
+  const [countdown, setCountdown] = useState({
+    days: '00',
+    hours: '00',
+    minutes: '00',
+    seconds: '00',
+  });
+
+  useEffect(() => {
+    const countDownEndDate = fechaCurso;
+    const endDate = new Date(countDownEndDate).getTime();
+
+    const interval = setInterval(() => {
+      const timeNow = new Date().getTime();
+      const timeLeft = endDate - timeNow;
+
+      if (timeLeft > 0) {
+        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+        setCountdown({
+          days: days < 10 ? `0${days}` : days.toString(),
+          hours: hours < 10 ? `0${hours}` : hours.toString(),
+          minutes: minutes < 10 ? `0${minutes}` : minutes.toString(),
+          seconds: seconds < 10 ? `0${seconds}` : seconds.toString(),
+        });
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
           <div className="w-full text-left flex py-1">

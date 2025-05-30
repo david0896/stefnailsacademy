@@ -8,8 +8,23 @@ import ModalHome from "@/components/ModalHome";
 import BlurBackgroundSection from "./BlurBackgroundSection";
 import BlurImage from "./BlurImage";
 
+function formatearFechaMesDia(fechaStr) {
+  const [day, month, year] = fechaStr.split('/').map(Number);
+  const fecha = new Date(year, month - 1, day);
 
-const Hero = () => {
+  const opciones = {
+    month: 'long',
+    day: 'numeric',
+  };
+
+  // Formatear la fecha en español
+  const formateador = new Intl.DateTimeFormat('es-ES', opciones);
+  return formateador.format(fecha);
+}
+
+
+
+const Hero = ({ProximoCurso, SiguienteCurso}) => {
 
     const [isVisible, setIsVisible] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -39,13 +54,12 @@ const Hero = () => {
                         <p className="text-lg text-[#383838] max-w-2xl mx-auto lg:mx-0">
                             En nuestra academia profesional de uñas, te ofrecemos cursos prácticos presenciales u online, personalizados y grupales para que te conviertas en un experto/a en diseño y elaboración de uñas.
                         </p>
-                        <a
-                            href="#"
+                        <button
                             className="inline-block w-fit bg-[#ff5a5f] text-white px-4 py-2 pr-6 rounded-[25px] text-lg font-medium hover:bg-[#ff3b3f] transition"
                             onClick={() => setIsOpen(true)}
                         >
                             Reserva tu lugar en la próxima clase
-                        </a>
+                        </button>
                                     
                     </div>
 
@@ -57,15 +71,17 @@ const Hero = () => {
                             <div className="grid grid-cols-5 rounded-lg border-solid border-2 border-[#ff5a5f]">
                                 <div className="col-span-2 bg-[#ff5a5f]/60 backdrop-blur-sm">
                                 <div className="bg-[#ff5a5f] p-2 h-full border-solid border-2 border-[#ffffff] rounded-lg">
-                                    <p className=" text-white font-bold text-center text-3xl">Febrero 28 <span className="block font-normal text-base">Siguiente clase</span></p>
+                                    <p className=" text-white font-bold text-center text-3xl">{formatearFechaMesDia(ProximoCurso.fechaSnFormato)} <span className="block font-normal text-base">Siguiente clase</span></p>
                                 </div>
                                 </div>
                                 <div className=" col-span-3 p-2 bg-[#ff5a5f]/60 backdrop-blur-sm">
-                                <Countdown/>
+                                <Countdown
+                                    fecha={ProximoCurso.fechaSnFormato}
+                                />
                                 </div>
                                 <div className=" col-span-5 p-2 bg-[#ff5a5f]/60 backdrop-blur-sm border-t-2 border-solid border-[#ff5a5f]">
-                                <p className=" text-white font-medium">Clase programada: Marzo 12</p>
-                                <p className=" text-white font-normal text-sm uppercase">soft gel nivel 2</p>
+                                <p className=" text-white font-medium">Clase programada: {SiguienteCurso.fecha}</p>
+                                <p className=" text-white font-normal text-sm uppercase">{SiguienteCurso.nombre}</p>
                                 </div>
                             </div>
                         </div> 
@@ -153,7 +169,12 @@ const Hero = () => {
             
         </BlurBackgroundSection>
         {/* Modal */}
-        <ModalHome isOpen={isOpen} onClose={() => setIsOpen(false)} />
+            <ModalHome 
+                isOpen={isOpen} 
+                onClose={() => setIsOpen(false)} 
+                data={ProximoCurso}
+                ProximoCurso={SiguienteCurso}
+            />
         </>
     );
 };

@@ -7,9 +7,31 @@ import ModalHome from "@/components/ModalHome";
 import styles from '../styles/Home.module.css';
 import useVisibility from "@/hooks/useVisibility";
 import InfiniteSlider from "@/components/InfiniteSlider";
+import useCursos from "@/hooks/useCursos";
+import useCursosProximos from "@/hooks/useCursosProximos";
+import useProximaFecha from "@/hooks/useProximaFecha";
 
-export default function Home() {
+export async function getStaticProps() {
+  // 1. Fetch a tu propia API
+  const res = await fetch(`${process.env.BASE_URL}/api/sheets/infoCursos`);
+  const cursos = await res.json();
 
+  // 2. ISR: Revalida cada 24 horas (86400 segundos)
+  return {
+    props: { cursos },
+    revalidate: 86400 // ← Actualiza 1 vez/día aunque no se use
+  };
+}
+
+export default function Home({cursos}) {
+
+  const { data } = useCursos(cursos); 
+  // obtener cursos con proximidad a fecha actual 
+  const cursosProcesados = useCursosProximos(data);
+  //primer curso proximo a la fecha actual
+  const ProximoCurso = cursosProcesados.find(curso => curso.proximoCurso);
+  //segundo curso proximo al primer curso a la fecha actual
+  const SiguienteCurso = cursosProcesados.find(curso => curso.siguienteCurso);
 
   // Referencias y visibilidad para cada sección
   const refNosotros = useRef(null);
@@ -31,7 +53,10 @@ export default function Home() {
   return (
     <div>
       <div>
-        <Hero/>
+        <Hero
+          ProximoCurso={ProximoCurso}
+          SiguienteCurso={SiguienteCurso}
+        />
         {/* seccion nosotros */}
         <div ref={refNosotros} className={`container mx-auto px-6 lg:px-20 grid grid-cols-1 space-y-3 py-10 relative transform transition-all duration-1000 ease-out 
           ${isVisibleNosotros ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}>
@@ -52,13 +77,12 @@ export default function Home() {
                 >
                   Leer más
                 </a>
-                <a
-                  href="#"
+                <button
                   className="inline-block w-fit bg-[#383838] text-white px-4 py-2 pr-6 rounded-[25px] font-normal hover:bg-[#212121] transition"
                   onClick={() => setIsOpen(true)}
                 >
                   Reservar tu lugar en la próxima clase
-                </a>
+                </button>
               </div>
             </div>
           </div> 
@@ -95,13 +119,12 @@ export default function Home() {
             <span className="font-semibold text-[#383838] text-lg">¡Tu carrera en uñas comienza aquí!</span>
             <h2 className="text-[#ff5a5f] text-4xl font-semibold">Cursos completos y especializados <span className=" block">con enfoque profesional</span></h2>
             <p className="text-[#383838] text-lg lg:w-3/4">En Stef Nails Academy, combinamos teoría, práctica y tendencias actuales para que domines las técnicas más innovadoras del sector. Aprende de la mano de expertos activos en la industria y desarrolla tu propio estilo con el respaldo de marcas líderes</p>
-              <a
-                href="#"
+              <button
                 className="inline-block w-fit bg-[#ff5a5f] text-white px-4 py-2 pr-6 rounded-[25px] font-normal hover:bg-[#ff3b3f] transition"
                 onClick={() => setIsOpen(true)}
               >
                 Reservar tu lugar en la próxima clase
-              </a>
+              </button>
           </div>
           <div ref={refCursosColum2} className={`col-span-3 mt-10 lg:mt-0 transform transition-all duration-1000 ease-out
             ${isVisibleCursosColum2 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-5"}`}>
@@ -196,7 +219,12 @@ export default function Home() {
         </div>
       </div>
       {/* Modal */}
-      <ModalHome isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <ModalHome 
+        isOpen={isOpen} 
+        onClose={() => setIsOpen(false)} 
+        data={ProximoCurso}
+        ProximoCurso={SiguienteCurso}
+      />
     </div>
   );
 }

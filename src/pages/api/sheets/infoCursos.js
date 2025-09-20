@@ -1,7 +1,8 @@
 export default async function handler(req, res) {
   try {
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${process.env.SPREADSHEET_ID}/values/Cursos!A1:K7?key=${process.env.GOOGLE_API_KEY}`;
- // Llamada a la API de tasa de cambio
+
+    // Llamada a la API de tasa de cambio
     const tasaResponse = await fetch(`${process.env.BASE_URL}/api/tasaCambiaria/bcv`);
     
     if (!tasaResponse.ok) {
@@ -60,6 +61,7 @@ export default async function handler(req, res) {
           instructor: instructor?.trim() || ''
         },
         precio: precioConvertido.toLocaleString('es-ES', formatoPrecio) || 0,
+        //precio: 0,
         imagen: imagen?.trim() || '',
         estatus: estatus?.trim() || '',
       };

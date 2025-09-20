@@ -7,15 +7,14 @@ import { set } from "react-hook-form";
 import useProximaFecha from "@/hooks/useProximaFecha";
 import useCursosProximos from "@/hooks/useCursosProximos";
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   // 1. Fetch a tu propia API
   const res = await fetch(`${process.env.BASE_URL}/api/sheets/infoCursos`);
   const cursos = await res.json();
 
   // 2. ISR: Revalida cada 24 horas (86400 segundos)
   return {
-    props: { cursos },
-    revalidate: 86400 // ← Actualiza 1 vez/día aunque no se use
+    props: { cursos }
   };
 }
 

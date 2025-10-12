@@ -17,7 +17,7 @@ const HeroAboutUs = () => {
 
     return (
         <section
-            className="relative w-full h-[110vw] lg:h-[30vw] bg-[#fdebeb]"
+            className="relative w-full h-[50vh] md:h-[40vh] xl:h-[50vh] bg-[#fdebeb]"
         >
             <div className="relative lg:absolute inset-0 flex items-center">
                 {/* **************** card **************** */}
@@ -33,10 +33,10 @@ const HeroAboutUs = () => {
                 <div className="container mx-auto px-6 mt-8 lg:mt-0 lg:px-20 grid grid-cols-1 items-center h-full">
                     {/* Columna de texto */}
                     <div className={clsx("flex flex-col col-span-1 justify-center items-center space-y-6 text-left h-full -mb-96 lg:mb-0", styles.heroSvg1FadeinLeft)}>
-                        <h1 className="text-5xl font-bold text-[#ff5a5f]">
+                        <h1 className="text-3xl xl:text-5xl font-bold text-[#ff5a5f]">
                             Conoce más sobre nosotros
                         </h1>
-                        <p className="text-lg text-[#383838] max-w-2xl lg:text-center mx-auto lg:mx-0">
+                        <p className="lg:text-lg text-[#383838] max-w-2xl lg:text-center mx-auto lg:mx-0">
                         Desde nuestros inicios, fusionamos teoría y práctica con las últimas tendencias, guiados por marcas líderes y profesionales del sector
                         </p>                                
                     </div>

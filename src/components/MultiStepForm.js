@@ -200,12 +200,12 @@ const MultiStepForm = ({ nombreCurso, precio }) => {
           <div className="mb-2 py-2 px-4 bg-gray-50 rounded-lg border border-gray-200">
             <h3 className="text-base font-semibold text-[#ff5a5f] mb-2">Datos para transferencia - Pago Móvil</h3>
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-gray-600 text-sm">Banco de Venezuela</p>
-                <p className="text-gray-600 text-sm">C.I 25458269</p>
+              <div className=' space-y-3'>
+                <p className="text-gray-600 text-sm">Bancamiga</p>
+                <p className="text-gray-600 text-sm">C.I: 16670743</p>
               </div>
-              <div>
-                <p className="text-gray-600 text-sm">0412 125 4875</p>
+              <div className=' space-y-3'>
+                <p className="text-gray-600 text-sm">0412 3692194</p>
                 <p className="text-gray-600 text-sm">{precio} Bs.</p>
               </div>
             </div>

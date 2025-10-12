@@ -22,9 +22,8 @@ function formatearFechaMesDia(fechaStr) {
   return formateador.format(fecha);
 }
 
-
-
 const Hero = ({ProximoCurso, SiguienteCurso}) => {
+    console.log(Object.prototype.toString.call(ProximoCurso) )
 
     const [isVisible, setIsVisible] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -42,23 +41,23 @@ const Hero = ({ProximoCurso, SiguienteCurso}) => {
             fullImageUrl="https://i.postimg.cc/fT1P7Mzt/background-u-as-profesionales.png"  // Imagen real
         >
             <div className="absolute inset-0 flex items-center">                
-                <div className="container mx-auto px-6 lg:px-20 grid grid-cols-1 md:grid-cols-2 gap-8 items-center h-full">
+                <div className="container mx-auto px-6 lg:px-20 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full">
                     {/* Columna de texto */}
                     <div className={clsx("flex flex-col col-span-1 justify-center space-y-6 text-left h-full -mb-96 lg:mb-0", styles.heroSvg1FadeinLeft)}>
-                        <h1 className="text-5xl font-bold text-[#ff5a5f]">
+                        <h1 className="text-3xl xl:text-5xl font-bold text-[#ff5a5f]">
                             Academia especializada en uñas profesionales
                         </h1>
-                        <h2 className="text-3xl text-[#383838]">
+                        <h2 className="text-2xl xl:text-3xl text-[#383838]">
                             Domina las técnicas de uñas más innovadoras
                         </h2>
-                        <p className="text-lg text-[#383838] max-w-2xl mx-auto lg:mx-0">
+                        <p className="lg:text-lg text-[#383838] max-w-2xl mx-auto lg:mx-0">
                             En nuestra academia profesional de uñas, te ofrecemos cursos prácticos presenciales u online, personalizados y grupales para que te conviertas en un experto/a en diseño y elaboración de uñas.
                         </p>
                         <button
-                            className="inline-block w-fit bg-[#ff5a5f] text-white px-4 py-2 pr-6 rounded-[25px] text-lg font-medium hover:bg-[#ff3b3f] transition"
-                            onClick={() => setIsOpen(true)}
+                            className="inline-block w-fit bg-[#ff5a5f] text-white px-4 py-2 pr-6 rounded-[25px] text-base lg:text-lg font-medium hover:bg-[#ff3b3f] transition"
+                            onClick={() => ProximoCurso && Object.keys(ProximoCurso).length > 0 ? setIsOpen(true) : setIsOpen(false)}
                         >
-                            Reserva tu lugar en la próxima clase
+                            {ProximoCurso && Object.keys(ProximoCurso).length > 0 ? "Reserva tu lugar en la próxima clase" : "Proximamente cursos disponibles"}
                         </button>
                                     
                     </div>
@@ -67,39 +66,47 @@ const Hero = ({ProximoCurso, SiguienteCurso}) => {
                     <div className="relative h-full flex col-span-1 justify-center items-end overflow-hidden">
                         
                         {/* Countdown */}
-                        <div className={clsx("absolute px-8 py-10 hidden lg:grid content-end z-20", styles.heroSvg1FadeinLeft)}>
-                            <div className="grid grid-cols-5 rounded-lg border-solid border-2 border-[#ff5a5f]">
-                                <div className="col-span-2 bg-[#ff5a5f]/60 backdrop-blur-sm">
-                                <div className="bg-[#ff5a5f] p-2 h-full border-solid border-2 border-[#ffffff] rounded-lg">
-                                    <p className=" text-white font-bold text-center text-3xl">{formatearFechaMesDia(ProximoCurso.fechaSnFormato)} <span className="block font-normal text-base">Siguiente clase</span></p>
-                                </div>
-                                </div>
-                                <div className=" col-span-3 p-2 bg-[#ff5a5f]/60 backdrop-blur-sm">
-                                <Countdown
-                                    fecha={ProximoCurso.fechaSnFormato}
-                                />
-                                </div>
-                                <div className=" col-span-5 p-2 bg-[#ff5a5f]/60 backdrop-blur-sm border-t-2 border-solid border-[#ff5a5f]">
-                                <p className=" text-white font-medium">Clase programada: {SiguienteCurso.fecha}</p>
-                                <p className=" text-white font-normal text-sm uppercase">{SiguienteCurso.nombre}</p>
-                                </div>
-                            </div>
-                        </div> 
-                        <div className={`${isVisible ? "opacity-100" : "opacity-0"} transition-opacity duration-1000 ease-in-out absolute -left-5 px-8 py-10 grid lg:hidden content-start z-20 bottom-28`}>
-                            <div className="grid grid-cols-5 rounded-lg">
-                                <div className="col-span-3 bg-[#ff5a5f]/60 backdrop-blur-sm rounded-lg">
-                                    <div className="bg-[#ff5a5f] p-2 h-full border-solid border-2 border-[#ffffff] rounded-lg">
-                                        <p className=" text-white font-bold text-center text-2xl">Enero 31 <span className="block font-normal text-base">Siguiente clase</span></p>
+                        {ProximoCurso && Object.keys(ProximoCurso).length > 0 && (
+                            <>
+                                <div className={clsx("absolute px-8 py-10 hidden lg:grid content-end z-20", styles.heroSvg1FadeinLeft)}>
+                                    <div className="grid grid-cols-5 rounded-lg border-solid border-2 border-[#ff5a5f]">
+                                        <div className="col-span-2 bg-[#ff5a5f]/60 backdrop-blur-sm">
+                                            <div className="bg-[#ff5a5f] p-2 h-full border-solid border-2 border-[#ffffff] rounded-lg">
+                                                <p className=" text-white font-bold text-center text-3xl">{formatearFechaMesDia(ProximoCurso.fechaSnFormato)} <span className="block font-normal text-base">Siguiente clase</span></p>
+                                            </div>
+                                        </div>
+                                        <div className=" col-span-3 p-2 bg-[#ff5a5f]/60 backdrop-blur-sm">
+                                            <Countdown
+                                                fecha={ProximoCurso.fechaSnFormato}
+                                            />
+                                        </div>
+                                        {SiguienteCurso && typeof SiguienteCurso === 'object' && Object.keys(SiguienteCurso).length !== 0 && (
+                                            <div className=" col-span-5 p-2 bg-[#ff5a5f]/60 backdrop-blur-sm border-t-2 border-solid border-[#ff5a5f]">
+                                                <p className=" text-white font-medium">Clase programada: {SiguienteCurso.fecha}</p>
+                                                <p className=" text-white font-normal text-sm uppercase">{SiguienteCurso.nombre}</p>
+                                            </div>
+                                        )}
                                     </div>
-                                </div>                        
-                            </div>
-                        </div>
+                                </div>  
+                                {/* Countdown mobile*/}
+                                <div className={`${isVisible ? "opacity-100" : "opacity-0"} transition-opacity duration-1000 ease-in-out absolute -left-8 px-8 py-10 grid lg:hidden content-start z-20 bottom-[18vh]`}>
+                                    <div className="grid grid-cols-5 rounded-lg">
+                                        <div className="col-span-3 w-11/12 bg-[#ff5a5f]/60 backdrop-blur-sm rounded-lg">
+                                            <div className="bg-[#ff5a5f] p-2 h-full border-solid border-2 border-[#ffffff] rounded-lg">
+                                                <p className=" text-white font-bold text-center text-base">{formatearFechaMesDia(ProximoCurso.fechaSnFormato)} <span className="block font-normal text-sm">Siguiente clase</span></p>
+                                            </div>
+                                        </div>                        
+                                    </div>
+                                </div>
+                            </>     
+                        )}
+                        
                         {/* Imagen de la instructora */}
                         <BlurImage
                             lowQualitySrc="https://i.postimg.cc/xdbsNgTM/instructor.jpg"
                             fullQualitySrc="https://i.postimg.cc/KjJrYrk3/instructor.png"
                             alt="Instructora profesional Stef"
-                            className={clsx("relative w-[72vw] h-[76vw] lg:w-[40vw] lg:h-[40vw] z-[8]", styles.heroFadeinLeft)}
+                            className={clsx("relative w-[72vw] h-[40vh]  lg:w-[40vw] lg:h-[80vh] z-[8]", styles.heroFadeinLeft)}
                         />
 
                         {/* SVGs detrás */}

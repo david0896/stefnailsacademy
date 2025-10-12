@@ -59,17 +59,17 @@ export default function Home({cursos}) {
         {/* seccion nosotros */}
         <div ref={refNosotros} className={`container mx-auto px-6 lg:px-20 grid grid-cols-1 space-y-3 py-10 relative transform transition-all duration-1000 ease-out 
           ${isVisibleNosotros ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}>
-          <span className="font-semibold text-[#383838] text-lg text-center">¿Quienes somos?</span>
-          <h2 className="text-[#ff5a5f] text-center text-4xl font-semibold">No solo enseñamos técnicas,<span className=" block">forjamos artistas</span></h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 pt-5">
-            <div className="col-span-1 flex justify-end">
+          <span className="font-semibold text-[#383838] text-base xl:text-lg text-center">¿Quienes somos?</span>
+          <h2 className="text-[#ff5a5f] text-center text-2xl xl:text-3xl font-semibold">No solo enseñamos técnicas,<span className=" block">forjamos artistas</span></h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 pt-5">
+            <div className="col-span-1 flex justify-center xl:justify-end">
               <PolaroidCarousel/>
             </div>
             <div className="col-auto flex flex-col lg:justify-center items-start space-y-6">            
-              <p className="text-[#383838] text-lg lg:w-3/4">
+              <p className="text-[#383838] lg:text-lg lg:w-3/4">
                 En nuestra academia especializada en uñas profesionales, fusionamos teoría y práctica con las tendencias más recientes del mundo de las uñas, asegurando que cada estudiante domine técnicas innovadoras y descubra su propio estilo. Nos aliamos con marcas líderes y expertos activos en la industria para ofrecer una formación actualizada, alineada con las verdaderas exigencias del mercado. Aquí no solo aprenderás a crear diseños excepcionales, sino también a construir una carrera sólida, con pasión, creatividad y profesionalismo
               </p>
-              <div className="flex flex-row space-x-2">
+              <div className="flex xl:flex-row space-x-2">
                 <a
                   href="/AboutUs"
                   className="inline-block w-fit bg-[#ff5a5f] text-white px-4 py-2 pr-6 rounded-[25px] font-normal hover:bg-[#ff3b3f] transition"
@@ -80,23 +80,23 @@ export default function Home({cursos}) {
                   className="inline-block w-fit bg-[#383838] text-white px-4 py-2 pr-6 rounded-[25px] font-normal hover:bg-[#212121] transition"
                   onClick={() => setIsOpen(true)}
                 >
-                  Reservar tu lugar en la próxima clase
+                  Próxima clase
                 </button>
               </div>
             </div>
           </div> 
-          <img src="https://i.postimg.cc/FFq3JLP4/US-3-00-removebg-preview.png" alt="Corta cuticula" className={clsx("hidden md:block absolute top-16 left-[28%] w-20 h-20", styles.flotar)}/>
-          <div className="hidden md:block absolute top-10 right-[29%]" style={{transform: 'rotate(15deg)'}}>
+          <img src="https://i.postimg.cc/FFq3JLP4/US-3-00-removebg-preview.png" alt="Corta cuticula" className={clsx("hidden xl:block absolute top-16 left-[28%] w-20 h-20", styles.flotar)}/>
+          <div className="hidden xl:block absolute top-10 right-[29%]" style={{transform: 'rotate(15deg)'}}>
             <img src="https://i.postimg.cc/dQmXnJyD/esmalte-de-unas-naranja.png" alt="Esmalte de uñas color naranja" className={clsx("w-20 h-20", styles.flotar)}/>
           </div>
         </div>
         {/* seccion productos */}
-        <div ref={refProductos} className={`bg-[#ff5a5f] mt-32 transform transition-all duration-1000 ease-out 
+        <div ref={refProductos} className={`bg-[#ff5a5f] mt-5 xl:mt-32 transform transition-all duration-1000 ease-out 
             ${isVisibleProductos ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}>
           <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 px-6 lg:px-20">
             <div className="text-[#fff] text-lg space-y-3 py-5">
-              <h3 className="text-3xl font-semibold">Proximamente llega nuestra tienda online</h3>
-              <p className="w-[95%]">
+              <h3 className="text-2xl font-semibold">Proximamente llega nuestra tienda online</h3>
+              <p className="lg:text-lg w-[95%]">
                 Nuestra tienda en línea diseñada para profesionales de uñas. Encuentra productos de alta calidad, para potenciar tu talento desde un solo lugar
               </p>            
               <p
@@ -115,15 +115,15 @@ export default function Home({cursos}) {
         <div className="container mx-auto grid grid-cols-1 lg:grid-cols-5 px-6 lg:px-20 mt-10 lg:mt-16">
           <div ref={refCursosColum1}  className={`col-span-2 space-y-3 flex flex-col justify-center transform transition-all duration-1000 ease-out
             ${isVisibleCursosColum1 ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"}`}>
-            <span className="font-semibold text-[#383838] text-lg">¡Tu carrera en uñas comienza aquí!</span>
-            <h2 className="text-[#ff5a5f] text-4xl font-semibold">Cursos completos y especializados <span className=" block">con enfoque profesional</span></h2>
-            <p className="text-[#383838] text-lg lg:w-3/4">En Stef Nails Academy, combinamos teoría, práctica y tendencias actuales para que domines las técnicas más innovadoras del sector. Aprende de la mano de expertos activos en la industria y desarrolla tu propio estilo con el respaldo de marcas líderes</p>
-              <button
-                className="inline-block w-fit bg-[#ff5a5f] text-white px-4 py-2 pr-6 rounded-[25px] font-normal hover:bg-[#ff3b3f] transition"
-                onClick={() => setIsOpen(true)}
-              >
-                Reservar tu lugar en la próxima clase
-              </button>
+            <span className="font-semibold text-[#383838] text-base xl:text-lg">¡Tu carrera en uñas comienza aquí!</span>
+            <h2 className="text-[#ff5a5f] text-2xl xl:text-3xl font-semibold">Cursos completos y especializados <span className=" block">con enfoque profesional</span></h2>
+            <p className="text-[#383838] pb-3 lg:text-lg  lg:w-3/4">En Stef Nails Academy, combinamos teoría, práctica y tendencias actuales para que domines las técnicas más innovadoras del sector. Aprende de la mano de expertos activos en la industria y desarrolla tu propio estilo con el respaldo de marcas líderes</p>
+            <button
+              className="inline-block w-fit bg-[#ff5a5f] text-white px-4 py-2 pr-6 rounded-[25px] font-normal hover:bg-[#ff3b3f] transition"
+              onClick={() => setIsOpen(true)}
+            >
+              Reservar tu lugar en la próxima clase
+            </button>
           </div>
           <div ref={refCursosColum2} className={`col-span-3 mt-10 lg:mt-0 transform transition-all duration-1000 ease-out
             ${isVisibleCursosColum2 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-5"}`}>
@@ -202,7 +202,7 @@ export default function Home({cursos}) {
           </div>        
         </div>
         {/* seccion testimonios */}
-        <div ref={refReferencias} className={`container mx-auto grid grid-cols-1 px-6 lg:px-20 mt-10 lg:mt-0 overflow-hidden transform transition-all duration-1000 ease-out 
+        <div ref={refReferencias} className={` hidden container mx-auto grid grid-cols-1 px-6 lg:px-20 mt-10 lg:mt-0 overflow-hidden transform transition-all duration-1000 ease-out 
             ${isVisibleReferencias ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}>
           <div className="text-center space-y-3">
             <span className="font-semibold text-[#383838] text-lg">Referencias</span>
@@ -218,12 +218,12 @@ export default function Home({cursos}) {
         </div>
       </div>
       {/* Modal */}
-      <ModalHome 
+      {/* <ModalHome 
         isOpen={isOpen} 
         onClose={() => setIsOpen(false)} 
         data={ProximoCurso}
         ProximoCurso={SiguienteCurso}
-      />
+      /> */}
     </div>
   );
 }

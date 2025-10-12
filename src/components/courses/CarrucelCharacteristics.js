@@ -82,13 +82,13 @@ const CarrucelCharacteristics = () => {
           isTransitioning ? styles.slideEnter : styles.slideExit // Aplicar animación
         )}
       >
-        <div className="w-full lg:w-1/2 p-5 rounded-sm bg-slate-50">
+        <div className="w-full lg:w-1/2 p-5 rounded-md bg-slate-50">
           <h2 className="text-2xl font-bold mb-4">{slides[currentIndex].title}</h2>
           <p className="text-base text-gray-700">
             {slides[currentIndex].description}
           </p>          
         </div>
-        <div className="w-full lg:w-1/2 h-[45vw] lg:h-auto flex justify-center relative">
+        <div className="w-full lg:w-1/2 h-[45vw] md:h-auto flex justify-center relative">
           <img
             src={slides[currentIndex].image}
             alt="Ilustración de certificación"

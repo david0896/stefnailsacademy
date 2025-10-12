@@ -19,21 +19,26 @@ const useCursosProximos = (cursos) => {
         return {
           ...curso,
           fechaObj: fechaCurso,
-          diferencia: diferencia >= 0 ? diferencia : Infinity
+          diferencia
         };
       } catch {
         return null;
       }
     }).filter(Boolean);
 
+    // Filtramos solo cursos futuros o de hoy
+    const cursosValidos = cursosConFechas.filter(curso => curso.diferencia >= 0);
+
+    if (cursosValidos.length === 0) return [];
+
     // Ordenar por fecha más próxima
-    const cursosOrdenados = [...cursosConFechas].sort((a, b) => a.diferencia - b.diferencia);
+    const cursosOrdenados = [...cursosValidos].sort((a, b) => a.diferencia - b.diferencia);
 
     const cursoMasProximo = cursosOrdenados[0];
     const siguienteCurso = cursosOrdenados[1]; // puede ser undefined si solo hay uno válido
 
     // Mapear resultado final
-    return cursosConFechas.map(curso => ({
+    return cursosValidos.map(curso => ({
       ...curso,
       proximoCurso: curso.id === cursoMasProximo?.id,
       siguienteCurso: curso.id === siguienteCurso?.id

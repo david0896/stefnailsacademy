@@ -1,0 +1,9 @@
+# Aplica estas reglas a todos los rastreadores
+User-agent: *
+#
+# Permite rastrear todo el sitio
+Allow: /
+#
+# Indica la ubicación del sitemap.xml
+# Reemplaza "https://www.tudominio.com" con tu URL
+Sitemap: https://www.stefnailsacademy.com/sitemap.xml

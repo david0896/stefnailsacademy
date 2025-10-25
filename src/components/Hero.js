@@ -23,7 +23,6 @@ function formatearFechaMesDia(fechaStr) {
 }
 
 const Hero = ({ProximoCurso, SiguienteCurso}) => {
-    console.log(Object.prototype.toString.call(ProximoCurso) )
 
     const [isVisible, setIsVisible] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -54,12 +53,11 @@ const Hero = ({ProximoCurso, SiguienteCurso}) => {
                             En nuestra academia profesional de uñas, te ofrecemos cursos prácticos presenciales u online, personalizados y grupales para que te conviertas en un experto/a en diseño y elaboración de uñas.
                         </p>
                         <button
-                            className="inline-block w-fit bg-[#ff5a5f] text-white px-4 py-2 pr-6 rounded-[25px] text-base lg:text-lg font-medium hover:bg-[#ff3b3f] transition"
+                            className="inline-block w-fit bg-[#ff5a5f] text-white px-4 py-2 pr-6 z-50 rounded-[25px] text-base lg:text-lg font-medium hover:bg-[#ff3b3f] transition"
                             onClick={() => ProximoCurso && Object.keys(ProximoCurso).length > 0 ? setIsOpen(true) : setIsOpen(false)}
                         >
                             {ProximoCurso && Object.keys(ProximoCurso).length > 0 ? "Reserva tu lugar en la próxima clase" : "Proximamente cursos disponibles"}
-                        </button>
-                                    
+                        </button>  
                     </div>
 
                     {/* Columna de imagen */}

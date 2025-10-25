@@ -25,7 +25,6 @@ const truncateText = (text, limit) => {
 
 const ModalHome = ({ isOpen, onClose, data, ProximoCurso }) => {
     if (!isOpen) return null;
-    console.log(JSON.stringify(data.precio, null, 2))
 
     const character_limit = 100;
     const description = data?.descripcion || '';

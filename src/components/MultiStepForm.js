@@ -1,32 +1,24 @@
 import { useState } from 'react';
-import { z } from 'zod';
+import { z, ZodError } from 'zod';
 import { useMutation } from '@tanstack/react-query';
 
-// Esquemas de validación
-const step1Schema = z.object({
-  nombre: z.string().min(1, "El nombre es requerido"),
-  apellido: z.string().min(1, "El apellido es requerido"),
-  cedula: z.string()
-    .min(6, "Mínimo 6 caracteres")
-    .max(10, "Máximo 10 caracteres")
-    .regex(/^[VvEeJj]\d+$/, "La cédula debe comenzar con una letra (V-E-J)"),
-  email: z.string().email("Email inválido"),
-  telefono: z.string().min(11, "Mínimo 11 dígitos").max(11, "Máximo 11 caracteres")
-});
+// Función de utilidad para limpiar y normalizar una cadena monetaria regional a Number
+const cleanMonetaryString = (value) => {
+    if (typeof value === 'number') return value;
+    if (typeof value !== 'string') return 0; // O manejar error
 
-const step2Schema = z.object({
-  bancoEmisor: z.string().min(1, "Banco requerido"),
-  referencia: z.string().min(1, "Referencia requerida"),
-  monto: z.number({
-    required_error: "Monto requerido",
-    invalid_type_error: "Debe ser un número"
-  }).positive("Monto debe ser positivo"),
-  aceptoTerminos: z.literal(true, {
-    errorMap: () => ({ message: "Debe aceptar los términos" })
-  })
-});
+    // 1. Reemplazar los puntos de miles (si existen)
+    let cleaned = value.replace(/\./g, ''); 
+
+    // 2. Reemplazar la coma decimal por un punto decimal
+    cleaned = cleaned.replace(',', '.');
+
+    // 3. Convertir a Number
+    return parseFloat(cleaned) || 0; // Usamos parseFloat para manejar el punto decimal
+};
 
 const MultiStepForm = ({ nombreCurso, precio }) => {
+  console.log(precio + " precio")
   const [currentStep, setCurrentStep] = useState(1);
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
@@ -39,6 +31,44 @@ const MultiStepForm = ({ nombreCurso, precio }) => {
     referencia: '',
     monto: '',
     aceptoTerminos: false
+  });
+
+  // Esquemas de validación
+  const step1Schema = z.object({
+    nombre: z.string().min(1, "El nombre es requerido"),
+    apellido: z.string().min(1, "El apellido es requerido"),
+    cedula: z.string()
+      .min(6, "Mínimo 6 caracteres")
+      .max(10, "Máximo 10 caracteres")
+      .regex(/^[VvEeJj]\d+$/, "La cédula debe comenzar con una letra (V-E-J)"),
+    email: z.string().email("Email inválido"),
+    telefono: z.string().min(11, "Mínimo 11 dígitos").max(11, "Máximo 11 caracteres")
+  });
+
+  const step2Schema = z.object({
+    bancoEmisor: z.string().min(1, "Banco requerido"),
+    referencia: z.string().min(1, "Referencia requerida"),
+    monto: z.number({
+    required_error: "Monto requerido",
+    invalid_type_error: "Debe ser un número"
+}).positive("Monto debe ser positivo").refine(val => {
+    
+    // Convertimos 'precio' a Number (por si viene como string)
+    const precioEsperado = cleanMonetaryString(precio);
+    
+    // Convertimos ambos a centavos y redondeamos (elimina el problema de punto flotante)
+    const montoEnCentavos = Math.round(val * 100);
+    const precioEnCentavos = Math.round(precioEsperado * 100);
+
+    // Comparamos los enteros
+    return montoEnCentavos === precioEnCentavos;
+
+}, {
+    message: `El monto ingresado debe coincidir con el precio exacto (${precio}).`,
+}),
+    aceptoTerminos: z.literal(true, {
+      errorMap: () => ({ message: "Debe aceptar los términos" })
+    })
   });
 
   const mutation = useMutation({
@@ -58,13 +88,66 @@ const MultiStepForm = ({ nombreCurso, precio }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-    
+
+    // Si el campo es el monto, aplicamos formateo de número
+ if (name === "monto") {
+        
+        // 1. LIMPIEZA INICIAL: Quitar todo lo que no sea dígito
+        // Esto crea una cadena de solo números (ej: "245122")
+        const digitsOnly = value.replace(/\D/g, "");
+
+        // 2. Si no hay dígitos, limpiar el estado y la vista
+        if (!digitsOnly) {
+            setFormData((prev) => ({ ...prev, [name]: 0 })); // Importante: usar 0 o null, no ""
+            e.target.value = "";
+            
+            // Si quieres limpiar errores, puedes hacerlo aquí
+            if (errors[name]) {
+                setErrors((prev) => ({ ...prev, [name]: "" }));
+            }
+            return;
+        }
+
+        // 3. CALCULAR VALOR NUMÉRICO REAL
+        // Convierte a número flotante dividiendo entre 100 para decimales automáticos.
+        // ESTE es el valor de tipo Number (ej: 2451.22) que se guarda en el estado
+        // y que Zod utilizará para la validación `val === precio`.
+        const numericValue = parseFloat(digitsOnly) / 100;
+
+        // 4. ACTUALIZAR EL ESTADO DE FORMULARIO
+        // Se actualiza el estado con el valor numérico limpio.
+        setFormData((prev) => ({
+            ...prev,
+            [name]: numericValue,
+        }));
+
+        // 5. FORMATEAR VISUALMENTE PARA EL INPUT (CADENA)
+        const formattedValue = new Intl.NumberFormat("es-ES", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+            useGrouping: true, // Activa los puntos de miles
+        }).format(numericValue);
+
+        // 6. REFLEJARLO EN EL INPUT (SOLO VISTA)
+        // Esto actualiza la apariencia del input que ve el usuario.
+        e.target.value = formattedValue;
+
+        console.log(formattedValue + " precio formateado")
+        
+        // El `return` original es opcional, pero lo mantendremos por consistencia.
+        // Si el monto fue procesado, asumimos que no hay más lógica de cambio de campo.
+        return;
+    }else {
+      // Comportamiento normal para los demás campos
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
+      }));
+    }
+
+    // Limpiar errores si existen
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
@@ -80,12 +163,21 @@ const MultiStepForm = ({ nombreCurso, precio }) => {
       }
       return true;
     } catch (error) {
-      const newErrors = error.errors.reduce((acc, curr) => {
-        acc[curr.path[0]] = curr.message;
-        return acc;
-      }, {});
-      setErrors(newErrors);
-      return false;
+      if (error instanceof ZodError) {
+             const newErrors = error.errors.reduce((acc, curr) => {
+                acc[curr.path[0]] = curr.message;
+                return acc;
+            }, {});
+            
+            setErrors(newErrors);
+            return false;
+            
+        } else {
+            // Manejar errores de ejecución inesperados (como el TypeError que estás viendo)
+            console.error("Error de ejecución capturado:", error);
+            setErrors({ general: "Error interno del formulario." });
+            return false;
+        }
     }
   };
 
@@ -244,14 +336,28 @@ const MultiStepForm = ({ nombreCurso, precio }) => {
             <div>
               <input
                 name="monto"
-                type="number"
+                type="text"
+                inputMode="numeric"
                 placeholder="Monto transferido"
-                className={`w-full p-3 border ${errors.monto ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff5a5f]`}
+                className={`w-full p-3 border ${
+                  errors.monto ? "border-red-500" : "border-gray-300"
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff5a5f]`}
                 onChange={handleChange}
-                value={formData.monto}
+                value={
+                  formData.monto !== "" && formData.monto != null
+                    ? new Intl.NumberFormat("es-ES", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                        useGrouping: true, // puntos de miles
+                      }).format(formData.monto)
+                    : ""
+                }
               />
-              {errors.monto && <p className="text-red-500 text-sm mt-1">{errors.monto}</p>}
+              {errors.monto && (
+                <p className="text-red-500 text-sm mt-1">{errors.monto}</p>
+              )}
             </div>
+
 
             <div className="mt-2">
               <label className="flex items-center text-sm">

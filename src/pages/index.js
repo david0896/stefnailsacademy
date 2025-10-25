@@ -77,11 +77,11 @@ export default function Home({cursos}) {
                   Leer más
                 </a>
                 <button
-                  className="inline-block w-fit bg-[#383838] text-white px-4 py-2 pr-6 rounded-[25px] font-normal hover:bg-[#212121] transition"
-                  onClick={() => setIsOpen(true)}
+                    className="inline-block w-fit bg-[#383838] text-white px-4 py-2 pr-6 rounded-[25px] font-normal hover:bg-[#212121] transition"
+                    onClick={() => ProximoCurso && Object.keys(ProximoCurso).length > 0 ? setIsOpen(true) : setIsOpen(false)}
                 >
-                  Próxima clase
-                </button>
+                    {ProximoCurso && Object.keys(ProximoCurso).length > 0 ? "Próxima clase" : "Proximamente"}
+                </button> 
               </div>
             </div>
           </div> 
@@ -119,11 +119,11 @@ export default function Home({cursos}) {
             <h2 className="text-[#ff5a5f] text-2xl xl:text-3xl font-semibold">Cursos completos y especializados <span className=" block">con enfoque profesional</span></h2>
             <p className="text-[#383838] pb-3 lg:text-lg  lg:w-3/4">En Stef Nails Academy, combinamos teoría, práctica y tendencias actuales para que domines las técnicas más innovadoras del sector. Aprende de la mano de expertos activos en la industria y desarrolla tu propio estilo con el respaldo de marcas líderes</p>
             <button
-              className="inline-block w-fit bg-[#ff5a5f] text-white px-4 py-2 pr-6 rounded-[25px] font-normal hover:bg-[#ff3b3f] transition"
-              onClick={() => setIsOpen(true)}
+                className="inline-block w-fit bg-[#ff5a5f] text-white px-4 py-2 pr-6 z-50 rounded-[25px] text-base lg:text-lg font-medium hover:bg-[#ff3b3f] transition"
+                onClick={() => ProximoCurso && Object.keys(ProximoCurso).length > 0 ? setIsOpen(true) : setIsOpen(false)}
             >
-              Reservar tu lugar en la próxima clase
-            </button>
+                {ProximoCurso && Object.keys(ProximoCurso).length > 0 ? "Reserva tu lugar en la próxima clase" : "Proximamente cursos disponibles"}
+            </button>  
           </div>
           <div ref={refCursosColum2} className={`col-span-3 mt-10 lg:mt-0 transform transition-all duration-1000 ease-out
             ${isVisibleCursosColum2 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-5"}`}>
@@ -218,12 +218,12 @@ export default function Home({cursos}) {
         </div>
       </div>
       {/* Modal */}
-      {/* <ModalHome 
+      <ModalHome 
         isOpen={isOpen} 
         onClose={() => setIsOpen(false)} 
         data={ProximoCurso}
         ProximoCurso={SiguienteCurso}
-      /> */}
+      />
     </div>
   );
 }

@@ -26,7 +26,7 @@ const termAndConditions = () => {
 
                     <h3 className="text-xl font-semibold text-gray-800 mt-6">3. Certificación</h3>
                     <p className="text-gray-600 leading-relaxed">
-                    La certificación final requiere 90% de asistencia y aprobación del examen práctico. Los certificados tienen validez internacional y llevarán el sello de la Academia.
+                    La certificación final requiere 100% de asistencia y aprobación del examen práctico. Los certificados tienen validez internacional y llevarán el sello de la Academia.
                     </p>
 
                     <h3 className="text-xl font-semibold text-gray-800 mt-6">4. Propiedad Intelectual</h3>

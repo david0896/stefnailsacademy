@@ -34,7 +34,7 @@ const ContactUs = () => {
                 <FaEnvelope className="text-xl flex-shrink-0" />
                 <div className="overflow-hidden">
                   <strong className="block">Correo:</strong>
-                  <span className="block break-words">Support@uprankly.com</span>
+                  <span className="block break-words">soportestefnailsacademy@gmail.com</span>
                 </div>
               </li>
 
@@ -48,7 +48,7 @@ const ContactUs = () => {
                     rel="noopener noreferrer"
                     className="block break-words hover:underline"
                   >
-                    C.C. Galerías El Paraiso, Final Av. Páez, con Ohiggins, Frente a la Redoma La India, El Paraíso, Caracas
+                    C.C. Galerías El Paraiso, Local 19, Final Av. Páez, con Ohiggins, Frente a la Redoma La India, El Paraíso, Caracas
                   </a>
                 </div>
               </li>

@@ -56,7 +56,7 @@ const AboutUs = () => {
         <div className="w-9/12 mx-auto">
           <div className="col-span-2 lg:text-center flex flex-col justify-center lg:w-7/12 mb-10 mx-auto space-y-4">
               <h2 className="text-[#ff5a5f] text-2xl xl:text-3xl font-semibold">Formadas por los mejores, reconocidas por los grandes</h2>
-              <p className="lg:text-lg text-[#383838] mx-auto lg:mx-0 ">Somos Master Instructores certificados y avalados por las marcas más importantes de la industria a nivel nacional e internacional: TONES, ANTARTYC, STALEKS, MIS COCO, SUPERCRISTAL, LATIN NAILS, NAILSHOP, entre otras</p> 
+              <p className="lg:text-lg text-[#383838] mx-auto lg:mx-0 ">Somos Master Instructores certificados y avalados por las marcas más importantes de la industria a nivel nacional e internacional: TONES, ANTARTYC, STALEKS, MIX COCO, SUPERCRISTAL, LATIN NAILS, NAILSHOP, JUDA, CANNI, LIAN</p> 
               <p className="lg:text-lg text-[#383838] mx-auto lg:mx-0">Formadas por los mejores instructores europeos, seguimos los lineamientos de los más exigentes estándares internacionales</p>
           </div>
         </div>

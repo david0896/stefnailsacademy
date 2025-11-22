@@ -1,15 +1,30 @@
 export default async function handler(req, res) {
+
+  const MONEDAS = {
+    "USD" : "USD",
+    "EUR" : "EUR",
+  };
+
   try {
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${process.env.SPREADSHEET_ID}/values/Cursos!A1:K7?key=${process.env.GOOGLE_API_KEY}`;
 
-    // Llamada a la API de tasa de cambio
+    // tasa de cambio USD
     const tasaResponse = await fetch(`${process.env.BASE_URL}/api/tasaCambiaria/bcv`);
     
     if (!tasaResponse.ok) {
       throw new Error(`Error al obtener tasa de cambio: ${tasaResponse.statusText}`);
     }
 
-    const tasaCambio = await tasaResponse.json();
+    const tasaCambioUsd = await tasaResponse.json();
+
+    // tasa de cambio EUR
+    const tasaEurResponse = await fetch(`${process.env.BASE_URL}/api/tasaCambiaria/bcvEuro`);
+    
+    if (!tasaEurResponse.ok) {
+      throw new Error(`Error al obtener tasa de cambio: ${tasaEurResponse.statusText}`);
+    }
+
+    const tasaCambioEur = await tasaEurResponse.json();
 
     const response = await fetch(url);
 
@@ -26,11 +41,11 @@ export default async function handler(req, res) {
     const cursos = data.values.slice(1).map((row, index) => {
 
       const [
-        nombre, descripcion, fechaStr, modo, nivel, horas,
-        cantClases, instructor, precio, imagen, estatus
+        Nombre, Descripcion, FechaLimiteIncripcion, Modo, Nivel, HorasAcademicas,
+        DiasDeClases, Instructor, Divisa, Precio, Imagen, Estatus
       ] = row;
 
-      const [day, month, year] = fechaStr.split('/').map(Number);
+      const [day, month, year] = FechaLimiteIncripcion.split('/').map(Number);
       const fechaObj = new Date(year, month - 1, day);
       const fechaFormateada = new Intl.DateTimeFormat('es-ES', {
         day: 'numeric',
@@ -45,25 +60,26 @@ export default async function handler(req, res) {
         maximumFractionDigits: 2,
         useGrouping: true
       };
-      const precioConvertido = Number((precio * tasaCambio).toFixed(2));
+
+      const precioConvertido = Divisa === MONEDAS.USD ? Number((Precio * tasaCambioUsd).toFixed(2)) : Number((Precio * tasaCambioEur).toFixed(2));
 
       return {
         id: index + 1,
-        nombre: nombre?.trim() || '',
-        descripcion: descripcion?.trim() || '',
+        nombre: Nombre?.trim() || '',
+        descripcion: Descripcion?.trim() || '',
         fecha: fechaFormateada,
-        fechaSnFormato: fechaStr?.trim(),
-        modo: modo?.trim() || '',
-        nivel: parseInt(nivel) || 0,
-        horas_academicas: parseInt(horas) || 0,
+        fechaSnFormato: FechaLimiteIncripcion?.trim(),
+        modo: Modo?.trim() || '',
+        nivel: Nivel.trim() || "",
+        horas_academicas: parseInt(HorasAcademicas) || 0,
         clases: {
-          cantidad: parseInt(cantClases) || 0,
-          instructor: instructor?.trim() || ''
+          cantidad: parseInt(DiasDeClases) || 0,
+          instructor: Instructor?.trim() || ''
         },
         precio: precioConvertido.toLocaleString('es-ES', formatoPrecio) || 0,
         //precio: 0,
-        imagen: imagen?.trim() || '',
-        estatus: estatus?.trim() || '',
+        imagen: Imagen?.trim() || '',
+        estatus: Estatus?.trim() || '',
       };
     });
 

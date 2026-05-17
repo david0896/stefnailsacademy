@@ -1,0 +1,153 @@
+// =============================================
+// Stef Nails Academy — Backoffice Schema
+// DB: PostgreSQL (local pgAdmin / Supabase prod)
+// =============================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =============================================
+// ADMIN USER — Login del backoffice (NextAuth)
+// =============================================
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("admin_users")
+}
+
+// =============================================
+// COURSE — Cursos (PRESENCIAL u ONLINE)
+// =============================================
+model Course {
+  id          String       @id @default(cuid())
+  title       String
+  description String
+  type        CourseType
+  status      CourseStatus @default(DRAFT)
+  priceEUR    Float
+  duration    String
+  maxSpots    Int?
+  date        DateTime?
+  imageUrl    String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  enrollments Enrollment[]
+
+  @@map("courses")
+}
+
+// =============================================
+// STUDENT — Alumnos registrados
+// =============================================
+model Student {
+  id              String          @id @default(cuid())
+  firstName       String
+  lastName        String
+  email           String          @unique
+  phone           String
+  idNumber        String
+  city            String
+  state           String
+  country         String          @default("Venezuela")
+  experienceLevel ExperienceLevel
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  enrollments Enrollment[]
+
+  @@map("students")
+}
+
+// =============================================
+// ENROLLMENT — Inscripciones
+// =============================================
+model Enrollment {
+  id              String           @id @default(cuid())
+  courseId        String
+  studentId       String
+  status          EnrollmentStatus @default(PENDING)
+  paymentMethod   PaymentMethod
+  paymentStatus   PaymentStatus    @default(PENDING)
+  amountEUR       Float
+  bankName        String?
+  referenceNumber String?
+  proofImageUrl   String?
+  notes           String?
+  enrolledAt      DateTime         @default(now())
+  confirmedAt     DateTime?
+  updatedAt       DateTime         @updatedAt
+
+  course  Course  @relation(fields: [courseId], references: [id])
+  student Student @relation(fields: [studentId], references: [id])
+
+  @@map("enrollments")
+}
+
+// =============================================
+// CONTENT — Contenido editable del sitio
+// =============================================
+model Content {
+  id        String      @id @default(cuid())
+  key       String      @unique
+  value     String
+  type      ContentType @default(TEXT)
+  updatedAt DateTime    @updatedAt
+
+  @@map("contents")
+}
+
+// =============================================
+// ENUMS
+// =============================================
+enum CourseType {
+  PRESENCIAL
+  ONLINE
+}
+
+enum CourseStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+}
+
+enum ExperienceLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum EnrollmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentMethod {
+  TRANSFER
+  GATEWAY
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  REFUNDED
+}
+
+enum ContentType {
+  TEXT
+  IMAGE
+  JSON
+}

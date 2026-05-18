@@ -84,13 +84,17 @@ export default function CursosPage({ courses }) {
                 <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Tipo</th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Estado</th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Precio (EUR)</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Duración</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Días de clases</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {courses.map((course) => (
-                <tr key={course.id} className="hover:bg-gray-50 transition-colors">
+                <tr
+                  key={course.id}
+                  onClick={() => router.push(`/backoffice/cursos/${course.id}?ver=1`)}
+                  className="hover:bg-gray-50 transition-colors cursor-pointer"
+                >
                   <td className="px-5 py-3.5">
                     <p className="font-medium text-gray-900">{course.title}</p>
                     <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{course.description}</p>
@@ -107,9 +111,9 @@ export default function CursosPage({ courses }) {
                     €{course.priceEUR.toFixed(2)}
                   </td>
                   <td className="px-4 py-3.5 text-gray-600">
-                    {course.duration}
+                    {course.diasDeClases ? `${course.diasDeClases} días` : '—'}
                   </td>
-                  <td className="px-4 py-3.5">
+                  <td className="px-4 py-3.5" onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center gap-3 justify-end">
                       <Link
                         href={`/backoffice/cursos/${course.id}`}

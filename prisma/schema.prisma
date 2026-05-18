@@ -30,18 +30,22 @@ model AdminUser {
 // COURSE — Cursos (PRESENCIAL u ONLINE)
 // =============================================
 model Course {
-  id          String       @id @default(cuid())
-  title       String
-  description String
-  type        CourseType
-  status      CourseStatus @default(DRAFT)
-  priceEUR    Float
-  duration    String
-  maxSpots    Int?
-  date        DateTime?
-  imageUrl    String?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id              String       @id @default(cuid())
+  title           String
+  description     String
+  type            CourseType
+  status          CourseStatus @default(DRAFT)
+  priceEUR        Float
+  duration        String?
+  maxSpots        Int?
+  date            DateTime?
+  imageUrl        String?
+  nivel           CourseLevel?
+  horasAcademicas Int?
+  diasDeClases    Int?
+  instructor      String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
 
   enrollments Enrollment[]
 
@@ -120,6 +124,13 @@ enum CourseStatus {
   DRAFT
   ACTIVE
   INACTIVE
+}
+
+enum CourseLevel {
+  PRINCIPIANTE
+  MEDIO
+  AVANZADO
+  MASTER
 }
 
 enum ExperienceLevel {

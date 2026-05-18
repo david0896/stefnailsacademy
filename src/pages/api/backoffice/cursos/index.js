@@ -5,15 +5,19 @@ import { getCourses } from '@/application/courses/getCourses';
 import { createCourse } from '@/application/courses/createCourse';
 
 const createCourseSchema = z.object({
-  title:       z.string().min(3, 'El título debe tener al menos 3 caracteres'),
-  description: z.string().min(10, 'La descripción debe tener al menos 10 caracteres'),
-  type:        z.enum(['PRESENCIAL', 'ONLINE']),
-  status:      z.enum(['DRAFT', 'ACTIVE', 'INACTIVE']).default('DRAFT'),
-  priceEUR:    z.number().positive('El precio debe ser mayor a 0'),
-  duration:    z.string().min(1, 'La duración es requerida'),
-  maxSpots:    z.number().int().positive().optional().nullable(),
-  date:        z.string().optional().nullable(),
-  imageUrl:    z.string().url().optional().nullable(),
+  title:           z.string().min(3, 'El título debe tener al menos 3 caracteres'),
+  description:     z.string().min(10, 'La descripción debe tener al menos 10 caracteres'),
+  type:            z.enum(['PRESENCIAL', 'ONLINE']),
+  status:          z.enum(['DRAFT', 'ACTIVE', 'INACTIVE']).default('DRAFT'),
+  priceEUR:        z.number().positive('El precio debe ser mayor a 0'),
+  duration:        z.string().optional().nullable(),
+  instructor:      z.string().optional().nullable(),
+  nivel:           z.enum(['PRINCIPIANTE', 'MEDIO', 'AVANZADO', 'MASTER']).optional().nullable(),
+  horasAcademicas: z.number().int().positive().optional().nullable(),
+  diasDeClases:    z.number().int().positive().optional().nullable(),
+  maxSpots:        z.number().int().positive().optional().nullable(),
+  date:            z.string().optional().nullable(),
+  imageUrl:        z.string().url().optional().or(z.literal('')).nullable(),
 });
 
 export default async function handler(req, res) {
@@ -36,9 +40,12 @@ export default async function handler(req, res) {
     }
 
     try {
+      const d = parsed.data;
       const course = await createCourse({
-        ...parsed.data,
-        date: parsed.data.date ? new Date(parsed.data.date) : null,
+        ...d,
+        date:       d.date      ? new Date(d.date) : null,
+        imageUrl:   d.imageUrl  || null,
+        instructor: d.instructor || null,
       });
       return res.status(201).json(course);
     } catch (error) {

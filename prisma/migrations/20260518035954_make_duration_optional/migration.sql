@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "courses" ALTER COLUMN "duration" DROP NOT NULL;

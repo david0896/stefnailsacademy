@@ -6,15 +6,19 @@ import { updateCourse } from '@/application/courses/updateCourse';
 import { deleteCourse } from '@/application/courses/deleteCourse';
 
 const updateCourseSchema = z.object({
-  title:       z.string().min(3).optional(),
-  description: z.string().min(10).optional(),
-  type:        z.enum(['PRESENCIAL', 'ONLINE']).optional(),
-  status:      z.enum(['DRAFT', 'ACTIVE', 'INACTIVE']).optional(),
-  priceEUR:    z.number().positive().optional(),
-  duration:    z.string().optional(),
-  maxSpots:    z.number().int().positive().optional().nullable(),
-  date:        z.string().optional().nullable(),
-  imageUrl:    z.string().url().optional().nullable(),
+  title:           z.string().min(3).optional(),
+  description:     z.string().min(10).optional(),
+  type:            z.enum(['PRESENCIAL', 'ONLINE']).optional(),
+  status:          z.enum(['DRAFT', 'ACTIVE', 'INACTIVE']).optional(),
+  priceEUR:        z.number().positive().optional(),
+  duration:        z.string().optional(),
+  instructor:      z.string().optional().nullable(),
+  nivel:           z.enum(['PRINCIPIANTE', 'MEDIO', 'AVANZADO', 'MASTER']).optional().nullable(),
+  horasAcademicas: z.number().int().positive().optional().nullable(),
+  diasDeClases:    z.number().int().positive().optional().nullable(),
+  maxSpots:        z.number().int().positive().optional().nullable(),
+  date:            z.string().optional().nullable(),
+  imageUrl:        z.string().url().optional().or(z.literal('')).nullable(),
 });
 
 export default async function handler(req, res) {
@@ -39,9 +43,12 @@ export default async function handler(req, res) {
     }
 
     try {
+      const d = parsed.data;
       const course = await updateCourse(id, {
-        ...parsed.data,
-        date: parsed.data.date ? new Date(parsed.data.date) : null,
+        ...d,
+        date:       d.date      ? new Date(d.date) : null,
+        imageUrl:   d.imageUrl  || null,
+        instructor: d.instructor || null,
       });
       return res.status(200).json(course);
     } catch (error) {

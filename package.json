@@ -19,7 +19,7 @@
     "googleapis": "148.0.0",
     "next": "15.1.4",
     "next-auth": "4.24.11",
-    "nodemailer": "7.0.3",
+    "nodemailer": "6.10.1",
     "prisma": "5.22.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
@@ -28,7 +28,7 @@
     "zod": "3.24.4"
   },
   "prisma": {
-    "seed": "node --experimental-vm-modules prisma/seed.js"
+    "seed": "node prisma/seed.mjs"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.2.0",

@@ -31,6 +31,10 @@ export class PrismaStudentRepository extends IStudentRepository {
     });
   }
 
+  async delete(id) {
+    return prisma.student.delete({ where: { id } });
+  }
+
   async findWithEnrollments(id) {
     return prisma.student.findUnique({
       where: { id },

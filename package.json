@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "5.0.1",

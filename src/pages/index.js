@@ -1,4 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/router";
+import { getSession } from "next-auth/react";
 import clsx from "clsx";
 import Hero from "@/components/Hero";
 import PolaroidCarousel from "@/components/PolaroidCarousel";
@@ -10,22 +12,78 @@ import InfiniteSlider from "@/components/InfiniteSlider";
 import useCursos from "@/hooks/useCursos";
 import useCursosProximos from "@/hooks/useCursosProximos";
 import useProximaFecha from "@/hooks/useProximaFecha";
+import { buildEnrollmentMap, variantClass } from "@/utils/enrollmentButtonState";
 
-export async function getServerSideProps() {
-  // 1. Fetch a tu propia API
-  const res = await fetch(`${process.env.BASE_URL}/api/sheets/infoCursos`);
-  const cursos = await res.json();
+export async function getServerSideProps(context) {
+  const { getActiveCourses } = await import('@/application/courses/getCourses');
+  const { getEuroRate }      = await import('@/infrastructure/services/exchangeRateService');
+  const { formatCurso }      = await import('@/utils/formatCurso');
+  const prisma               = (await import('@/lib/prisma')).default;
 
-  // 2. ISR: Revalida cada 24 horas (86400 segundos)
+  const SLIDE_KEYS = ['hero.slide.1', 'hero.slide.2', 'hero.slide.3'];
+
+  const [rawCourses, tasaEur, rawSlides] = await Promise.all([
+    getActiveCourses(),
+    getEuroRate().catch(() => 1),
+    prisma.content.findMany({ where: { key: { in: SLIDE_KEYS } }, orderBy: { key: 'asc' } }),
+  ]);
+
+  const cursos = rawCourses.map((c) => formatCurso(c, tasaEur));
+
+  const slides = SLIDE_KEYS
+    .map((k) => {
+      const item = rawSlides.find((s) => s.key === k);
+      if (!item) return null;
+      try { return item.type === 'JSON' ? JSON.parse(item.value) : item.value; }
+      catch { return null; }
+    })
+    .filter(Boolean);
+
+  // Datos del alumno logueado (para prefill del form + estado de botones)
+  let student       = null;
+  let inscripciones = [];
+  const session = await getSession(context);
+  if (session?.user?.role === 'STUDENT' && session.user.id) {
+    try {
+      const studentRow = await prisma.student.findUnique({ where: { id: session.user.id } });
+      if (studentRow) {
+        student = {
+          id:        studentRow.id,
+          firstName: studentRow.firstName ?? '',
+          lastName:  studentRow.lastName  ?? '',
+          email:     studentRow.email,
+          phone:     studentRow.phone     ?? '',
+          idNumber:  studentRow.idNumber  ?? '',
+        };
+      }
+      const { getStudentEnrollments } = await import('@/application/enrollments/getStudentEnrollments');
+      const raw = await getStudentEnrollments(session.user.id);
+      inscripciones = raw.map((e) => ({
+        id:            e.id,
+        status:        e.status,
+        paymentStatus: e.paymentStatus,
+        course:        { id: e.course.id },
+      }));
+    } catch (err) {
+      console.error('[Home] error cargando datos del alumno:', err);
+    }
+  }
+
   return {
-    props: { cursos },
+    props: {
+      cursos:        JSON.parse(JSON.stringify(cursos)),
+      slides,
+      student:       student ? JSON.parse(JSON.stringify(student)) : null,
+      inscripciones: JSON.parse(JSON.stringify(inscripciones)),
+    },
   };
 }
 
-export default function Home({cursos}) {
+export default function Home({ cursos, slides = [], student = null, inscripciones = [] }) {
+  const router = useRouter();
 
-  const { data } = useCursos(cursos); 
-  // obtener cursos con proximidad a fecha actual 
+  const { data } = useCursos(cursos);
+  // obtener cursos con proximidad a fecha actual
   const cursosProcesados = useCursosProximos(data);
   //primer curso proximo a la fecha actual
   const ProximoCurso = cursosProcesados.find(curso => curso.proximoCurso);
@@ -46,8 +104,22 @@ export default function Home({cursos}) {
   const isVisibleCursosColum2 = useVisibility(refCursosColum2);
   const isVisibleReferencias = useVisibility(refReferencias);
 
-
   const [isOpen, setIsOpen] = useState(false);
+
+  // Estado de inscripción del alumno por curso
+  const enrollmentMap = useMemo(() => buildEnrollmentMap(inscripciones), [inscripciones]);
+  const proximoEstado = ProximoCurso ? enrollmentMap[ProximoCurso.id] : null;
+
+  // Auth guard + dedup
+  const handleReservar = () => {
+    if (!ProximoCurso || Object.keys(ProximoCurso).length === 0) return;
+    if (!student) {
+      router.push({ pathname: '/login', query: { callbackUrl: '/Courses' } });
+      return;
+    }
+    if (proximoEstado) return; // ya inscrito → botón ya no debería ser clickeable
+    setIsOpen(true);
+  };
 
   return (
     <div>
@@ -55,6 +127,9 @@ export default function Home({cursos}) {
         <Hero
           ProximoCurso={ProximoCurso}
           SiguienteCurso={SiguienteCurso}
+          slides={slides}
+          student={student}
+          enrollmentState={proximoEstado}
         />
         {/* seccion nosotros */}
         <div ref={refNosotros} className={`container mx-auto px-6 lg:px-20 grid grid-cols-1 space-y-3 py-10 relative transform transition-all duration-1000 ease-out 
@@ -76,12 +151,18 @@ export default function Home({cursos}) {
                 >
                   Leer más
                 </a>
-                <button
+                {proximoEstado ? (
+                  <span className={`inline-block w-fit px-4 py-2 pr-6 rounded-[25px] font-normal ${variantClass[proximoEstado.variant]}`}>
+                    {proximoEstado.label}
+                  </span>
+                ) : (
+                  <button
                     className="inline-block w-fit bg-[#383838] text-white px-4 py-2 pr-6 rounded-[25px] font-normal hover:bg-[#212121] transition"
-                    onClick={() => ProximoCurso && Object.keys(ProximoCurso).length > 0 ? setIsOpen(true) : setIsOpen(false)}
-                >
+                    onClick={handleReservar}
+                  >
                     {ProximoCurso && Object.keys(ProximoCurso).length > 0 ? "Próxima clase" : "Proximamente"}
-                </button> 
+                  </button>
+                )}
               </div>
             </div>
           </div> 
@@ -118,12 +199,18 @@ export default function Home({cursos}) {
             <span className="font-semibold text-[#383838] text-base xl:text-lg">¡Tu carrera en uñas comienza aquí!</span>
             <h2 className="text-[#ff5a5f] text-2xl xl:text-3xl font-semibold">Cursos completos y especializados <span className=" block">con enfoque profesional</span></h2>
             <p className="text-[#383838] pb-3 lg:text-lg  lg:w-3/4">En Stef Nails Academy, combinamos teoría, práctica y tendencias actuales para que domines las técnicas más innovadoras del sector. Aprende de la mano de expertos activos en la industria y desarrolla tu propio estilo con el respaldo de marcas líderes</p>
-            <button
+            {proximoEstado ? (
+              <span className={`inline-block w-fit px-4 py-2 pr-6 rounded-[25px] text-base lg:text-lg font-medium ${variantClass[proximoEstado.variant]}`}>
+                {proximoEstado.label}
+              </span>
+            ) : (
+              <button
                 className="inline-block w-fit bg-[#ff5a5f] text-white px-4 py-2 pr-6 z-50 rounded-[25px] text-base lg:text-lg font-medium hover:bg-[#ff3b3f] transition"
-                onClick={() => ProximoCurso && Object.keys(ProximoCurso).length > 0 ? setIsOpen(true) : setIsOpen(false)}
-            >
+                onClick={handleReservar}
+              >
                 {ProximoCurso && Object.keys(ProximoCurso).length > 0 ? "Reserva tu lugar en la próxima clase" : "Proximamente cursos disponibles"}
-            </button>  
+              </button>
+            )}
           </div>
           <div ref={refCursosColum2} className={`col-span-3 mt-10 lg:mt-0 transform transition-all duration-1000 ease-out
             ${isVisibleCursosColum2 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-5"}`}>
@@ -218,11 +305,12 @@ export default function Home({cursos}) {
         </div>
       </div>
       {/* Modal */}
-      <ModalHome 
-        isOpen={isOpen} 
-        onClose={() => setIsOpen(false)} 
+      <ModalHome
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
         data={ProximoCurso}
         ProximoCurso={SiguienteCurso}
+        student={student}
       />
     </div>
   );

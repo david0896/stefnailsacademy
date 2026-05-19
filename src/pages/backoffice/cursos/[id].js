@@ -5,6 +5,19 @@ import { getSession } from 'next-auth/react';
 import BOLayout from '@/components/backoffice/BOLayout';
 import CourseForm from '@/components/backoffice/CourseForm';
 
+/** Extrae un string legible desde errores de Zod flatten o strings simples */
+function extractApiError(error, fallback = 'Error desconocido') {
+  if (!error) return fallback;
+  if (typeof error === 'string') return error;
+  if (error?.formErrors?.length > 0) return error.formErrors[0];
+  if (error?.fieldErrors) {
+    for (const msgs of Object.values(error.fieldErrors)) {
+      if (msgs?.[0]) return msgs[0];
+    }
+  }
+  return fallback;
+}
+
 export default function CursoPage({ course }) {
   const router = useRouter();
   const isViewMode = !!router.query.ver;
@@ -26,7 +39,7 @@ export default function CursoPage({ course }) {
       const result = await res.json();
 
       if (!res.ok) {
-        setError(result.error?.formErrors?.[0] || result.error || 'Error al actualizar el curso');
+        setError(extractApiError(result.error, 'Error al actualizar el curso'));
         return;
       }
 
@@ -38,8 +51,11 @@ export default function CursoPage({ course }) {
     }
   };
 
+  // Excluir campos legacy que RHF podría enviar como null al API
+  // eslint-disable-next-line no-unused-vars
+  const { duration: _dur, createdAt: _c, updatedAt: _u, id: _id, ...courseFields } = course;
   const defaultValues = {
-    ...course,
+    ...courseFields,
     date: course.date ? new Date(course.date).toISOString().split('T')[0] : null,
   };
 

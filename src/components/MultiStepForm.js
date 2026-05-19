@@ -1,154 +1,145 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
 import { z, ZodError } from 'zod';
 import { useMutation } from '@tanstack/react-query';
 
-// Función de utilidad para limpiar y normalizar una cadena monetaria regional a Number
+// Convierte cadena monetaria local (con coma/punto) a Number
 const cleanMonetaryString = (value) => {
-    if (typeof value === 'number') return value;
-    if (typeof value !== 'string') return 0; // O manejar error
-
-    // 1. Reemplazar los puntos de miles (si existen)
-    let cleaned = value.replace(/\./g, ''); 
-
-    // 2. Reemplazar la coma decimal por un punto decimal
-    cleaned = cleaned.replace(',', '.');
-
-    // 3. Convertir a Number
-    return parseFloat(cleaned) || 0; // Usamos parseFloat para manejar el punto decimal
+  if (typeof value === 'number') return value;
+  if (typeof value !== 'string') return 0;
+  let cleaned = value.replace(/\./g, '').replace(',', '.');
+  return parseFloat(cleaned) || 0;
 };
 
-const MultiStepForm = ({ nombreCurso, precio }) => {
-  console.log(precio + " precio")
-  const [currentStep, setCurrentStep] = useState(1);
+// Determina si el perfil del alumno está completo y se puede saltar el step 1
+const hasCompleteProfile = (student) => {
+  if (!student) return false;
+  return Boolean(
+    student.firstName &&
+    student.lastName  &&
+    student.email     &&
+    student.phone     &&
+    student.idNumber
+  );
+};
+
+const MultiStepForm = ({ cursoId, nombreCurso, precio, student, onClose }) => {
+  const router = useRouter();
+  const profileComplete = useMemo(() => hasCompleteProfile(student), [student]);
+
+  // Si el perfil ya está completo, empezamos directamente en step 2 (pago)
+  const initialStep = profileComplete ? 2 : 1;
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const [errors, setErrors] = useState({});
+
+  // Pre-llenar datos del alumno si ya está logueado
   const [formData, setFormData] = useState({
-    nombre: '',
-    apellido: '',
-    cedula: '',
-    email: '',
-    telefono: '',
-    bancoEmisor: '',
-    referencia: '',
-    monto: '',
-    aceptoTerminos: false
+    nombre:         student?.firstName ?? '',
+    apellido:       student?.lastName  ?? '',
+    cedula:         student?.idNumber  ?? '',
+    email:          student?.email     ?? '',
+    telefono:       student?.phone     ?? '',
+    bancoEmisor:    '',
+    referencia:     '',
+    monto:          '',
+    aceptoTerminos: false,
   });
 
-  // Esquemas de validación
+  // ── Esquemas de validación ──────────────────────────────────────
   const step1Schema = z.object({
-    nombre: z.string().min(1, "El nombre es requerido"),
-    apellido: z.string().min(1, "El apellido es requerido"),
-    cedula: z.string()
-      .min(6, "Mínimo 6 caracteres")
-      .max(10, "Máximo 10 caracteres")
-      .regex(/^[VvEeJj]\d+$/, "La cédula debe comenzar con una letra (V-E-J)"),
-    email: z.string().email("Email inválido"),
-    telefono: z.string().min(11, "Mínimo 11 dígitos").max(11, "Máximo 11 caracteres")
+    nombre:   z.string().min(1, 'El nombre es requerido'),
+    apellido: z.string().min(1, 'El apellido es requerido'),
+    cedula:   z.string()
+              .min(6, 'Mínimo 6 caracteres')
+              .max(10, 'Máximo 10 caracteres')
+              .regex(/^[VvEeJj]\d+$/, 'La cédula debe comenzar con una letra (V-E-J)'),
+    email:    z.string().email('Email inválido'),
+    telefono: z.string().min(11, 'Mínimo 11 dígitos').max(11, 'Máximo 11 caracteres'),
   });
 
   const step2Schema = z.object({
-    bancoEmisor: z.string().min(1, "Banco requerido"),
-    referencia: z.string().min(1, "Referencia requerida"),
+    bancoEmisor: z.string().min(1, 'Banco requerido'),
+    referencia:  z.string().min(1, 'Referencia requerida'),
     monto: z.number({
-    required_error: "Monto requerido",
-    invalid_type_error: "Debe ser un número"
-}).positive("Monto debe ser positivo").refine(val => {
-    
-    // Convertimos 'precio' a Number (por si viene como string)
-    const precioEsperado = cleanMonetaryString(precio);
-    
-    // Convertimos ambos a centavos y redondeamos (elimina el problema de punto flotante)
-    const montoEnCentavos = Math.round(val * 100);
-    const precioEnCentavos = Math.round(precioEsperado * 100);
-
-    // Comparamos los enteros
-    return montoEnCentavos === precioEnCentavos;
-
-}, {
-    message: `El monto ingresado debe coincidir con el precio exacto (${precio}).`,
-}),
-    aceptoTerminos: z.literal(true, {
-      errorMap: () => ({ message: "Debe aceptar los términos" })
+      required_error:     'Monto requerido',
+      invalid_type_error: 'Debe ser un número',
     })
+      .positive('Monto debe ser positivo')
+      .refine((val) => {
+        const precioEsperado   = cleanMonetaryString(precio);
+        const montoEnCentavos  = Math.round(val * 100);
+        const precioEnCentavos = Math.round(precioEsperado * 100);
+        return montoEnCentavos === precioEnCentavos;
+      }, {
+        message: `El monto ingresado debe coincidir con el precio exacto (${precio}).`,
+      }),
+    aceptoTerminos: z.literal(true, {
+      errorMap: () => ({ message: 'Debe aceptar los términos' }),
+    }),
   });
 
+  // ── Mutación: enviar inscripción ──────────────────────────────
   const mutation = useMutation({
     mutationFn: async (data) => {
-      const response = await fetch('/api/enviar-inscripcion', {
-        method: 'POST',
+      const response = await fetch('/api/inscripciones', {
+        method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, nombreCurso, precio })
+        body: JSON.stringify({
+          courseId:        cursoId,
+          bankName:        data.bancoEmisor,
+          referenceNumber: String(data.referencia),
+          firstName:       data.nombre,
+          lastName:        data.apellido,
+          phone:           data.telefono,
+          idNumber:        data.cedula,
+        }),
       });
 
-      if (!response.ok) throw new Error('Error al enviar la inscripción');
-      return response.json();
+      const json = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        const msg = typeof json?.error === 'string'
+          ? json.error
+          : 'No se pudo registrar la inscripción';
+        throw new Error(msg);
+      }
+      return json;
     },
     onSuccess: () => setCurrentStep(3),
-    onError: (error) => setErrors({ form: error.message })
+    onError:   (error) => setErrors({ form: error.message }),
   });
 
+  // ── Handlers ──────────────────────────────────────────────────
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
-    // Si el campo es el monto, aplicamos formateo de número
- if (name === "monto") {
-        
-        // 1. LIMPIEZA INICIAL: Quitar todo lo que no sea dígito
-        // Esto crea una cadena de solo números (ej: "245122")
-        const digitsOnly = value.replace(/\D/g, "");
+    if (name === 'monto') {
+      const digitsOnly = value.replace(/\D/g, '');
 
-        // 2. Si no hay dígitos, limpiar el estado y la vista
-        if (!digitsOnly) {
-            setFormData((prev) => ({ ...prev, [name]: 0 })); // Importante: usar 0 o null, no ""
-            e.target.value = "";
-            
-            // Si quieres limpiar errores, puedes hacerlo aquí
-            if (errors[name]) {
-                setErrors((prev) => ({ ...prev, [name]: "" }));
-            }
-            return;
-        }
-
-        // 3. CALCULAR VALOR NUMÉRICO REAL
-        // Convierte a número flotante dividiendo entre 100 para decimales automáticos.
-        // ESTE es el valor de tipo Number (ej: 2451.22) que se guarda en el estado
-        // y que Zod utilizará para la validación `val === precio`.
-        const numericValue = parseFloat(digitsOnly) / 100;
-
-        // 4. ACTUALIZAR EL ESTADO DE FORMULARIO
-        // Se actualiza el estado con el valor numérico limpio.
-        setFormData((prev) => ({
-            ...prev,
-            [name]: numericValue,
-        }));
-
-        // 5. FORMATEAR VISUALMENTE PARA EL INPUT (CADENA)
-        const formattedValue = new Intl.NumberFormat("es-ES", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-            useGrouping: true, // Activa los puntos de miles
-        }).format(numericValue);
-
-        // 6. REFLEJARLO EN EL INPUT (SOLO VISTA)
-        // Esto actualiza la apariencia del input que ve el usuario.
-        e.target.value = formattedValue;
-
-        console.log(formattedValue + " precio formateado")
-        
-        // El `return` original es opcional, pero lo mantendremos por consistencia.
-        // Si el monto fue procesado, asumimos que no hay más lógica de cambio de campo.
+      if (!digitsOnly) {
+        setFormData((prev) => ({ ...prev, [name]: 0 }));
+        e.target.value = '';
+        if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }));
         return;
-    }else {
-      // Comportamiento normal para los demás campos
-      setFormData((prev) => ({
-        ...prev,
-        [name]: type === "checkbox" ? checked : value,
-      }));
+      }
+
+      const numericValue = parseFloat(digitsOnly) / 100;
+      setFormData((prev) => ({ ...prev, [name]: numericValue }));
+
+      const formattedValue = new Intl.NumberFormat('es-ES', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+        useGrouping: true,
+      }).format(numericValue);
+      e.target.value = formattedValue;
+      return;
     }
 
-    // Limpiar errores si existen
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
   const validateStep = async (step) => {
@@ -156,28 +147,21 @@ const MultiStepForm = ({ nombreCurso, precio }) => {
       if (step === 1) {
         await step1Schema.parseAsync(formData);
       } else if (step === 2) {
-        await step2Schema.parseAsync({
-          ...formData,
-          monto: Number(formData.monto)
-        });
+        await step2Schema.parseAsync({ ...formData, monto: Number(formData.monto) });
       }
       return true;
     } catch (error) {
       if (error instanceof ZodError) {
-             const newErrors = error.errors.reduce((acc, curr) => {
-                acc[curr.path[0]] = curr.message;
-                return acc;
-            }, {});
-            
-            setErrors(newErrors);
-            return false;
-            
-        } else {
-            // Manejar errores de ejecución inesperados (como el TypeError que estás viendo)
-            console.error("Error de ejecución capturado:", error);
-            setErrors({ general: "Error interno del formulario." });
-            return false;
-        }
+        const newErrors = error.errors.reduce((acc, curr) => {
+          acc[curr.path[0]] = curr.message;
+          return acc;
+        }, {});
+        setErrors(newErrors);
+        return false;
+      }
+      console.error('Error en validación:', error);
+      setErrors({ general: 'Error interno del formulario' });
+      return false;
     }
   };
 
@@ -192,12 +176,18 @@ const MultiStepForm = ({ nombreCurso, precio }) => {
     if (isValid) mutation.mutate(formData);
   };
 
+  const handleSuccessClose = () => {
+    onClose?.();
+    router.push('/Courses');
+  };
+
+  // ── UI ────────────────────────────────────────────────────────
   const ProgressIndicator = () => (
     <div className="relative mb-5">
       <div className="flex justify-between max-w-2xl mx-auto px-20">
         {[1, 2, 3].map((step) => (
           <div key={step} className="relative z-10">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center 
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center
               ${currentStep >= step ? 'bg-[#ff5a5f] text-white' : 'bg-gray-300'}`}>
               {step}
             </div>
@@ -212,73 +202,67 @@ const MultiStepForm = ({ nombreCurso, precio }) => {
     <form onSubmit={handleSubmit} className="mt-6">
       <ProgressIndicator />
 
+      {/* Aviso cuando saltamos el step 1 */}
+      {profileComplete && currentStep === 2 && (
+        <div className="px-5 mb-3">
+          <p className="text-xs text-gray-500 text-center">
+            ✓ Usando datos de tu perfil ({student?.email})
+          </p>
+        </div>
+      )}
+
       {currentStep === 1 && (
         <div className="px-5">
           <div className="flex flex-col gap-2">
             <div>
               <input
-                name="nombre"
-                type="text"
-                placeholder="Escribe tu nombre"
+                name="nombre" type="text" placeholder="Escribe tu nombre"
                 className={`w-full p-3 border ${errors.nombre ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff5a5f]`}
-                onChange={handleChange}
-                value={formData.nombre}
+                onChange={handleChange} value={formData.nombre}
               />
               {errors.nombre && <p className="text-red-500 text-sm mt-1">{errors.nombre}</p>}
             </div>
 
             <div>
               <input
-                name="apellido"
-                type="text"
-                placeholder="Escribe tu apellido"
+                name="apellido" type="text" placeholder="Escribe tu apellido"
                 className={`w-full p-3 border ${errors.apellido ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff5a5f]`}
-                onChange={handleChange}
-                value={formData.apellido}
+                onChange={handleChange} value={formData.apellido}
               />
               {errors.apellido && <p className="text-red-500 text-sm mt-1">{errors.apellido}</p>}
             </div>
 
             <div>
               <input
-                name="cedula"
-                type="text"
-                placeholder="Escribe tu cédula"
+                name="cedula" type="text" placeholder="Escribe tu cédula (ej: V12345678)"
                 className={`w-full p-3 border ${errors.cedula ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff5a5f]`}
-                onChange={handleChange}
-                value={formData.cedula}
+                onChange={handleChange} value={formData.cedula}
               />
               {errors.cedula && <p className="text-red-500 text-sm mt-1">{errors.cedula}</p>}
             </div>
 
             <div>
               <input
-                name="email"
-                type="email"
-                placeholder="Escribe tu dirección de correo"
-                className={`w-full p-3 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff5a5f]`}
-                onChange={handleChange}
-                value={formData.email}
+                name="email" type="email" placeholder="Escribe tu dirección de correo"
+                disabled={!!student?.email}
+                className={`w-full p-3 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff5a5f] ${student?.email ? 'bg-gray-50 cursor-not-allowed' : ''}`}
+                onChange={handleChange} value={formData.email}
               />
               {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
             </div>
 
             <div>
               <input
-                name="telefono"
-                type="tel"
-                placeholder="Escribe tu número de teléfono"
+                name="telefono" type="tel" placeholder="Escribe tu número de teléfono (11 dígitos)"
                 className={`w-full p-3 border ${errors.telefono ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff5a5f]`}
-                onChange={handleChange}
-                value={formData.telefono}
+                onChange={handleChange} value={formData.telefono}
               />
               {errors.telefono && <p className="text-red-500 text-sm mt-1">{errors.telefono}</p>}
             </div>
           </div>
           <div className="flex justify-end mt-4">
             <button
-              type="button"
-              onClick={handleNextStep}
+              type="button" onClick={handleNextStep}
               className="px-6 py-2 bg-[#ff5a5f] text-white rounded-md hover:bg-[#ff5a5f]/70 transition"
             >
               Siguiente
@@ -292,11 +276,11 @@ const MultiStepForm = ({ nombreCurso, precio }) => {
           <div className="mb-2 py-2 px-4 bg-gray-50 rounded-lg border border-gray-200">
             <h3 className="text-base font-semibold text-[#ff5a5f] mb-2">Datos para transferencia - Pago Móvil</h3>
             <div className="grid grid-cols-2 gap-4">
-              <div className=' space-y-3'>
+              <div className="space-y-3">
                 <p className="text-gray-600 text-sm">Bancamiga</p>
                 <p className="text-gray-600 text-sm">C.I: 16670743</p>
               </div>
-              <div className=' space-y-3'>
+              <div className="space-y-3">
                 <p className="text-gray-600 text-sm">0412 3692194</p>
                 <p className="text-gray-600 text-sm">{precio} Bs.</p>
               </div>
@@ -311,104 +295,96 @@ const MultiStepForm = ({ nombreCurso, precio }) => {
           <div className="flex flex-col gap-2">
             <div>
               <input
-                name="bancoEmisor"
-                type="text"
-                placeholder="Banco desde el que transfiere"
+                name="bancoEmisor" type="text" placeholder="Banco desde el que transfiere"
                 className={`w-full p-3 border ${errors.bancoEmisor ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff5a5f]`}
-                onChange={handleChange}
-                value={formData.bancoEmisor}
+                onChange={handleChange} value={formData.bancoEmisor}
               />
               {errors.bancoEmisor && <p className="text-red-500 text-sm mt-1">{errors.bancoEmisor}</p>}
             </div>
 
             <div>
               <input
-                name="referencia"
-                type="number"
-                placeholder="Número de referencia de la transferencia"
+                name="referencia" type="number" placeholder="Número de referencia de la transferencia"
                 className={`w-full p-3 border ${errors.referencia ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff5a5f]`}
-                onChange={handleChange}
-                value={formData.referencia}
+                onChange={handleChange} value={formData.referencia}
               />
               {errors.referencia && <p className="text-red-500 text-sm mt-1">{errors.referencia}</p>}
             </div>
 
             <div>
               <input
-                name="monto"
-                type="text"
-                inputMode="numeric"
-                placeholder="Monto transferido"
-                className={`w-full p-3 border ${
-                  errors.monto ? "border-red-500" : "border-gray-300"
-                } rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff5a5f]`}
+                name="monto" type="text" inputMode="numeric" placeholder="Monto transferido"
+                className={`w-full p-3 border ${errors.monto ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff5a5f]`}
                 onChange={handleChange}
                 value={
-                  formData.monto !== "" && formData.monto != null
-                    ? new Intl.NumberFormat("es-ES", {
+                  formData.monto !== '' && formData.monto != null
+                    ? new Intl.NumberFormat('es-ES', {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
-                        useGrouping: true, // puntos de miles
+                        useGrouping: true,
                       }).format(formData.monto)
-                    : ""
+                    : ''
                 }
               />
-              {errors.monto && (
-                <p className="text-red-500 text-sm mt-1">{errors.monto}</p>
-              )}
+              {errors.monto && <p className="text-red-500 text-sm mt-1">{errors.monto}</p>}
             </div>
-
 
             <div className="mt-2">
               <label className="flex items-center text-sm">
                 <input
-                  name="aceptoTerminos"
-                  type="checkbox"
+                  name="aceptoTerminos" type="checkbox"
                   className={`mr-2 ${errors.aceptoTerminos ? 'border-red-500' : ''}`}
-                  onChange={handleChange}
-                  checked={formData.aceptoTerminos}
+                  onChange={handleChange} checked={formData.aceptoTerminos}
                 />
                 <span>
-                  Acepto los <a href="/termAndConditions" target='blank' className="text-[#ff5a5f] underline">términos y condiciones</a>
+                  Acepto los{' '}
+                  <a href="/termAndConditions" target="_blank" rel="noopener noreferrer" className="text-[#ff5a5f] underline">
+                    términos y condiciones
+                  </a>
                 </span>
               </label>
-              {errors.aceptoTerminos && (
-                <p className="text-red-500 text-sm mt-1">{errors.aceptoTerminos}</p>
-              )}
+              {errors.aceptoTerminos && <p className="text-red-500 text-sm mt-1">{errors.aceptoTerminos}</p>}
             </div>
           </div>
 
           <div className="flex justify-between mt-4">
+            {!profileComplete ? (
+              <button
+                type="button" onClick={() => setCurrentStep(1)}
+                className="px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition"
+              >
+                Anterior
+              </button>
+            ) : <div />}
             <button
-              type="button"
-              onClick={() => setCurrentStep(1)}
-              className="px-6 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition"
-            >
-              Anterior
-            </button>
-            <button
-              type="submit"
-              disabled={mutation.isPending}
-              className={`px-6 py-2 bg-[#ff5a5f] text-white rounded-md hover:bg-[#ff5a5f]/70 transition ${
-                mutation.isPending ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
+              type="submit" disabled={mutation.isPending}
+              className={`px-6 py-2 bg-[#ff5a5f] text-white rounded-md hover:bg-[#ff5a5f]/70 transition ${mutation.isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               {mutation.isPending ? 'Enviando...' : 'Enviar'}
             </button>
           </div>
-          
+
           {errors.form && (
-            <p className="text-red-500 text-sm mt-2 text-center">
-              {errors.form}
-            </p>
+            <p className="text-red-500 text-sm mt-2 text-center">{errors.form}</p>
           )}
         </div>
       )}
 
       {currentStep === 3 && (
         <div className="text-center px-5 py-12">
-          <h2 className="text-2xl font-semibold mb-4">¡Gracias por registrarte!</h2>
-          <p className="text-gray-600">Pronto será contactado por nuestros asesores.</p>
+          <h2 className="text-2xl font-semibold mb-3">¡Inscripción registrada!</h2>
+          <p className="text-gray-600 mb-2">
+            Tu inscripción está pendiente de confirmación. Pronto será contactado por nuestros asesores.
+          </p>
+          <p className="text-xs text-gray-400 mb-6">
+            Puedes ver el estado de tu inscripción en la sección "Mis inscripciones" de tus cursos.
+          </p>
+          <button
+            type="button" onClick={handleSuccessClose}
+            className="px-6 py-2 bg-[#ff5a5f] text-white rounded-md hover:bg-[#ff5a5f]/70 transition"
+          >
+            Ver mis inscripciones
+          </button>
         </div>
       )}
     </form>

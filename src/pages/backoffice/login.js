@@ -25,7 +25,7 @@ export default function BackofficeLogin() {
     setIsLoading(true);
     setAuthError('');
 
-    const result = await signIn('credentials', {
+    const result = await signIn('admin-credentials', {
       email: data.email,
       password: data.password,
       redirect: false,

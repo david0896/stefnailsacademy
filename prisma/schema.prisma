@@ -9,9 +9,9 @@ generator client {
 }
 
 datasource db {
-  provider   = "postgresql"
-  url        = env("DATABASE_URL")
-  directUrl  = env("DIRECT_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // =============================================
@@ -38,7 +38,6 @@ model Course {
   type            CourseType
   status          CourseStatus @default(DRAFT)
   priceEUR        Float
-  duration        String?
   maxSpots        Int?
   date            DateTime?
   imageUrl        String?
@@ -46,6 +45,7 @@ model Course {
   horasAcademicas Int?
   diasDeClases    Int?
   instructor      String?
+  sede            String?
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
@@ -58,18 +58,19 @@ model Course {
 // STUDENT — Alumnos registrados
 // =============================================
 model Student {
-  id              String          @id @default(cuid())
+  id              String           @id @default(cuid())
   firstName       String
   lastName        String
-  email           String          @unique
-  phone           String
-  idNumber        String
-  city            String
-  state           String
-  country         String          @default("Venezuela")
-  experienceLevel ExperienceLevel
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  email           String           @unique
+  phone           String?
+  idNumber        String?
+  city            String?
+  state           String?
+  country         String           @default("Venezuela")
+  experienceLevel ExperienceLevel?
+  password        String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 
   enrollments Enrollment[]
 

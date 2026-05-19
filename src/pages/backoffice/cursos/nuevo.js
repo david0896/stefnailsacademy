@@ -5,6 +5,18 @@ import { getSession } from 'next-auth/react';
 import BOLayout from '@/components/backoffice/BOLayout';
 import CourseForm from '@/components/backoffice/CourseForm';
 
+function extractApiError(error, fallback = 'Error desconocido') {
+  if (!error) return fallback;
+  if (typeof error === 'string') return error;
+  if (error?.formErrors?.length > 0) return error.formErrors[0];
+  if (error?.fieldErrors) {
+    for (const msgs of Object.values(error.fieldErrors)) {
+      if (msgs?.[0]) return msgs[0];
+    }
+  }
+  return fallback;
+}
+
 export default function NuevoCursoPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +36,7 @@ export default function NuevoCursoPage() {
       const result = await res.json();
 
       if (!res.ok) {
-        setError(result.error?.formErrors?.[0] || result.error || 'Error al crear el curso');
+        setError(extractApiError(result.error, 'Error al crear el curso'));
         return;
       }
 

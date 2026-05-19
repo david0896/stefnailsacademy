@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
 import { clsx } from 'clsx';
+import { useEffect, useState } from 'react';
 
 const navItems = [
   { label: 'Dashboard',      href: '/backoffice' },
@@ -14,9 +15,29 @@ const navItems = [
 export default function BOLayout({ children }) {
   const router = useRouter();
   const { data: session } = useSession();
+  const [navigating, setNavigating] = useState(false);
+
+  useEffect(() => {
+    const start = () => setNavigating(true);
+    const done  = () => setNavigating(false);
+    router.events.on('routeChangeStart', start);
+    router.events.on('routeChangeComplete', done);
+    router.events.on('routeChangeError', done);
+    return () => {
+      router.events.off('routeChangeStart', start);
+      router.events.off('routeChangeComplete', done);
+      router.events.off('routeChangeError', done);
+    };
+  }, [router.events]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
+      {/* Barra de progreso de navegación */}
+      {navigating && (
+        <div className="fixed top-0 left-0 right-0 z-50 h-0.5 bg-gray-200">
+          <div className="h-full bg-gray-900 animate-pulse w-3/4" />
+        </div>
+      )}
 
       {/* Sidebar */}
       <aside className="w-56 bg-white border-r border-gray-100 flex flex-col fixed h-full">

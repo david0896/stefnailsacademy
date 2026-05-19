@@ -23,7 +23,7 @@ const truncateText = (text, limit) => {
   return truncated + '...';
 };
 
-const ModalHome = ({ isOpen, onClose, data, ProximoCurso }) => {
+const ModalHome = ({ isOpen, onClose, data, ProximoCurso, student }) => {
     if (!isOpen) return null;
 
     const character_limit = 100;
@@ -78,7 +78,13 @@ const ModalHome = ({ isOpen, onClose, data, ProximoCurso }) => {
                                     </p>
                                     <p className="text-base font-semibold text-gray-800">Costo: {data?.precio} Bs.</p>
                                     <p className="text-sm text-gray-500">Modalidad: {data?.modo}</p>
-                                </div>                        
+                                    {data?.modo === 'PRESENCIAL' && data?.sede && (
+                                        <p className="text-sm text-gray-500 mt-1 flex items-start gap-1">
+                                            <span aria-hidden>📍</span>
+                                            <span>{data.sede}</span>
+                                        </p>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -90,8 +96,11 @@ const ModalHome = ({ isOpen, onClose, data, ProximoCurso }) => {
                         
                         {/* Form */}
                         <MultiStepForm
+                            cursoId={data?.id}
                             nombreCurso={data?.nombre}
                             precio={data?.precio}
+                            student={student}
+                            onClose={onClose}
                         />
 
                         {/* Footer */}

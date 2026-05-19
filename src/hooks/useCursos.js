@@ -6,7 +6,7 @@ const useCursos = (initialData) => {
 
   const revalidate = async () => {
     try {
-      const res = await fetch(`${process.env.BASE_URL}/api/sheets/infoCursos`);
+      const res = await fetch('/api/cursos');
       const newData = await res.json();
       setData(newData);
       setLastUpdated(Date.now());

@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import { Montserrat, Nunito, Geist, Geist_Mono } from "next/font/google";
 import Footer from "@/components/Footer";
+import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,6 +36,7 @@ const Layout = ({ children }) => {
         <Navbar />
         <main>{children}</main>
         <Footer/>
+        <FloatingWhatsApp />
     </div>
   );
 };

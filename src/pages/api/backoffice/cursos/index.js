@@ -4,20 +4,27 @@ import { z } from 'zod';
 import { getCourses } from '@/application/courses/getCourses';
 import { createCourse } from '@/application/courses/createCourse';
 
+const nullToUndef = (v) => (v === null || v === undefined ? undefined : v);
+const nullOrEmpty = (v) => (v === null || v === '' || v === undefined ? undefined : v);
+const nullableIntApi = z.preprocess(
+  (v) => (v === null || v === undefined || v === '') ? undefined : Number(v),
+  z.number().int().positive().optional(),
+);
+
 const createCourseSchema = z.object({
   title:           z.string().min(3, 'El título debe tener al menos 3 caracteres'),
   description:     z.string().min(10, 'La descripción debe tener al menos 10 caracteres'),
   type:            z.enum(['PRESENCIAL', 'ONLINE']),
   status:          z.enum(['DRAFT', 'ACTIVE', 'INACTIVE']).default('DRAFT'),
-  priceEUR:        z.number().positive('El precio debe ser mayor a 0'),
-  duration:        z.string().optional().nullable(),
-  instructor:      z.string().optional().nullable(),
-  nivel:           z.enum(['PRINCIPIANTE', 'MEDIO', 'AVANZADO', 'MASTER']).optional().nullable(),
-  horasAcademicas: z.number().int().positive().optional().nullable(),
-  diasDeClases:    z.number().int().positive().optional().nullable(),
-  maxSpots:        z.number().int().positive().optional().nullable(),
-  date:            z.string().optional().nullable(),
-  imageUrl:        z.string().url().optional().or(z.literal('')).nullable(),
+  priceEUR:        z.preprocess(nullToUndef, z.number().positive('El precio debe ser mayor a 0')),
+  instructor:      z.preprocess(nullToUndef, z.string().optional()),
+  sede:            z.preprocess(nullToUndef, z.string().optional()),
+  nivel:           z.preprocess(nullOrEmpty, z.enum(['PRINCIPIANTE', 'MEDIO', 'AVANZADO', 'MASTER']).optional()),
+  horasAcademicas: nullableIntApi,
+  diasDeClases:    nullableIntApi,
+  maxSpots:        nullableIntApi,
+  date:            z.preprocess(nullToUndef, z.string().optional()),
+  imageUrl:        z.preprocess(nullOrEmpty, z.string().url('URL inválida').optional()),
 });
 
 export default async function handler(req, res) {
@@ -43,9 +50,10 @@ export default async function handler(req, res) {
       const d = parsed.data;
       const course = await createCourse({
         ...d,
-        date:       d.date      ? new Date(d.date) : null,
-        imageUrl:   d.imageUrl  || null,
-        instructor: d.instructor || null,
+        date:       d.date       ? new Date(d.date) : null,
+        imageUrl:   d.imageUrl   ?? null,
+        instructor: d.instructor ?? null,
+        sede:       d.sede       ?? null,
       });
       return res.status(201).json(course);
     } catch (error) {

@@ -1,8 +1,11 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { z } from 'zod';
+import bcrypt from 'bcryptjs';
 import { getStudents } from '@/application/students/getStudents';
 import { createStudent } from '@/application/students/createStudent';
+
+const nullishToUndef = (v) => (v === null || v === '' || v === undefined ? undefined : v);
 
 const createStudentSchema = z.object({
   firstName:       z.string().min(2, 'Mínimo 2 caracteres'),
@@ -14,6 +17,7 @@ const createStudentSchema = z.object({
   state:           z.string().min(2, 'Estado requerido'),
   country:         z.string().default('Venezuela'),
   experienceLevel: z.enum(['BEGINNER', 'INTERMEDIATE', 'ADVANCED']),
+  password:        z.preprocess(nullishToUndef, z.string().min(8, 'Mínimo 8 caracteres').optional()),
 });
 
 export default async function handler(req, res) {
@@ -36,7 +40,14 @@ export default async function handler(req, res) {
     }
 
     try {
-      const student = await createStudent(parsed.data);
+      const data = { ...parsed.data };
+      if (data.password) {
+        data.password = await bcrypt.hash(data.password, 10);
+      } else {
+        delete data.password;
+      }
+      const student = await createStudent(data);
+      if (student && student.password) delete student.password;
       return res.status(201).json(student);
     } catch (error) {
       return res.status(422).json({ error: error.message });

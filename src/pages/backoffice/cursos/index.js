@@ -16,10 +16,10 @@ const typeLabel = {
   ONLINE:     'Online',
 };
 
-export default function CursosPage({ courses }) {
+export default function CursosPage({ courses = [], loadError }) {
   const router = useRouter();
   const [deleting, setDeleting] = useState(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(loadError || '');
 
   const handleDelete = async (id, title) => {
     if (!confirm(`¿Eliminar el curso "${title}"? Esta acción no se puede deshacer.`)) return;
@@ -103,12 +103,16 @@ export default function CursosPage({ courses }) {
                     {typeLabel[course.type]}
                   </td>
                   <td className="px-4 py-3.5">
-                    <span className={clsx('inline-flex px-2 py-0.5 rounded-full text-xs font-medium', statusLabel[course.status].style)}>
-                      {statusLabel[course.status].text}
-                    </span>
+                    {statusLabel[course.status] ? (
+                      <span className={clsx('inline-flex px-2 py-0.5 rounded-full text-xs font-medium', statusLabel[course.status].style)}>
+                        {statusLabel[course.status].text}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-gray-400">—</span>
+                    )}
                   </td>
                   <td className="px-4 py-3.5 text-gray-600">
-                    €{course.priceEUR.toFixed(2)}
+                    €{Number(course.priceEUR ?? 0).toFixed(2)}
                   </td>
                   <td className="px-4 py-3.5 text-gray-600">
                     {course.diasDeClases ? `${course.diasDeClases} días` : '—'}
@@ -146,12 +150,21 @@ export async function getServerSideProps(context) {
     return { redirect: { destination: '/backoffice/login', permanent: false } };
   }
 
-  const { getCourses } = await import('@/application/courses/getCourses');
-  const courses = await getCourses();
-
-  return {
-    props: {
-      courses: JSON.parse(JSON.stringify(courses)),
-    },
-  };
+  try {
+    const { getCourses } = await import('@/application/courses/getCourses');
+    const courses = await getCourses();
+    return {
+      props: {
+        courses: JSON.parse(JSON.stringify(courses)),
+      },
+    };
+  } catch (err) {
+    console.error('[backoffice/cursos] getServerSideProps error:', err);
+    return {
+      props: {
+        courses: [],
+        loadError: err?.message || 'Error al cargar los cursos',
+      },
+    };
+  }
 }

@@ -14,8 +14,8 @@ const courseSchema = z.object({
   type:            z.enum(['PRESENCIAL', 'ONLINE']),
   status:          z.enum(['DRAFT', 'ACTIVE', 'INACTIVE']),
   priceEUR:        z.coerce.number().positive('Debe ser mayor a 0'),
-  duration:        z.string().optional().nullable(),
   instructor:      z.string().optional().nullable(),
+  sede:            z.string().optional().nullable(),
   nivel:           z.preprocess(
     (v) => (v === '' || v == null) ? null : v,
     z.enum(['PRINCIPIANTE', 'MEDIO', 'AVANZADO', 'MASTER']).nullable().optional()
@@ -25,15 +25,15 @@ const courseSchema = z.object({
   maxSpots:        nullableInt,
   date:            z.string().optional().nullable(),
   imageUrl:        z.string().url('URL inválida').optional().or(z.literal('')).nullable(),
-}).refine((data) => {
-  if (data.type === 'PRESENCIAL') {
-    return !!data.date && !!data.maxSpots;
-  }
-  return true;
-}, {
-  message: 'Los cursos presenciales requieren fecha y cupos',
-  path: ['type'],
-});
+})
+  // Fecha y cupos son obligatorios para ambos tipos
+  .refine((d) => !!d.date, { message: 'La fecha es requerida', path: ['date'] })
+  .refine((d) => !!d.maxSpots, { message: 'Los cupos son requeridos', path: ['maxSpots'] })
+  // Sede es obligatoria solo para PRESENCIAL
+  .refine(
+    (d) => d.type !== 'PRESENCIAL' || (typeof d.sede === 'string' && d.sede.trim().length > 0),
+    { message: 'La sede es requerida para cursos presenciales', path: ['sede'] }
+  );
 
 const inputClass = 'w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent';
 const inputReadOnlyClass = 'w-full px-3 py-2 border border-gray-100 rounded-lg text-sm bg-gray-50 text-gray-700 cursor-default';
@@ -76,8 +76,8 @@ export default function CourseForm({ defaultValues, onSubmit, isLoading, readOnl
   });
 
   const courseType = watch('type');
-  // En modo lectura siempre se muestran los campos de fecha/cupos
-  const showPresencialFields = readOnly ? true : courseType === 'PRESENCIAL';
+  // En edición la sede aparece solo si el tipo es PRESENCIAL; en lectura siempre la mostramos
+  const showSedeField = readOnly ? true : courseType === 'PRESENCIAL';
 
   const ic = readOnly ? inputReadOnlyClass : inputClass;
 
@@ -206,30 +206,45 @@ export default function CourseForm({ defaultValues, onSubmit, isLoading, readOnl
         </div>
       </div>
 
-      {/* Fecha + Cupos — siempre visible en readOnly, condicional en edición */}
-      {showPresencialFields && (
-        <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
-          <div>
-            <label className={labelClass}>Fecha del curso</label>
-            <input
-              {...register('date')}
-              type={readOnly ? 'text' : 'date'}
-              disabled={readOnly}
-              className={ic}
-            />
-            {errors.date && <p className={errorClass}>{errors.date.message}</p>}
-          </div>
-          <div>
-            <label className={labelClass}>Cupos disponibles</label>
-            <input
-              {...register('maxSpots')}
-              type={readOnly ? 'text' : 'number'}
-              disabled={readOnly}
-              className={ic}
-              placeholder="Ej: 15"
-            />
-            {errors.maxSpots && <p className={errorClass}>{errors.maxSpots.message}</p>}
-          </div>
+      {/* Fecha + Cupos — siempre visibles para ambos tipos */}
+      <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+        <div>
+          <label className={labelClass}>Fecha del curso</label>
+          <input
+            {...register('date')}
+            type={readOnly ? 'text' : 'date'}
+            disabled={readOnly}
+            className={ic}
+          />
+          {errors.date && <p className={errorClass}>{errors.date.message}</p>}
+        </div>
+        <div>
+          <label className={labelClass}>Cupos disponibles</label>
+          <input
+            {...register('maxSpots')}
+            type={readOnly ? 'text' : 'number'}
+            disabled={readOnly}
+            className={ic}
+            placeholder="Ej: 15"
+          />
+          {errors.maxSpots && <p className={errorClass}>{errors.maxSpots.message}</p>}
+        </div>
+      </div>
+
+      {/* Sede — solo PRESENCIAL */}
+      {showSedeField && (
+        <div>
+          <label className={labelClass}>
+            Sede {courseType === 'PRESENCIAL' && <span className="text-red-500">*</span>}
+            {courseType !== 'PRESENCIAL' && !readOnly && <span className="text-gray-400 font-normal"> (solo presencial)</span>}
+          </label>
+          <input
+            {...register('sede')}
+            disabled={readOnly}
+            className={ic}
+            placeholder="Ej: Estudio Caracas — Av. Principal, Piso 2"
+          />
+          {errors.sede && <p className={errorClass}>{errors.sede.message}</p>}
         </div>
       )}
 

@@ -93,12 +93,20 @@ export default function AlumnosPage({ students }) {
                     <p className="font-medium text-gray-900">{student.firstName} {student.lastName}</p>
                     <p className="text-xs text-gray-400 mt-0.5">{student.email}</p>
                   </td>
-                  <td className="px-4 py-3.5 text-gray-600">{student.phone}</td>
-                  <td className="px-4 py-3.5 text-gray-600">{student.city}, {student.state}</td>
+                  <td className="px-4 py-3.5 text-gray-600">{student.phone || <span className="text-gray-300">—</span>}</td>
+                  <td className="px-4 py-3.5 text-gray-600">
+                    {student.city || student.state
+                      ? `${student.city ?? ''}${student.city && student.state ? ', ' : ''}${student.state ?? ''}`
+                      : <span className="text-gray-300">—</span>}
+                  </td>
                   <td className="px-4 py-3.5">
-                    <span className={clsx('inline-flex px-2 py-0.5 rounded-full text-xs font-medium', levelLabel[student.experienceLevel].style)}>
-                      {levelLabel[student.experienceLevel].text}
-                    </span>
+                    {levelLabel[student.experienceLevel] ? (
+                      <span className={clsx('inline-flex px-2 py-0.5 rounded-full text-xs font-medium', levelLabel[student.experienceLevel].style)}>
+                        {levelLabel[student.experienceLevel].text}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-gray-300">— Sin definir —</span>
+                    )}
                   </td>
                   <td className="px-4 py-3.5" onClick={(e) => e.stopPropagation()}>
                     <div className="flex items-center gap-3 justify-end">

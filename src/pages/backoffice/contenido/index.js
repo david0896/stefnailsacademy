@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import { getSession } from 'next-auth/react';
 import { clsx } from 'clsx';
 import BOLayout from '@/components/backoffice/BOLayout';
@@ -10,9 +9,167 @@ const typeStyle = {
   JSON:  'bg-orange-50 text-orange-600',
 };
 
-const inputClass = 'w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent';
+const inputClass =
+  'w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent';
 
-// ─── Fila de contenido con edición inline ─────────────────────────────────
+const SLIDE_LABELS = {
+  'hero.slide.1': 'Slide 1 — Principal',
+  'hero.slide.2': 'Slide 2 — Secundario',
+  'hero.slide.3': 'Slide 3 — Tienda / Promo',
+};
+
+// ─── Guarda un bloque de contenido vía API ────────────────────────────────
+async function saveContent(key, value, type) {
+  const res = await fetch(`/api/backoffice/contenido/${encodeURIComponent(key)}`, {
+    method:  'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ value, type }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Error al guardar');
+  return data;
+}
+
+// ─── Editor visual para slides del Hero ───────────────────────────────────
+function HeroSlideEditor({ item, label, onSaved }) {
+  const parsed     = (() => { try { return JSON.parse(item.value); } catch { return {}; } })();
+  const [fields, setFields] = useState({
+    titulo:        parsed.titulo       ?? '',
+    subtitulo:     parsed.subtitulo    ?? '',
+    descripcion:   parsed.descripcion  ?? '',
+    imagenUrl:     parsed.imagenUrl    ?? '',
+    imagenBajaCal: parsed.imagenBajaCal ?? '',
+    ctaTexto:      parsed.ctaTexto     ?? '',
+    ctaUrl:        parsed.ctaUrl       ?? '',
+    activo:        parsed.activo       ?? true,
+  });
+  const [isLoading, setLoading] = useState(false);
+  const [error,     setError]   = useState('');
+  const [saved,     setSaved]   = useState(false);
+
+  const set = (k) => (e) =>
+    setFields((prev) => ({ ...prev, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
+
+  const handleSave = async () => {
+    setLoading(true);
+    setError('');
+    setSaved(false);
+    try {
+      const json = JSON.stringify({ ...parsed, ...fields });
+      await saveContent(item.key, json, 'JSON');
+      setSaved(true);
+      onSaved();
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const field = (name, lbl, placeholder = '', type = 'text') => (
+    <div>
+      <label className="block text-xs font-medium text-gray-600 mb-1">{lbl}</label>
+      {type === 'textarea' ? (
+        <textarea
+          value={fields[name]}
+          onChange={set(name)}
+          rows={3}
+          placeholder={placeholder}
+          className={inputClass}
+        />
+      ) : (
+        <input
+          type={type}
+          value={fields[name]}
+          onChange={set(name)}
+          placeholder={placeholder}
+          className={inputClass}
+        />
+      )}
+    </div>
+  );
+
+  return (
+    <div className="border border-gray-100 rounded-xl bg-white overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100 bg-gray-50">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium text-gray-800">{label}</span>
+          <code className="text-xs font-mono text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">
+            {item.key}
+          </code>
+        </div>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <span className="text-xs text-gray-500">Activo</span>
+          <div className="relative">
+            <input
+              type="checkbox"
+              checked={fields.activo}
+              onChange={set('activo')}
+              className="sr-only peer"
+            />
+            <div className="w-9 h-5 rounded-full bg-gray-200 peer-checked:bg-gray-900 transition-colors" />
+            <div className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform peer-checked:translate-x-4" />
+          </div>
+        </label>
+      </div>
+
+      {/* Image preview */}
+      {fields.imagenUrl && (
+        <div className="relative h-28 overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={fields.imagenUrl}
+            alt="preview"
+            className="w-full h-full object-cover"
+            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+          />
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <div className="text-center text-white px-4">
+              <p className="text-sm font-semibold drop-shadow">{fields.titulo || '—'}</p>
+              <p className="text-xs opacity-80 drop-shadow">{fields.subtitulo || ''}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Fields */}
+      <div className="px-5 py-4 space-y-3">
+        <div className="grid grid-cols-2 gap-3">
+          {field('titulo',    'Título principal', 'Ej: Academia de uñas profesionales')}
+          {field('subtitulo', 'Subtítulo',        'Ej: Aprende desde donde estés')}
+        </div>
+        {field('descripcion', 'Descripción', 'Texto del slide...', 'textarea')}
+        <div className="grid grid-cols-2 gap-3">
+          {field('ctaTexto', 'Texto del botón CTA', 'Ej: Ver cursos')}
+          {field('ctaUrl',   'URL del botón CTA',   'Ej: /Courses o https://wa.link/...')}
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          {field('imagenUrl',     'URL imagen fondo',           'https://...')}
+          {field('imagenBajaCal', 'URL imagen baja calidad (blur)', 'https://...')}
+        </div>
+
+        {error && <p className="text-xs text-red-500">{error}</p>}
+
+        <div className="flex items-center gap-3 pt-1">
+          <button
+            onClick={handleSave}
+            disabled={isLoading}
+            className="bg-gray-900 text-white text-xs px-4 py-2 rounded-lg hover:bg-gray-800 disabled:opacity-50 transition-colors"
+          >
+            {isLoading ? 'Guardando...' : 'Guardar slide'}
+          </button>
+          {saved && (
+            <span className="text-xs text-green-600 font-medium">✓ Guardado</span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Fila genérica para contenido no-slide ────────────────────────────────
 function ContentRow({ item, onSaved }) {
   const [editing, setEditing]   = useState(false);
   const [value, setValue]       = useState(item.value);
@@ -23,20 +180,11 @@ function ContentRow({ item, onSaved }) {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch(`/api/backoffice/contenido/${encodeURIComponent(item.key)}`, {
-        method:  'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ value, type: item.type }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || 'Error al guardar');
-        return;
-      }
+      await saveContent(item.key, value, item.type);
       setEditing(false);
       onSaved();
-    } catch {
-      setError('Error de conexión');
+    } catch (err) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -117,27 +265,17 @@ function NewContentForm({ onSaved }) {
   const [error, setError]       = useState('');
 
   const handleSave = async () => {
-    if (!key.trim()) { setError('La clave es requerida'); return; }
+    if (!key.trim())   { setError('La clave es requerida'); return; }
     if (!value.trim()) { setError('El valor es requerido'); return; }
-
     setLoading(true);
     setError('');
     try {
-      const res = await fetch(`/api/backoffice/contenido/${encodeURIComponent(key.trim())}`, {
-        method:  'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ value, type }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || 'Error al guardar');
-        return;
-      }
+      await saveContent(key.trim(), value, type);
       setKey(''); setValue(''); setType('TEXT');
       setOpen(false);
       onSaved();
-    } catch {
-      setError('Error de conexión');
+    } catch (err) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -157,7 +295,6 @@ function NewContentForm({ onSaved }) {
   return (
     <div className="border border-gray-200 rounded-xl p-5 space-y-3">
       <h3 className="text-sm font-medium text-gray-700">Nuevo bloque</h3>
-
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-medium text-gray-600 mb-1">Clave</label>
@@ -177,7 +314,6 @@ function NewContentForm({ onSaved }) {
           </select>
         </div>
       </div>
-
       <div>
         <label className="block text-xs font-medium text-gray-600 mb-1">Valor</label>
         <textarea
@@ -188,9 +324,7 @@ function NewContentForm({ onSaved }) {
           placeholder={type === 'JSON' ? '{"clave": "valor"}' : 'Escribí el contenido...'}
         />
       </div>
-
       {error && <p className="text-xs text-red-500">{error}</p>}
-
       <div className="flex gap-2">
         <button
           onClick={handleSave}
@@ -212,7 +346,6 @@ function NewContentForm({ onSaved }) {
 
 // ─── Página principal ──────────────────────────────────────────────────────
 export default function ContenidoPage({ initialContent }) {
-  const router = useRouter();
   const [content, setContent] = useState(initialContent);
 
   const refresh = async () => {
@@ -221,29 +354,56 @@ export default function ContenidoPage({ initialContent }) {
     setContent(data);
   };
 
+  const slideKeys   = Object.keys(SLIDE_LABELS);
+  const slides      = content.filter((c) => slideKeys.includes(c.key));
+  const otherItems  = content.filter((c) => !slideKeys.includes(c.key));
+
   return (
     <BOLayout>
       <div className="max-w-2xl">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-xl font-semibold text-gray-900">Contenido</h1>
-            <p className="text-sm text-gray-500 mt-0.5">
-              Bloques de texto e imágenes editables del sitio público
-            </p>
-          </div>
+        <div className="mb-6">
+          <h1 className="text-xl font-semibold text-gray-900">Contenido</h1>
+          <p className="text-sm text-gray-500 mt-0.5">
+            Bloques de texto e imágenes editables del sitio público
+          </p>
         </div>
 
-        <div className="bg-white border border-gray-100 rounded-xl mb-4 overflow-hidden">
-          {content.length === 0 ? (
-            <div className="px-5 py-10 text-center">
-              <p className="text-sm text-gray-400">No hay bloques de contenido aún.</p>
+        {/* ── Hero Carousel ── */}
+        {slides.length > 0 && (
+          <section className="mb-8">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">
+              Hero Carousel
+            </h2>
+            <div className="space-y-4">
+              {slideKeys.map((key) => {
+                const item = slides.find((s) => s.key === key);
+                if (!item) return null;
+                return (
+                  <HeroSlideEditor
+                    key={key}
+                    item={item}
+                    label={SLIDE_LABELS[key]}
+                    onSaved={refresh}
+                  />
+                );
+              })}
             </div>
-          ) : (
-            content.map((item) => (
-              <ContentRow key={item.key} item={item} onSaved={refresh} />
-            ))
-          )}
-        </div>
+          </section>
+        )}
+
+        {/* ── Tasas y otros ── */}
+        {otherItems.length > 0 && (
+          <section className="mb-6">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">
+              Otros bloques
+            </h2>
+            <div className="bg-white border border-gray-100 rounded-xl overflow-hidden">
+              {otherItems.map((item) => (
+                <ContentRow key={item.key} item={item} onSaved={refresh} />
+              ))}
+            </div>
+          </section>
+        )}
 
         <NewContentForm onSaved={refresh} />
       </div>

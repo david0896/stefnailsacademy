@@ -74,6 +74,7 @@ export default function AlumnoPage({ student }) {
             onSubmit={handleSubmit}
             isLoading={isLoading}
             readOnly={isViewMode}
+            isEdit
           />
         </div>
 
@@ -93,6 +94,8 @@ export async function getServerSideProps(context) {
   try {
     const { getStudentById } = await import('@/application/students/getStudentById');
     const student = await getStudentById(id);
+    // Por seguridad, nunca pasamos el hash de la contraseña al cliente
+    if (student && student.password) delete student.password;
     return {
       props: { student: JSON.parse(JSON.stringify(student)) },
     };

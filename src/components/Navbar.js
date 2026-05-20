@@ -197,8 +197,11 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className={styles.mobileMenu}>
           <div className={styles.logoContainer}>
-            <span className={styles.logoText}>Stef</span>
-            <span className={styles.logoSubtext}>Nails Academy</span>
+            <img
+              src="https://i.postimg.cc/pdhQfKMg/steflogo-1.png"
+              className={styles.logoText}
+              alt="Stef Nails Academy"
+            />
           </div>
           <div className="flex flex-col items-center justify-center min-h-screen">
             <ul>

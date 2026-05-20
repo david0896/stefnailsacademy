@@ -114,7 +114,7 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
                 lowQualitySrc="https://i.postimg.cc/xdbsNgTM/instructor.jpg"
                 fullQualitySrc="https://i.postimg.cc/KjJrYrk3/instructor.png"
                 alt="Instructora profesional Stef"
-                className="relative w-[80vw] h-[48vh] lg:w-[40vw] lg:h-[80vh] z-20 object-cover object-center"
+                className="relative w-[60vw] h-[36vh] lg:w-[40vw] lg:h-[80vh] z-20 object-cover object-center"
               />
 
               {/* SVGs decorativos */}

@@ -75,8 +75,11 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
               )}
             </div>
 
-            {/* Columna de imagen + countdown */}
-            <div className="relative h-full flex col-span-1 justify-center items-end overflow-hidden">
+            {/* Columna de imagen + countdown
+                En mobile: items-start + overflow-visible para que la cabeza
+                de la instructora no se recorte. En desktop: comportamiento
+                original con items-end + overflow-hidden. */}
+            <div className="relative h-full flex col-span-1 justify-center items-start lg:items-end lg:overflow-hidden">
 
               {/* Countdown — desktop (absolute, en la columna de la imagen) */}
               {ProximoCurso && Object.keys(ProximoCurso).length > 0 && (
@@ -109,12 +112,14 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
                 </>
               )}
 
-              {/* Imagen instructora */}
+              {/* Imagen instructora — z-20 para que quede delante de SVGs
+                  decorativos y cualquier elemento de fondo del slide.
+                  object-top en mobile para preservar la cabeza al recortar. */}
               <BlurImage
                 lowQualitySrc="https://i.postimg.cc/xdbsNgTM/instructor.jpg"
                 fullQualitySrc="https://i.postimg.cc/KjJrYrk3/instructor.png"
                 alt="Instructora profesional Stef"
-                className="relative w-[72vw] h-[40vh] lg:w-[40vw] lg:h-[80vh] z-[8]"
+                className="relative w-[72vw] h-[40vh] lg:w-[40vw] lg:h-[80vh] z-20 object-top lg:object-center"
               />
 
               {/* SVGs decorativos */}

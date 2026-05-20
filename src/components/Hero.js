@@ -61,25 +61,13 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
                 </button>
               )}
 
-              {/* Fecha próxima clase — mobile only, debajo del CTA.
-                  Recuadro rojo con estética del Hero, sin tapar la imagen. */}
-              {hayCurso && (
-                <div className="lg:hidden mt-1">
-                  <div className="bg-[#ff5a5f] border-2 border-white rounded-lg px-4 py-2 inline-block shadow-md">
-                    <p className="text-white font-bold text-base leading-tight whitespace-nowrap">
-                      {formatearFechaMesDia(ProximoCurso.fechaSnFormato)}
-                      <span className="block font-normal text-xs opacity-90">Siguiente clase</span>
-                    </p>
-                  </div>
-                </div>
-              )}
             </div>
 
-            {/* Columna de imagen + countdown
-                En mobile: items-start + overflow-visible para que la cabeza
-                de la instructora no se recorte. En desktop: comportamiento
-                original con items-end + overflow-hidden. */}
-            <div className="relative h-full flex col-span-1 justify-center items-start lg:items-end lg:overflow-hidden">
+            {/* Columna de imagen + countdown.
+                En mobile la imagen vuelve a anchorse al bottom (items-end)
+                y el badge de fecha flota arriba a la izquierda, fuera del
+                área de la cara. object-top en la imagen preserva la cabeza. */}
+            <div className="relative h-full flex col-span-1 justify-center items-end overflow-hidden">
 
               {/* Countdown — desktop (absolute, en la columna de la imagen) */}
               {ProximoCurso && Object.keys(ProximoCurso).length > 0 && (
@@ -106,20 +94,27 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
                     </div>
                   </div>
 
-                  {/* Countdown — mobile: lo renderizamos aparte, fuera de
-                      este contenedor de imagen, para que no solape a la
-                      instructora. Ver bloque al final del slide. */}
+                  {/* Badge de fecha — mobile only, esquina superior izquierda
+                      de la columna de la imagen. Posicionado lejos de la cara
+                      de la instructora. */}
+                  <div className="lg:hidden absolute top-3 left-3 z-30">
+                    <div className="bg-[#ff5a5f] border-2 border-white rounded-lg px-3 py-2 shadow-md">
+                      <p className="text-white font-bold text-sm leading-tight whitespace-nowrap">
+                        {formatearFechaMesDia(ProximoCurso.fechaSnFormato)}
+                        <span className="block font-normal text-[10px] opacity-90">Siguiente clase</span>
+                      </p>
+                    </div>
+                  </div>
                 </>
               )}
 
-              {/* Imagen instructora — z-20 para que quede delante de SVGs
-                  decorativos y cualquier elemento de fondo del slide.
-                  object-top en mobile para preservar la cabeza al recortar. */}
+              {/* Imagen instructora — z-20 delante de SVGs decorativos.
+                  object-top en mobile preserva la cabeza al hacer object-cover. */}
               <BlurImage
                 lowQualitySrc="https://i.postimg.cc/xdbsNgTM/instructor.jpg"
                 fullQualitySrc="https://i.postimg.cc/KjJrYrk3/instructor.png"
                 alt="Instructora profesional Stef"
-                className="relative w-[72vw] h-[40vh] lg:w-[40vw] lg:h-[80vh] z-20 object-top lg:object-center"
+                className="relative w-[80vw] h-[45vh] lg:w-[40vw] lg:h-[80vh] z-20 object-top lg:object-center"
               />
 
               {/* SVGs decorativos */}

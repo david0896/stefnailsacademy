@@ -61,19 +61,14 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
                 </button>
               )}
 
-              {/* Countdown — mobile only, debajo del CTA. No solapa la imagen. */}
+              {/* Fecha próxima clase — mobile only, debajo del CTA */}
               {hayCurso && (
-                <div className="lg:hidden mt-2">
-                  <div className="bg-[#ff5a5f] border-2 border-white rounded-lg px-3 py-2 inline-flex items-center gap-3 shadow-md w-full sm:w-auto">
-                    <p className="text-white font-bold text-sm leading-tight whitespace-nowrap">
-                      {formatearFechaMesDia(ProximoCurso.fechaSnFormato)}
-                      <span className="block font-normal text-[10px] opacity-90">Siguiente clase</span>
-                    </p>
-                    <div className="border-l border-white/40 pl-3 text-white text-xs">
-                      <Countdown fecha={ProximoCurso.fechaSnFormato} />
-                    </div>
-                  </div>
-                </div>
+                <p className="lg:hidden text-sm text-[#383838]">
+                  <span className="font-semibold">Siguiente clase:</span>{' '}
+                  <span className="text-[#ff5a5f] font-bold">
+                    {formatearFechaMesDia(ProximoCurso.fechaSnFormato)}
+                  </span>
+                </p>
               )}
             </div>
 

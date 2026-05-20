@@ -112,7 +112,7 @@ export default function CourseForm({ defaultValues, onSubmit, isLoading, readOnl
       </div>
 
       {/* Tipo + Estado */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className={labelClass}>Tipo</label>
           {readOnly ? (
@@ -154,7 +154,7 @@ export default function CourseForm({ defaultValues, onSubmit, isLoading, readOnl
       </div>
 
       {/* Instructor + Nivel */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className={labelClass}>Instructor <span className="text-gray-400 font-normal">(opcional)</span></label>
           <input
@@ -183,7 +183,7 @@ export default function CourseForm({ defaultValues, onSubmit, isLoading, readOnl
       </div>
 
       {/* Horas académicas + Días de clases */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className={labelClass}>Horas académicas <span className="text-gray-400 font-normal">(opcional)</span></label>
           <input
@@ -207,7 +207,7 @@ export default function CourseForm({ defaultValues, onSubmit, isLoading, readOnl
       </div>
 
       {/* Fecha + Cupos — siempre visibles para ambos tipos */}
-      <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
         <div>
           <label className={labelClass}>Fecha del curso</label>
           <input

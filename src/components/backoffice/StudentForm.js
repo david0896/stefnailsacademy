@@ -80,7 +80,7 @@ export default function StudentForm({ defaultValues, onSubmit, isLoading, readOn
       className="space-y-5"
     >
       {/* Nombre + Apellido */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className={labelClass}>Nombre</label>
           <input {...register('firstName')} disabled={readOnly} className={ic} placeholder="Ej: María" />
@@ -101,7 +101,7 @@ export default function StudentForm({ defaultValues, onSubmit, isLoading, readOn
       </div>
 
       {/* Teléfono + Cédula */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className={labelClass}>Teléfono</label>
           <input {...register('phone')} disabled={readOnly} className={ic} placeholder="Ej: 0414-1234567" />
@@ -115,7 +115,7 @@ export default function StudentForm({ defaultValues, onSubmit, isLoading, readOn
       </div>
 
       {/* Ciudad + Estado */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className={labelClass}>Ciudad</label>
           <input {...register('city')} disabled={readOnly} className={ic} placeholder="Ej: Caracas" />
@@ -129,7 +129,7 @@ export default function StudentForm({ defaultValues, onSubmit, isLoading, readOn
       </div>
 
       {/* País + Nivel */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className={labelClass}>País</label>
           <input {...register('country')} disabled={readOnly} className={ic} placeholder="Venezuela" />
@@ -163,7 +163,7 @@ export default function StudentForm({ defaultValues, onSubmit, isLoading, readOn
                 : 'Si la dejas vacía, el alumno podrá registrarla más tarde desde la página pública /registro.'}
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className={labelClass}>
                 {isEdit ? 'Nueva contraseña' : 'Contraseña'}

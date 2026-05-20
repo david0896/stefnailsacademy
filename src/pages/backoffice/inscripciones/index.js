@@ -71,7 +71,7 @@ export default function InscripcionesPage({ enrollments, currentStatus }) {
           <p className="text-gray-400 text-sm">No hay inscripciones para mostrar.</p>
         </div>
       ) : (
-        <div className="bg-white border border-gray-100 rounded-xl overflow-hidden">
+        <div className="bg-white border border-gray-100 rounded-xl overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50">

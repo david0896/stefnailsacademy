@@ -29,7 +29,7 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
         fullImageUrl={slide.imagenUrl}
       >
         <div className="absolute inset-0 flex items-center">
-          <div className="container mx-auto px-6 lg:px-20 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-20 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full">
 
             {/* Columna de texto */}
             <div className="flex flex-col col-span-1 justify-center space-y-4 lg:space-y-6 text-left pt-20 lg:pt-0">
@@ -169,7 +169,7 @@ function SlideGenerico({ slide }) {
       {/* Overlay oscuro para legibilidad */}
       <div className="absolute inset-0 bg-black/40 z-[2]" />
       <div className="absolute inset-0 flex items-center z-[10]">
-        <div className="container mx-auto px-6 lg:px-20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-20">
           <div className="max-w-xl space-y-4 lg:space-y-6">
             <h1 className="text-2xl sm:text-3xl xl:text-5xl font-bold text-white leading-tight">
               {slide.titulo}
@@ -261,20 +261,21 @@ const Hero = ({ ProximoCurso, SiguienteCurso, slides = [], student = null, enrol
         ))}
       </div>
 
-      {/* Flechas de navegación */}
+      {/* Flechas de navegación — en mobile las bajamos al footer del slide
+          para no tapar el texto del Hero. Touch target 44px (min recomendado). */}
       {total > 1 && (
         <>
           <button
             onClick={prev}
             aria-label="Slide anterior"
-            className="absolute left-3 lg:left-6 top-1/2 -translate-y-1/2 z-40 bg-black/30 hover:bg-black/50 text-white rounded-full p-2 lg:p-3 transition-colors"
+            className="absolute left-2 lg:left-6 bottom-16 lg:bottom-auto lg:top-1/2 lg:-translate-y-1/2 z-40 bg-black/40 hover:bg-black/60 text-white rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors"
           >
             <FaChevronLeft className="w-4 h-4 lg:w-5 lg:h-5" />
           </button>
           <button
             onClick={next}
             aria-label="Slide siguiente"
-            className="absolute right-3 lg:right-6 top-1/2 -translate-y-1/2 z-40 bg-black/30 hover:bg-black/50 text-white rounded-full p-2 lg:p-3 transition-colors"
+            className="absolute right-2 lg:right-6 bottom-16 lg:bottom-auto lg:top-1/2 lg:-translate-y-1/2 z-40 bg-black/40 hover:bg-black/60 text-white rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors"
           >
             <FaChevronRight className="w-4 h-4 lg:w-5 lg:h-5" />
           </button>

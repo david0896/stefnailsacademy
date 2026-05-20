@@ -60,12 +60,27 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
                   {hayCurso ? slide.ctaTexto : 'Proximamente cursos disponibles'}
                 </button>
               )}
+
+              {/* Countdown — mobile only, debajo del CTA. No solapa la imagen. */}
+              {hayCurso && (
+                <div className="lg:hidden mt-2">
+                  <div className="bg-[#ff5a5f] border-2 border-white rounded-lg px-3 py-2 inline-flex items-center gap-3 shadow-md w-full sm:w-auto">
+                    <p className="text-white font-bold text-sm leading-tight whitespace-nowrap">
+                      {formatearFechaMesDia(ProximoCurso.fechaSnFormato)}
+                      <span className="block font-normal text-[10px] opacity-90">Siguiente clase</span>
+                    </p>
+                    <div className="border-l border-white/40 pl-3 text-white text-xs">
+                      <Countdown fecha={ProximoCurso.fechaSnFormato} />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Columna de imagen + countdown */}
             <div className="relative h-full flex col-span-1 justify-center items-end overflow-hidden">
 
-              {/* Countdown — desktop */}
+              {/* Countdown — desktop (absolute, en la columna de la imagen) */}
               {ProximoCurso && Object.keys(ProximoCurso).length > 0 && (
                 <>
                   <div className="absolute px-8 py-10 hidden lg:grid content-end z-20">
@@ -90,20 +105,9 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
                     </div>
                   </div>
 
-                  {/* Countdown — mobile (alineado al viewport, sin overflow) */}
-                  <div
-                    className={`${isVisible ? 'opacity-100' : 'opacity-0'} transition-opacity duration-1000 absolute left-4 right-4 top-4 z-20 lg:hidden`}
-                  >
-                    <div className="bg-[#ff5a5f] backdrop-blur-sm border-2 border-white rounded-lg px-4 py-2 inline-flex items-center gap-3 shadow-lg">
-                      <p className="text-white font-bold text-base leading-tight">
-                        {formatearFechaMesDia(ProximoCurso.fechaSnFormato)}
-                        <span className="block font-normal text-xs opacity-90">Siguiente clase</span>
-                      </p>
-                      <div className="border-l border-white/40 pl-3 text-white text-xs">
-                        <Countdown fecha={ProximoCurso.fechaSnFormato} />
-                      </div>
-                    </div>
-                  </div>
+                  {/* Countdown — mobile: lo renderizamos aparte, fuera de
+                      este contenedor de imagen, para que no solape a la
+                      instructora. Ver bloque al final del slide. */}
                 </>
               )}
 
@@ -205,9 +209,12 @@ const Hero = ({ ProximoCurso, SiguienteCurso, slides = [], student = null, enrol
   const [paused, setPaused] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [touchStartX, setTouchStartX] = useState(null);
+  const [touchEndX, setTouchEndX] = useState(null);
 
   const total = slides.length;
   const hayCurso = ProximoCurso && Object.keys(ProximoCurso).length > 0;
+  const MIN_SWIPE_DISTANCE = 50; // px
 
   useEffect(() => { setIsVisible(true); }, []);
 
@@ -220,6 +227,21 @@ const Hero = ({ ProximoCurso, SiguienteCurso, slides = [], student = null, enrol
     const timer = setInterval(next, 4000);
     return () => clearInterval(timer);
   }, [paused, isOpen, total, next]);
+
+  // Swipe táctil (mobile/tablet) para cambiar de slide
+  const handleTouchStart = (e) => {
+    setTouchEndX(null);
+    setTouchStartX(e.targetTouches[0].clientX);
+  };
+  const handleTouchMove = (e) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+  const handleTouchEnd = () => {
+    if (touchStartX == null || touchEndX == null) return;
+    const distance = touchStartX - touchEndX;
+    if (distance > MIN_SWIPE_DISTANCE) next();        // swipe izquierda → siguiente
+    else if (distance < -MIN_SWIPE_DISTANCE) prev();  // swipe derecha → anterior
+  };
 
   // Auth guard + dedup para abrir el modal
   const handleReservar = () => {
@@ -236,9 +258,12 @@ const Hero = ({ ProximoCurso, SiguienteCurso, slides = [], student = null, enrol
 
   return (
     <div
-      className="relative w-full overflow-hidden"
+      className="relative w-full overflow-hidden touch-pan-y"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Slides — crossfade con absolute positioning */}
       <div className="relative w-full" style={{ height: '100vh' }}>

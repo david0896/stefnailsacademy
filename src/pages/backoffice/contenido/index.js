@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { getSession } from 'next-auth/react';
 import { clsx } from 'clsx';
 import BOLayout from '@/components/backoffice/BOLayout';
+import ImageUpload from '@/components/backoffice/ImageUpload';
 
 const typeStyle = {
   TEXT:  'bg-blue-50 text-blue-600',
@@ -39,10 +40,33 @@ function HeroSlideEditor({ item, label, onSaved }) {
     descripcion:   parsed.descripcion  ?? '',
     imagenUrl:     parsed.imagenUrl    ?? '',
     imagenBajaCal: parsed.imagenBajaCal ?? '',
+    imagenVariants: parsed.imagenVariants ?? null,
     ctaTexto:      parsed.ctaTexto     ?? '',
     ctaUrl:        parsed.ctaUrl       ?? '',
     activo:        parsed.activo       ?? true,
   });
+
+  // Maneja el cambio desde ImageUpload: si subió imagen optimizada,
+  // mapea la variante grande a imagenUrl y la chica (400w) a imagenBajaCal
+  // (que el Hero usa para el efecto blur). Si usó URL externa, ambas iguales.
+  const handleImageChange = ({ imageUrl, imageVariants }) => {
+    if (imageVariants) {
+      const small = imageVariants.sizes['400'] || imageVariants.base;
+      setFields((prev) => ({
+        ...prev,
+        imagenUrl:      imageVariants.base,
+        imagenBajaCal:  small,
+        imagenVariants: imageVariants,
+      }));
+    } else {
+      setFields((prev) => ({
+        ...prev,
+        imagenUrl:      imageUrl,
+        imagenBajaCal:  imageUrl,
+        imagenVariants: null,
+      }));
+    }
+  };
   const [isLoading, setLoading] = useState(false);
   const [error,     setError]   = useState('');
   const [saved,     setSaved]   = useState(false);
@@ -145,9 +169,17 @@ function HeroSlideEditor({ item, label, onSaved }) {
           {field('ctaTexto', 'Texto del botón CTA', 'Ej: Ver cursos')}
           {field('ctaUrl',   'URL del botón CTA',   'Ej: /Courses o https://wa.link/...')}
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          {field('imagenUrl',     'URL imagen fondo',           'https://...')}
-          {field('imagenBajaCal', 'URL imagen baja calidad (blur)', 'https://...')}
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">Imagen de fondo del slide</label>
+          <ImageUpload
+            imageUrl={fields.imagenVariants ? '' : fields.imagenUrl}
+            imageVariants={fields.imagenVariants}
+            folder="contenido"
+            onChange={handleImageChange}
+          />
+          <p className="text-[11px] text-gray-400 mt-1">
+            Al subir, se genera automáticamente la versión de baja calidad para el efecto blur.
+          </p>
         </div>
 
         {error && <p className="text-xs text-red-500">{error}</p>}

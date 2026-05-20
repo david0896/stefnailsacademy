@@ -122,7 +122,7 @@ const Courses = ({ cursos, inscripciones = [], student = null }) => {
     const handleNext = () => setPage((p) => Math.min(totalPages - 1, p + 1));
 
     return (
-        <div className="w-10/12 mx-auto pb-10">
+        <div className="w-11/12 sm:w-10/12 mx-auto pb-10">
             <CarrucelCharacteristics/>
 
             {/* ── Historial del alumno (solo si está logueado y tiene inscripciones) ── */}
@@ -130,19 +130,19 @@ const Courses = ({ cursos, inscripciones = [], student = null }) => {
                 <MisInscripciones inscripciones={inscripciones} />
             )}
 
-            <h2 className="text-2xl xl:text-3xl font-bold text-[#383838] mt-10 mb-5">
-                Conoce nuestro proximo curso ideal para ti
+            <h2 className="text-xl sm:text-2xl xl:text-3xl font-bold text-[#383838] mt-10 mb-5">
+                Conoce nuestro próximo curso ideal para ti
             </h2>
 
             {ProximoCurso ? (
                 <>
                     {/* ── Curso destacado ── */}
-                    <div className="grid grid-cols-1 lg:grid-cols-12 border-[0.5px] border-gray-300 rounded-md p-8 gap-5 bg-[#ff5a600d]">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 border border-gray-200 rounded-lg p-4 sm:p-6 lg:p-8 gap-5 bg-[#ff5a600d]">
                         <div className="col-span-1 xl:col-span-3">
                             <img
                                 src={ProximoCurso.imagen}
                                 alt={"Ilustración de certificación " + ProximoCurso.nombre}
-                                className="w-full h-72 rounded-sm"
+                                className="w-full h-56 sm:h-72 object-cover rounded-md"
                             />
                         </div>
                         <div className="xl:col-span-9 space-y-5 flex flex-col justify-between">
@@ -194,7 +194,7 @@ const Courses = ({ cursos, inscripciones = [], student = null }) => {
                                 Conoce los siguientes cursos que tendremos para ti
                             </h3>
 
-                            <div className="mb-6 grid grid-cols-3 lg:grid-cols-5 gap-4">
+                            <div className="mb-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
                                 {cursosPagina.map((curso, index) => (
                                     <CursoCardMini
                                         key={curso.id ?? index}
@@ -233,7 +233,14 @@ const Courses = ({ cursos, inscripciones = [], student = null }) => {
                 </>
 
             ) : (
-                <p>No hay cursos disponibles</p>
+                <div className="border border-gray-200 rounded-lg p-8 sm:p-12 text-center bg-gray-50">
+                    <p className="text-gray-500 text-base sm:text-lg">
+                        Aún no hay cursos disponibles.
+                    </p>
+                    <p className="text-gray-400 text-sm mt-2">
+                        Pronto publicaremos nuevas fechas. ¡Mantente atenta!
+                    </p>
+                </div>
             )}
 
             {/* Modal */}

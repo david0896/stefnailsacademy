@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ─── Base global: evita scroll horizontal en mobile ───────────────────────
+   Cualquier elemento con anchos absolutos (carouseles, imágenes con efectos,
+   secciones con padding negativo) puede generar scroll lateral indeseado.
+   Lo bloqueamos a nivel raíz. */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* ─── Touch targets accesibles en mobile ────────────────────────────────── */
+@media (max-width: 768px) {
+  button,
+  [role="button"],
+  a.button,
+  input[type="submit"] {
+    min-height: 40px;
+  }
+}

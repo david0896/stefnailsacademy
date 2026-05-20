@@ -33,7 +33,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center px-4 pt-32 pb-12">
+    <div className="min-h-[70vh] flex items-center justify-center px-4 pt-24 sm:pt-32 pb-16 sm:pb-12">
       <div className="w-full max-w-md bg-white border border-gray-100 rounded-xl shadow-sm p-8">
         <h1 className="text-2xl font-bold text-[#383838] mb-1">Iniciar sesión</h1>
         <p className="text-sm text-gray-500 mb-6">Accede a tu cuenta de alumno</p>

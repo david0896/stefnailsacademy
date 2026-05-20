@@ -120,14 +120,22 @@
   
   /* Mobile Styles */
   @media screen and (max-width: 768px) {
+    .navbar {
+      padding: 0.75rem 1rem; /* menos padding lateral en mobile */
+    }
+
+    .logoText {
+      width: 5.5rem; /* logo un poco más chico en mobile */
+    }
+
     .navLinks {
       display: none;
     }
-  
+
     .hamburger {
       display: flex;
     }
-  
+
     .mobileMenu {
       position: fixed;
       top: 0;
@@ -138,9 +146,10 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 2rem;
-      z-index: 999;
+      padding: 2rem 1.25rem;
+      z-index: 1100;        /* sobre cualquier hero/carousel (z-50 = 50) */
       animation: slideIn 0.5s ease;
+      overflow-y: auto;     /* scroll si el contenido del menú no entra */
     }
   
     .mobileMenu ul {

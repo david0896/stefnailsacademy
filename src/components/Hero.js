@@ -29,10 +29,10 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
         fullImageUrl={slide.imagenUrl}
       >
         <div className="absolute inset-0 flex items-center">
-          <div className="container mx-auto px-6 lg:px-20 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-20 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full">
 
             {/* Columna de texto */}
-            <div className="flex flex-col col-span-1 justify-center space-y-4 lg:space-y-6 text-left pt-20 lg:pt-0">
+            <div className="flex flex-col col-span-1 justify-center space-y-4 lg:space-y-6 text-left pt-32 lg:pt-0">
               <h1 className="text-2xl sm:text-3xl xl:text-5xl font-bold text-[#ff5a5f] leading-tight">
                 {slide.titulo}
               </h1>
@@ -60,12 +60,16 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
                   {hayCurso ? slide.ctaTexto : 'Proximamente cursos disponibles'}
                 </button>
               )}
+
             </div>
 
-            {/* Columna de imagen + countdown */}
+            {/* Columna de imagen + countdown.
+                En mobile la imagen vuelve a anchorse al bottom (items-end)
+                y el badge de fecha flota arriba a la izquierda, fuera del
+                área de la cara. object-top en la imagen preserva la cabeza. */}
             <div className="relative h-full flex col-span-1 justify-center items-end overflow-hidden">
 
-              {/* Countdown — desktop */}
+              {/* Countdown — desktop (absolute, en la columna de la imagen) */}
               {ProximoCurso && Object.keys(ProximoCurso).length > 0 && (
                 <>
                   <div className="absolute px-8 py-10 hidden lg:grid content-end z-20">
@@ -90,28 +94,27 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
                     </div>
                   </div>
 
-                  {/* Countdown — mobile */}
-                  <div className={`${isVisible ? 'opacity-100' : 'opacity-0'} transition-opacity duration-1000 absolute -left-8 px-8 py-10 grid lg:hidden content-start z-20 bottom-[18vh]`}>
-                    <div className="grid grid-cols-5 rounded-lg">
-                      <div className="col-span-3 w-11/12 bg-[#ff5a5f]/60 backdrop-blur-sm rounded-lg">
-                        <div className="bg-[#ff5a5f] p-2 h-full border-solid border-2 border-[#ffffff] rounded-lg">
-                          <p className="text-white font-bold text-center text-base">
-                            {formatearFechaMesDia(ProximoCurso.fechaSnFormato)}
-                            <span className="block font-normal text-sm">Siguiente clase</span>
-                          </p>
-                        </div>
-                      </div>
+                  {/* Badge de fecha — mobile only, esquina inferior izquierda
+                      sobre la imagen como un pin. Acompaña visualmente. */}
+                  <div className="lg:hidden absolute bottom-4 left-3 z-30">
+                    <div className="bg-[#ff5a5f] border-2 border-white rounded-lg px-3 py-2 shadow-lg">
+                      <p className="text-white font-bold text-sm leading-tight whitespace-nowrap">
+                        {formatearFechaMesDia(ProximoCurso.fechaSnFormato)}
+                        <span className="block font-normal text-[10px] opacity-90">Siguiente clase</span>
+                      </p>
                     </div>
                   </div>
                 </>
               )}
 
-              {/* Imagen instructora */}
+              {/* Imagen instructora — z-20 delante de SVGs decorativos.
+                  object-center muestra cara + torso + manos (lo que vende),
+                  con recortes equilibrados arriba y abajo. */}
               <BlurImage
                 lowQualitySrc="https://i.postimg.cc/xdbsNgTM/instructor.jpg"
                 fullQualitySrc="https://i.postimg.cc/KjJrYrk3/instructor.png"
                 alt="Instructora profesional Stef"
-                className="relative w-[72vw] h-[40vh] lg:w-[40vw] lg:h-[80vh] z-[8]"
+                className="relative w-[60vw] h-[36vh] lg:w-[40vw] lg:h-[80vh] z-20 object-cover object-center"
               />
 
               {/* SVGs decorativos */}
@@ -132,12 +135,13 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
             </div>
           </div>
 
-          {/* Card flotante */}
+          {/* Card flotante — solo visible en desktop. En mobile el espacio
+              es muy chico y compite con el countdown + texto + imagen. */}
           <div
             className={clsx(
               `${isVisible ? 'opacity-100' : 'opacity-0'} transition-opacity duration-1000`,
-              'absolute rounded-md grid z-30 w-[55vw] lg:w-[17vw]',
-              'bottom-10 lg:bottom-auto lg:top-[12vw] right-[35vw] lg:right-[5vw]',
+              'hidden lg:grid absolute rounded-md z-30 w-[17vw]',
+              'top-[12vw] right-[5vw]',
               'bg-[#fff]/60 backdrop-blur-sm p-1 py-3',
               styles.heroFloat
             )}
@@ -169,7 +173,7 @@ function SlideGenerico({ slide }) {
       {/* Overlay oscuro para legibilidad */}
       <div className="absolute inset-0 bg-black/40 z-[2]" />
       <div className="absolute inset-0 flex items-center z-[10]">
-        <div className="container mx-auto px-6 lg:px-20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-20">
           <div className="max-w-xl space-y-4 lg:space-y-6">
             <h1 className="text-2xl sm:text-3xl xl:text-5xl font-bold text-white leading-tight">
               {slide.titulo}
@@ -203,9 +207,12 @@ const Hero = ({ ProximoCurso, SiguienteCurso, slides = [], student = null, enrol
   const [paused, setPaused] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [touchStartX, setTouchStartX] = useState(null);
+  const [touchEndX, setTouchEndX] = useState(null);
 
   const total = slides.length;
   const hayCurso = ProximoCurso && Object.keys(ProximoCurso).length > 0;
+  const MIN_SWIPE_DISTANCE = 50; // px
 
   useEffect(() => { setIsVisible(true); }, []);
 
@@ -218,6 +225,21 @@ const Hero = ({ ProximoCurso, SiguienteCurso, slides = [], student = null, enrol
     const timer = setInterval(next, 4000);
     return () => clearInterval(timer);
   }, [paused, isOpen, total, next]);
+
+  // Swipe táctil (mobile/tablet) para cambiar de slide
+  const handleTouchStart = (e) => {
+    setTouchEndX(null);
+    setTouchStartX(e.targetTouches[0].clientX);
+  };
+  const handleTouchMove = (e) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+  const handleTouchEnd = () => {
+    if (touchStartX == null || touchEndX == null) return;
+    const distance = touchStartX - touchEndX;
+    if (distance > MIN_SWIPE_DISTANCE) next();        // swipe izquierda → siguiente
+    else if (distance < -MIN_SWIPE_DISTANCE) prev();  // swipe derecha → anterior
+  };
 
   // Auth guard + dedup para abrir el modal
   const handleReservar = () => {
@@ -234,9 +256,12 @@ const Hero = ({ ProximoCurso, SiguienteCurso, slides = [], student = null, enrol
 
   return (
     <div
-      className="relative w-full overflow-hidden"
+      className="relative w-full overflow-hidden touch-pan-y"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Slides — crossfade con absolute positioning */}
       <div className="relative w-full" style={{ height: '100vh' }}>
@@ -261,29 +286,30 @@ const Hero = ({ ProximoCurso, SiguienteCurso, slides = [], student = null, enrol
         ))}
       </div>
 
-      {/* Flechas de navegación */}
+      {/* Flechas de navegación — solo desktop. En mobile el usuario hace
+          swipe táctil o espera el autoplay. */}
       {total > 1 && (
         <>
           <button
             onClick={prev}
             aria-label="Slide anterior"
-            className="absolute left-3 lg:left-6 top-1/2 -translate-y-1/2 z-40 bg-black/30 hover:bg-black/50 text-white rounded-full p-2 lg:p-3 transition-colors"
+            className="hidden lg:flex absolute left-6 top-1/2 -translate-y-1/2 z-40 bg-black/40 hover:bg-black/60 text-white rounded-full min-w-[44px] min-h-[44px] items-center justify-center transition-colors"
           >
-            <FaChevronLeft className="w-4 h-4 lg:w-5 lg:h-5" />
+            <FaChevronLeft className="w-5 h-5" />
           </button>
           <button
             onClick={next}
             aria-label="Slide siguiente"
-            className="absolute right-3 lg:right-6 top-1/2 -translate-y-1/2 z-40 bg-black/30 hover:bg-black/50 text-white rounded-full p-2 lg:p-3 transition-colors"
+            className="hidden lg:flex absolute right-6 top-1/2 -translate-y-1/2 z-40 bg-black/40 hover:bg-black/60 text-white rounded-full min-w-[44px] min-h-[44px] items-center justify-center transition-colors"
           >
-            <FaChevronRight className="w-4 h-4 lg:w-5 lg:h-5" />
+            <FaChevronRight className="w-5 h-5" />
           </button>
         </>
       )}
 
-      {/* Dots de navegación */}
+      {/* Dots de navegación — solo desktop también */}
       {total > 1 && (
-        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2">
+        <div className="hidden lg:flex absolute bottom-5 left-1/2 -translate-x-1/2 z-40 items-center gap-2">
           {slides.map((_, i) => (
             <button
               key={i}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { FaFacebook, FaInstagram, FaTwitter, FaWhatsapp, FaUserCircle } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaTwitter, FaTiktok, FaUserCircle } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { useSession, signOut } from "next-auth/react";
 import styles from "../styles/Navbar.module.css";
@@ -182,25 +182,41 @@ const Navbar = () => {
         <AuthDesktop />
       </div>
 
-      <div
-        className={styles.hamburger}
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
-      >
-        {isMenuOpen ? <IoMdClose className={styles.closeIcon} /> : (
-          <>
-            <div />
-            <div />
-            <div />
-          </>
-        )}
-      </div>
+      {/* Botón hamburguesa: solo visible cuando el menú está cerrado.
+          Cuando está abierto, el botón de cerrar (X) vive dentro del drawer
+          para garantizar que sea clickeable encima de todo. */}
+      {!isMenuOpen && (
+        <div
+          className={styles.hamburger}
+          onClick={() => setIsMenuOpen(true)}
+          aria-label="Abrir menú"
+        >
+          <div />
+          <div />
+          <div />
+        </div>
+      )}
       {isMenuOpen && (
         <div className={styles.mobileMenu}>
-          <div className={styles.logoContainer}>
-            <span className={styles.logoText}>Stef</span>
-            <span className={styles.logoSubtext}>Nails Academy</span>
+          {/* Header del drawer: logo + X de cerrar */}
+          <div className="flex items-center justify-between w-full mb-4">
+            <div className={styles.logoContainer}>
+              <img
+                src="https://i.postimg.cc/pdhQfKMg/steflogo-1.png"
+                className={styles.logoText}
+                alt="Stef Nails Academy"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen(false)}
+              aria-label="Cerrar menú"
+              className="p-2 -mr-2 text-[#ff5a5f] hover:text-[#ff3b3f] transition-colors"
+            >
+              <IoMdClose className="w-7 h-7" />
+            </button>
           </div>
-          <div className="flex flex-col items-center justify-center min-h-screen">
+          <div className="flex flex-col items-center justify-center flex-1">
             <ul>
               <li><Link href="/" onClick={() => setIsMenuOpen(false)}>Inicio</Link></li>
               <li><Link href="/AboutUs" onClick={() => setIsMenuOpen(false)}>Nosotros</Link></li>
@@ -212,8 +228,7 @@ const Navbar = () => {
           <div className={styles.socialIcons}>
             <FaFacebook />
             <FaInstagram />
-            <FaTwitter />
-            <FaWhatsapp />
+            <FaTiktok />
           </div>
         </div>
       )}

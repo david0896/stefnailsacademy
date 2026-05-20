@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function RecuperarContrasenaPage() {
   return (
-    <div className="min-h-[70vh] flex items-center justify-center px-4 pt-32 pb-12">
+    <div className="min-h-[70vh] flex items-center justify-center px-4 pt-24 sm:pt-32 pb-16 sm:pb-12">
       <div className="w-full max-w-md bg-white border border-gray-100 rounded-xl shadow-sm p-8 text-center">
         <h1 className="text-2xl font-bold text-[#383838] mb-3">Recuperar contraseña</h1>
 

@@ -1,4 +1,4 @@
-import { FaWhatsapp, FaTiktok, FaInstagram, FaFacebook } from "react-icons/fa";
+import { FaTiktok, FaInstagram, FaFacebook } from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -15,9 +15,6 @@ const Footer = () => {
             Donde el arte de las uñas se convierte en tu profesión. Transforma tu talento en un negocio de éxito.
           </p>
           <div className="flex space-x-4 mt-4">
-            <a href="https://wa.link/pxwwz5" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
-              <FaWhatsapp className="text-xl hover:text-green-500 cursor-pointer" />
-            </a>
             <a href="https://www.facebook.com/profile.php?id=61561978680089" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
               <FaFacebook className="text-xl hover:text-blue-500 cursor-pointer" />
             </a>

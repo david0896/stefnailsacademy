@@ -90,16 +90,17 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
                     </div>
                   </div>
 
-                  {/* Countdown — mobile */}
-                  <div className={`${isVisible ? 'opacity-100' : 'opacity-0'} transition-opacity duration-1000 absolute -left-8 px-8 py-10 grid lg:hidden content-start z-20 bottom-[18vh]`}>
-                    <div className="grid grid-cols-5 rounded-lg">
-                      <div className="col-span-3 w-11/12 bg-[#ff5a5f]/60 backdrop-blur-sm rounded-lg">
-                        <div className="bg-[#ff5a5f] p-2 h-full border-solid border-2 border-[#ffffff] rounded-lg">
-                          <p className="text-white font-bold text-center text-base">
-                            {formatearFechaMesDia(ProximoCurso.fechaSnFormato)}
-                            <span className="block font-normal text-sm">Siguiente clase</span>
-                          </p>
-                        </div>
+                  {/* Countdown — mobile (alineado al viewport, sin overflow) */}
+                  <div
+                    className={`${isVisible ? 'opacity-100' : 'opacity-0'} transition-opacity duration-1000 absolute left-4 right-4 top-4 z-20 lg:hidden`}
+                  >
+                    <div className="bg-[#ff5a5f] backdrop-blur-sm border-2 border-white rounded-lg px-4 py-2 inline-flex items-center gap-3 shadow-lg">
+                      <p className="text-white font-bold text-base leading-tight">
+                        {formatearFechaMesDia(ProximoCurso.fechaSnFormato)}
+                        <span className="block font-normal text-xs opacity-90">Siguiente clase</span>
+                      </p>
+                      <div className="border-l border-white/40 pl-3 text-white text-xs">
+                        <Countdown fecha={ProximoCurso.fechaSnFormato} />
                       </div>
                     </div>
                   </div>
@@ -132,12 +133,13 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
             </div>
           </div>
 
-          {/* Card flotante */}
+          {/* Card flotante — solo visible en desktop. En mobile el espacio
+              es muy chico y compite con el countdown + texto + imagen. */}
           <div
             className={clsx(
               `${isVisible ? 'opacity-100' : 'opacity-0'} transition-opacity duration-1000`,
-              'absolute rounded-md grid z-30 w-[55vw] lg:w-[17vw]',
-              'bottom-10 lg:bottom-auto lg:top-[12vw] right-[35vw] lg:right-[5vw]',
+              'hidden lg:grid absolute rounded-md z-30 w-[17vw]',
+              'top-[12vw] right-[5vw]',
               'bg-[#fff]/60 backdrop-blur-sm p-1 py-3',
               styles.heroFloat
             )}
@@ -261,30 +263,30 @@ const Hero = ({ ProximoCurso, SiguienteCurso, slides = [], student = null, enrol
         ))}
       </div>
 
-      {/* Flechas de navegación — en mobile las bajamos al footer del slide
-          para no tapar el texto del Hero. Touch target 44px (min recomendado). */}
+      {/* Flechas de navegación — solo desktop. En mobile el usuario hace
+          swipe táctil o espera el autoplay. */}
       {total > 1 && (
         <>
           <button
             onClick={prev}
             aria-label="Slide anterior"
-            className="absolute left-2 lg:left-6 bottom-16 lg:bottom-auto lg:top-1/2 lg:-translate-y-1/2 z-40 bg-black/40 hover:bg-black/60 text-white rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors"
+            className="hidden lg:flex absolute left-6 top-1/2 -translate-y-1/2 z-40 bg-black/40 hover:bg-black/60 text-white rounded-full min-w-[44px] min-h-[44px] items-center justify-center transition-colors"
           >
-            <FaChevronLeft className="w-4 h-4 lg:w-5 lg:h-5" />
+            <FaChevronLeft className="w-5 h-5" />
           </button>
           <button
             onClick={next}
             aria-label="Slide siguiente"
-            className="absolute right-2 lg:right-6 bottom-16 lg:bottom-auto lg:top-1/2 lg:-translate-y-1/2 z-40 bg-black/40 hover:bg-black/60 text-white rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors"
+            className="hidden lg:flex absolute right-6 top-1/2 -translate-y-1/2 z-40 bg-black/40 hover:bg-black/60 text-white rounded-full min-w-[44px] min-h-[44px] items-center justify-center transition-colors"
           >
-            <FaChevronRight className="w-4 h-4 lg:w-5 lg:h-5" />
+            <FaChevronRight className="w-5 h-5" />
           </button>
         </>
       )}
 
-      {/* Dots de navegación */}
+      {/* Dots de navegación — solo desktop también */}
       {total > 1 && (
-        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2">
+        <div className="hidden lg:flex absolute bottom-5 left-1/2 -translate-x-1/2 z-40 items-center gap-2">
           {slides.map((_, i) => (
             <button
               key={i}

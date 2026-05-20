@@ -7,12 +7,14 @@ const AboutUs = () => {
   return (
     <div className=''>
         <HeroAboutUs/>
-        <div className="h-40 flex flex-col lg:flex-row gap-3 -mt-[15vw] lg:-mt-20 w-9/12 mx-auto justify-center items-center relative">
-          <img src="https://i.postimg.cc/9Q3JyTk9/charla-de-entrega-de-diplomas-stef-nails-academia.png" alt="Stef Nails academia" className=" w-60 h-44 hidden lg:block rounded-md aspect-square object-cover"/>
-          <img src="https://i.postimg.cc/VLsbpNbh/certificado-curso-stef-nails.png" alt="Stef Nails academia" className="w-52 h-36 rounded-md hidden lg:block aspect-square object-cover"/>
-          <div className="flex space-x-4">
-            <img src="https://i.postimg.cc/X79DHQdL/entrega-de-certificado-stef-nails-academia.png" alt="Stef Nails academia" className="w-52 h-36 lg:w-56 lg:h-40 rounded-md aspect-square object-cover"/>
-            <img src="https://i.postimg.cc/3rvLNnSh/entre-de-medalla-stef-nails-academia.png" alt="Stef Nails academia" className=" w-52 h-36 rounded-md aspect-square object-cover"/>
+        {/* Galería de fotos: en mobile va debajo del Hero (sin solape),
+            en desktop sube con margin negativo */}
+        <div className="flex flex-col lg:flex-row gap-3 mt-6 lg:-mt-20 w-11/12 sm:w-10/12 lg:w-9/12 mx-auto justify-center items-center relative">
+          <img src="https://i.postimg.cc/9Q3JyTk9/charla-de-entrega-de-diplomas-stef-nails-academia.png" alt="Stef Nails academia" className="w-60 h-44 hidden lg:block rounded-md aspect-square object-cover"/>
+          <img src="https://i.postimg.cc/VLsbpNbh/certificado-curso-stef-nails.png" alt="Stef Nails academia" className="w-52 h-36 hidden lg:block rounded-md aspect-square object-cover"/>
+          <div className="flex gap-3 w-full lg:w-auto">
+            <img src="https://i.postimg.cc/X79DHQdL/entrega-de-certificado-stef-nails-academia.png" alt="Stef Nails academia" className="w-1/2 lg:w-56 h-32 sm:h-36 lg:h-40 rounded-md object-cover"/>
+            <img src="https://i.postimg.cc/3rvLNnSh/entre-de-medalla-stef-nails-academia.png" alt="Stef Nails academia" className="w-1/2 lg:w-52 h-32 sm:h-36 lg:h-36 rounded-md object-cover"/>
           </div>
         </div>
         <div className="w-9/12 mx-auto">

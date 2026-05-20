@@ -109,13 +109,14 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
               )}
 
               {/* Imagen instructora — z-20 delante de SVGs decorativos.
-                  En mobile object-contain muestra la imagen completa
-                  (sin recortar). En desktop sigue object-cover original. */}
+                  En mobile usa object-cover + object-bottom: la imagen llena
+                  el contenedor anchada al pie, sin dejar espacio en blanco
+                  debajo de la instructora. */}
               <BlurImage
                 lowQualitySrc="https://i.postimg.cc/xdbsNgTM/instructor.jpg"
                 fullQualitySrc="https://i.postimg.cc/KjJrYrk3/instructor.png"
                 alt="Instructora profesional Stef"
-                className="relative w-[80vw] h-[45vh] lg:w-[40vw] lg:h-[80vh] z-20 !object-contain lg:!object-cover object-bottom lg:object-center"
+                className="relative w-[80vw] h-[50vh] lg:w-[40vw] lg:h-[80vh] z-20 object-cover object-bottom lg:object-center"
               />
 
               {/* SVGs decorativos */}

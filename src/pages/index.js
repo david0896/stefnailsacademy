@@ -132,7 +132,7 @@ export default function Home({ cursos, slides = [], student = null, inscripcione
           enrollmentState={proximoEstado}
         />
         {/* seccion nosotros */}
-        <div ref={refNosotros} className={`container mx-auto px-6 lg:px-20 grid grid-cols-1 space-y-3 py-10 relative transform transition-all duration-1000 ease-out 
+        <div ref={refNosotros} className={`container mx-auto px-4 sm:px-6 lg:px-20 grid grid-cols-1 space-y-3 py-10 pb-16 relative transform transition-all duration-1000 ease-out
           ${isVisibleNosotros ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}>
           <span className="font-semibold text-[#383838] text-base xl:text-lg text-center">¿Quienes somos?</span>
           <h2 className="text-[#ff5a5f] text-center text-2xl xl:text-3xl font-semibold">No solo enseñamos técnicas,<span className=" block">forjamos artistas</span></h2>
@@ -172,23 +172,20 @@ export default function Home({ cursos, slides = [], student = null, inscripcione
           </div>
         </div>
         {/* seccion productos */}
-        <div ref={refProductos} className={`bg-[#ff5a5f] mt-5 xl:mt-32 transform transition-all duration-1000 ease-out 
+        <div ref={refProductos} className={`bg-[#ff5a5f] mt-10 xl:mt-32 transform transition-all duration-1000 ease-out
             ${isVisibleProductos ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}`}>
-          <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 px-6 lg:px-20">
-            <div className="text-[#fff] text-lg space-y-3 py-5">
-              <h3 className="text-2xl font-semibold">Proximamente llega nuestra tienda online</h3>
-              <p className="lg:text-lg w-[95%]">
-                Nuestra tienda en línea diseñada para profesionales de uñas. Encuentra productos de alta calidad, para potenciar tu talento desde un solo lugar
-              </p>            
-              <p
-                href="#"
-                className="inline-block w-fit bg-[#383838] text-white px-4 py-2 pr-6 rounded-[25px] font-normal hover:bg-[#383838] transition"
-              >
-                Proximamente
+          <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 px-4 sm:px-6 lg:px-20">
+            <div className="text-[#fff] text-lg space-y-3 py-6">
+              <h3 className="text-xl sm:text-2xl font-semibold">Proximamente llega nuestra tienda online</h3>
+              <p className="text-sm sm:text-base lg:text-lg">
+                Nuestra tienda en línea diseñada para profesionales de uñas. Encuentra productos de alta calidad, para potenciar tu talento desde un solo lugar.
+              </p>
+              <p className="inline-block w-fit bg-[#383838] text-white text-sm px-4 py-2 pr-6 rounded-[25px] font-normal">
+                Próximamente
               </p>
             </div>
-            <div className="overflow-hidden h-52 flex justify-end">
-              <img src="https://i.postimg.cc/2jTJ8XDL/snail-colors.png" alt="Pinturas de uñas" className=" w-11/12 lg:w-9/12 h-fit lg:-mt-10 -mr-10 lg:mr-0"/>
+            <div className="overflow-hidden h-40 sm:h-52 flex justify-end items-end">
+              <img src="https://i.postimg.cc/2jTJ8XDL/snail-colors.png" alt="Pinturas de uñas" className="w-3/4 sm:w-11/12 lg:w-9/12 h-fit lg:-mt-10" />
             </div>
           </div>
         </div>

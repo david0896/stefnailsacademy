@@ -32,7 +32,7 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
           <div className="container mx-auto px-4 sm:px-6 lg:px-20 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full">
 
             {/* Columna de texto */}
-            <div className="flex flex-col col-span-1 justify-center space-y-4 lg:space-y-6 text-left pt-20 lg:pt-0">
+            <div className="flex flex-col col-span-1 justify-center space-y-4 lg:space-y-6 text-left pt-28 lg:pt-0">
               <h1 className="text-2xl sm:text-3xl xl:text-5xl font-bold text-[#ff5a5f] leading-tight">
                 {slide.titulo}
               </h1>
@@ -61,14 +61,17 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
                 </button>
               )}
 
-              {/* Fecha próxima clase — mobile only, debajo del CTA */}
+              {/* Fecha próxima clase — mobile only, debajo del CTA.
+                  Recuadro rojo con estética del Hero, sin tapar la imagen. */}
               {hayCurso && (
-                <p className="lg:hidden text-sm text-[#383838]">
-                  <span className="font-semibold">Siguiente clase:</span>{' '}
-                  <span className="text-[#ff5a5f] font-bold">
-                    {formatearFechaMesDia(ProximoCurso.fechaSnFormato)}
-                  </span>
-                </p>
+                <div className="lg:hidden mt-1">
+                  <div className="bg-[#ff5a5f] border-2 border-white rounded-lg px-4 py-2 inline-block shadow-md">
+                    <p className="text-white font-bold text-base leading-tight whitespace-nowrap">
+                      {formatearFechaMesDia(ProximoCurso.fechaSnFormato)}
+                      <span className="block font-normal text-xs opacity-90">Siguiente clase</span>
+                    </p>
+                  </div>
+                </div>
               )}
             </div>
 

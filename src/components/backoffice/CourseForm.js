@@ -90,9 +90,19 @@ export default function CourseForm({ defaultValues, onSubmit, isLoading, readOnl
 
   const ic = readOnly ? inputReadOnlyClass : inputClass;
 
+  // Inyectamos explícitamente imageUrl + imageVariants desde los valores
+  // observados, para no depender de cómo RHF registra el campo sin input.
+  const submitHandler = (data) => {
+    onSubmit({
+      ...data,
+      imageUrl:      watchedImageUrl || null,
+      imageVariants: watchedImageVariants ?? null,
+    });
+  };
+
   return (
     <form
-      onSubmit={readOnly ? (e) => e.preventDefault() : handleSubmit(onSubmit)}
+      onSubmit={readOnly ? (e) => e.preventDefault() : handleSubmit(submitHandler)}
       className="space-y-5"
     >
       {/* Título */}

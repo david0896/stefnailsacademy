@@ -3,17 +3,11 @@ import { PrismaCourseRepository } from '@/infrastructure/repositories/PrismaCour
 const courseRepository = new PrismaCourseRepository();
 
 export const createCourse = async (data) => {
-  // Regla de negocio: PRESENCIAL requiere fecha y cupos
-  if (data.type === 'PRESENCIAL') {
-    if (!data.date) throw new Error('Los cursos presenciales requieren una fecha');
-    if (!data.maxSpots) throw new Error('Los cursos presenciales requieren un número de cupos');
-  }
-
-  // Regla de negocio: ONLINE no tiene fecha ni cupos
-  if (data.type === 'ONLINE') {
-    data.date = null;
-    data.maxSpots = null;
-  }
+  // Regla de negocio: TODOS los cursos (PRESENCIAL y ONLINE) requieren
+  // fecha y cupos. La fecha se usa para ordenar y mostrar los próximos
+  // cursos en el sitio público.
+  if (!data.date) throw new Error('La fecha es requerida');
+  if (!data.maxSpots) throw new Error('El número de cupos es requerido');
 
   return courseRepository.create(data);
 };

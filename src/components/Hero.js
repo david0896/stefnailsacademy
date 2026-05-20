@@ -32,7 +32,7 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
           <div className="container mx-auto px-4 sm:px-6 lg:px-20 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center h-full">
 
             {/* Columna de texto */}
-            <div className="flex flex-col col-span-1 justify-center space-y-4 lg:space-y-6 text-left pt-28 lg:pt-0">
+            <div className="flex flex-col col-span-1 justify-center space-y-4 lg:space-y-6 text-left pt-32 lg:pt-0">
               <h1 className="text-2xl sm:text-3xl xl:text-5xl font-bold text-[#ff5a5f] leading-tight">
                 {slide.titulo}
               </h1>
@@ -94,11 +94,10 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
                     </div>
                   </div>
 
-                  {/* Badge de fecha — mobile only, esquina superior izquierda
-                      de la columna de la imagen. Posicionado lejos de la cara
-                      de la instructora. */}
-                  <div className="lg:hidden absolute top-3 left-3 z-30">
-                    <div className="bg-[#ff5a5f] border-2 border-white rounded-lg px-3 py-2 shadow-md">
+                  {/* Badge de fecha — mobile only, esquina inferior izquierda
+                      sobre la imagen como un pin. Acompaña visualmente. */}
+                  <div className="lg:hidden absolute bottom-4 left-3 z-30">
+                    <div className="bg-[#ff5a5f] border-2 border-white rounded-lg px-3 py-2 shadow-lg">
                       <p className="text-white font-bold text-sm leading-tight whitespace-nowrap">
                         {formatearFechaMesDia(ProximoCurso.fechaSnFormato)}
                         <span className="block font-normal text-[10px] opacity-90">Siguiente clase</span>
@@ -109,14 +108,13 @@ function SlidePrincipal({ slide, ProximoCurso, SiguienteCurso, isVisible, onRese
               )}
 
               {/* Imagen instructora — z-20 delante de SVGs decorativos.
-                  En mobile usa object-cover + object-bottom: la imagen llena
-                  el contenedor anchada al pie, sin dejar espacio en blanco
-                  debajo de la instructora. */}
+                  object-center muestra cara + torso + manos (lo que vende),
+                  con recortes equilibrados arriba y abajo. */}
               <BlurImage
                 lowQualitySrc="https://i.postimg.cc/xdbsNgTM/instructor.jpg"
                 fullQualitySrc="https://i.postimg.cc/KjJrYrk3/instructor.png"
                 alt="Instructora profesional Stef"
-                className="relative w-[80vw] h-[50vh] lg:w-[40vw] lg:h-[80vh] z-20 object-cover object-bottom lg:object-center"
+                className="relative w-[80vw] h-[48vh] lg:w-[40vw] lg:h-[80vh] z-20 object-cover object-center"
               />
 
               {/* SVGs decorativos */}

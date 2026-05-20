@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import clsx from "clsx";
 import styles from "../styles/ModalHome.module.css";
 import MultiStepForm from "./MultiStepForm";
+import ResponsiveImage from "@/components/ResponsiveImage";
 
 // Función auxiliar para cortar el texto sin cortar palabras
 const truncateText = (text, limit) => {
@@ -53,24 +54,26 @@ const ModalHome = ({ isOpen, onClose, data, ProximoCurso, student }) => {
                         className={` hidden lg:block col-span-2 relative bg-[#ffddde] p-6`}    
                     >
                         {/* Fondo con imagen y blur */}
-                        <div 
+                        <div
                             className="absolute inset-0 bg-cover blur-[2px] bg-center opacity-30"
-                            style={{ backgroundImage: `url(${data?.imagen})` }}
+                            style={{ backgroundImage: `url(${data?.imagenVariants?.base || data?.imagen})` }}
                             aria-hidden="true"
                         ></div>
 
                         {/* Main Content */}
-                        <div className="flex flex-col md:flex-row gap-4 relative">  
+                        <div className="flex flex-col md:flex-row gap-4 relative">
                             <div className="flex-1 flex flex-col justify-center items-center">
                                 <img
                                     src="https://i.postimg.cc/GpRdG1qP/logo-stefnails.png"
                                     alt="Logo Stef Nails"
                                     className=" w-1/5 pb-5"
                                 />
-                                <img
+                                <ResponsiveImage
+                                    variants={data?.imagenVariants}
                                     src={data?.imagen}
-                                    alt="Curso acrílico básico"
-                                    className=" w-4/5 rounded-2xl"
+                                    alt={`Imagen del curso ${data?.nombre || ''}`}
+                                    sizes="(max-width: 1024px) 80vw, 30vw"
+                                    className="w-4/5 rounded-2xl"
                                 />
                                 <div className=" bg-white rounded-2xl w-4/5 p-3 -mt-8">
                                     <h3 className="text-lg font-bold text-gray-700">{data?.nombre}</h3>

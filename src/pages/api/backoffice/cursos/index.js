@@ -11,6 +11,17 @@ const nullableIntApi = z.preprocess(
   z.number().int().positive().optional(),
 );
 
+// Variantes de imagen optimizada (subida desde storage). Shape flexible.
+const imageVariantsSchema = z.preprocess(
+  (v) => (v === null || v === undefined || v === '') ? undefined : v,
+  z.object({
+    base:   z.string().url(),
+    width:  z.number().optional(),
+    height: z.number().optional(),
+    sizes:  z.record(z.string()),
+  }).optional(),
+);
+
 const createCourseSchema = z.object({
   title:           z.string().min(3, 'El título debe tener al menos 3 caracteres'),
   description:     z.string().min(10, 'La descripción debe tener al menos 10 caracteres'),
@@ -25,6 +36,7 @@ const createCourseSchema = z.object({
   maxSpots:        nullableIntApi,
   date:            z.preprocess(nullToUndef, z.string().optional()),
   imageUrl:        z.preprocess(nullOrEmpty, z.string().url('URL inválida').optional()),
+  imageVariants:   imageVariantsSchema,
 });
 
 export default async function handler(req, res) {
@@ -50,10 +62,11 @@ export default async function handler(req, res) {
       const d = parsed.data;
       const course = await createCourse({
         ...d,
-        date:       d.date       ? new Date(d.date) : null,
-        imageUrl:   d.imageUrl   ?? null,
-        instructor: d.instructor ?? null,
-        sede:       d.sede       ?? null,
+        date:          d.date          ? new Date(d.date) : null,
+        imageUrl:      d.imageUrl      ?? null,
+        imageVariants: d.imageVariants ?? null,
+        instructor:    d.instructor    ?? null,
+        sede:          d.sede          ?? null,
       });
       return res.status(201).json(course);
     } catch (error) {

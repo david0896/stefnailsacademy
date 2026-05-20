@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import ImageUpload from './ImageUpload';
 
 // Convierte string vacío / null / undefined → null para campos numéricos opcionales
 const nullableInt = z.preprocess(
@@ -25,6 +26,7 @@ const courseSchema = z.object({
   maxSpots:        nullableInt,
   date:            z.string().optional().nullable(),
   imageUrl:        z.string().url('URL inválida').optional().or(z.literal('')).nullable(),
+  imageVariants:   z.any().optional().nullable(),
 })
   // Fecha y cupos son obligatorios para ambos tipos
   .refine((d) => !!d.date, { message: 'La fecha es requerida', path: ['date'] })
@@ -63,6 +65,7 @@ export default function CourseForm({ defaultValues, onSubmit, isLoading, readOnl
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(courseSchema),
@@ -71,11 +74,17 @@ export default function CourseForm({ defaultValues, onSubmit, isLoading, readOnl
       type: 'PRESENCIAL',
       nivel: null,
       instructor: '',
+      imageVariants: null,
       ...defaultValues,
     },
   });
 
+  // Registramos imageVariants (no tiene input nativo, lo maneja ImageUpload)
+  register('imageVariants');
+
   const courseType = watch('type');
+  const watchedImageUrl = watch('imageUrl');
+  const watchedImageVariants = watch('imageVariants');
   // En edición la sede aparece solo si el tipo es PRESENCIAL; en lectura siempre la mostramos
   const showSedeField = readOnly ? true : courseType === 'PRESENCIAL';
 
@@ -248,14 +257,18 @@ export default function CourseForm({ defaultValues, onSubmit, isLoading, readOnl
         </div>
       )}
 
-      {/* Imagen */}
+      {/* Imagen — subir archivo (optimizado) o usar URL externa */}
       <div>
-        <label className={labelClass}>URL de imagen <span className="text-gray-400 font-normal">(opcional)</span></label>
-        <input
-          {...register('imageUrl')}
-          disabled={readOnly}
-          className={ic}
-          placeholder="https://..."
+        <label className={labelClass}>Imagen del curso <span className="text-gray-400 font-normal">(opcional)</span></label>
+        <ImageUpload
+          imageUrl={watchedImageUrl || ''}
+          imageVariants={watchedImageVariants || null}
+          folder="cursos"
+          readOnly={readOnly}
+          onChange={({ imageUrl, imageVariants }) => {
+            setValue('imageUrl', imageUrl, { shouldValidate: true });
+            setValue('imageVariants', imageVariants, { shouldValidate: false });
+          }}
         />
         {errors.imageUrl && <p className={errorClass}>{errors.imageUrl.message}</p>}
       </div>

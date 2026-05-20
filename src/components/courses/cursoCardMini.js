@@ -1,4 +1,5 @@
 import { variantClass } from "@/utils/enrollmentButtonState";
+import ResponsiveImage from "@/components/ResponsiveImage";
 
 function esFechaPasada(fechaStr) {
   const [dia, mes, anio] = fechaStr.split('/').map(Number);
@@ -42,10 +43,12 @@ const CursoCardMini = ({ index, curso, onReservar, enrollmentState }) => {
 
   return (
     <div className="py-4">
-      <img
+      <ResponsiveImage
+        variants={curso.imagenVariants}
         src={curso.imagen}
         alt={`Imagen del curso ${curso.nombre}`}
-        className="w-full h-auto rounded-sm mb-4"
+        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+        className="w-full h-40 object-cover rounded-sm mb-4"
       />
       <h3 className="text-base font-bold text-[#383838]">{curso.nombre}</h3>
       <p className="text-[#383838] text-sm">{curso.descripcion}</p>

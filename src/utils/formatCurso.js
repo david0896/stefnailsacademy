@@ -46,6 +46,7 @@ export function formatCurso(curso, tasaEur) {
     precio:    precioBs.toLocaleString('es-ES', formatoPrecio),
     priceEUR:  curso.priceEUR,
     imagen:    curso.imageUrl  ?? '',
+    imagenVariants: curso.imageVariants ?? null, // { base, width, height, sizes }
     estatus:   curso.status,
     maxSpots:  curso.maxSpots  ?? null,
   };

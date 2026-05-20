@@ -41,6 +41,7 @@ model Course {
   maxSpots        Int?
   date            DateTime?
   imageUrl        String?
+  imageVariants   Json?
   nivel           CourseLevel?
   horasAcademicas Int?
   diasDeClases    Int?

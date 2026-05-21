@@ -8,6 +8,7 @@ import ModalHome from "@/components/ModalHome";
 import useProximaFecha from "@/hooks/useProximaFecha";
 import useCursosProximos from "@/hooks/useCursosProximos";
 import MisInscripciones from "@/components/courses/MisInscripciones";
+import ResponsiveImage from "@/components/ResponsiveImage";
 import { buildEnrollmentMap, variantClass } from "@/utils/enrollmentButtonState";
 
 const PER_PAGE = 5;
@@ -139,9 +140,12 @@ const Courses = ({ cursos, inscripciones = [], student = null }) => {
                     {/* ── Curso destacado ── */}
                     <div className="grid grid-cols-1 lg:grid-cols-12 border border-gray-200 rounded-lg p-4 sm:p-6 lg:p-8 gap-5 bg-[#ff5a600d]">
                         <div className="col-span-1 xl:col-span-3">
-                            <img
+                            <ResponsiveImage
+                                variants={ProximoCurso.imagenVariants}
                                 src={ProximoCurso.imagen}
                                 alt={"Ilustración de certificación " + ProximoCurso.nombre}
+                                sizes="(max-width: 1024px) 100vw, 25vw"
+                                priority
                                 className="w-full h-56 sm:h-72 object-cover rounded-md"
                             />
                         </div>

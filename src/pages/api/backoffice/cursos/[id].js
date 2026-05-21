@@ -12,6 +12,17 @@ const nullableIntApi = z.preprocess(
   z.number().int().positive().optional(),
 );
 
+// null → "borrar variantes"; objeto válido → setear; undefined → no tocar
+const imageVariantsUpdate = z.preprocess(
+  (v) => (v === '' || v === undefined ? undefined : v),
+  z.object({
+    base:   z.string().url(),
+    width:  z.number().optional(),
+    height: z.number().optional(),
+    sizes:  z.record(z.string()),
+  }).nullable().optional(),
+);
+
 const updateCourseSchema = z.object({
   title:           z.string().min(3).optional(),
   description:     z.string().min(10).optional(),
@@ -26,6 +37,7 @@ const updateCourseSchema = z.object({
   maxSpots:        nullableIntApi,
   date:            z.preprocess(nullToUndef, z.string().optional()),
   imageUrl:        z.preprocess(nullOrEmpty, z.string().url().optional()),
+  imageVariants:   imageVariantsUpdate,
 });
 
 export default async function handler(req, res) {
@@ -57,6 +69,9 @@ export default async function handler(req, res) {
         imageUrl:   d.imageUrl   ?? null,
         instructor: d.instructor ?? null,
         sede:       d.sede       ?? null,
+        // imageVariants: si vino (objeto o null) se aplica; si es undefined
+        // el spread lo incluye como undefined → Prisma lo ignora
+        imageVariants: d.imageVariants === undefined ? undefined : d.imageVariants,
       });
       return res.status(200).json(course);
     } catch (error) {

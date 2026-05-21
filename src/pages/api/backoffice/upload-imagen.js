@@ -19,9 +19,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Método no permitido' });
   }
 
-  // Solo administradores pueden subir imágenes
+  // Requiere sesión activa del backoffice (consistente con el resto de
+  // /api/backoffice/*, que solo verifican la existencia de sesión —
+  // el acceso al BO ya está restringido por el middleware a admins).
   const session = await getServerSession(req, res, authOptions);
-  if (!session || session.user?.role !== 'ADMIN') {
+  if (!session) {
     return res.status(401).json({ error: 'No autorizado' });
   }
 

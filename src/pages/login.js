@@ -82,7 +82,13 @@ export default function LoginPage() {
 
         <p className="text-sm text-gray-600 text-center mt-6">
           ¿No tienes cuenta?{' '}
-          <Link href="/registro" className="text-[#ff5a5f] font-medium hover:underline">
+          <Link
+            href={{
+              pathname: '/registro',
+              query: router.query.callbackUrl ? { callbackUrl: router.query.callbackUrl } : {},
+            }}
+            className="text-[#ff5a5f] font-medium hover:underline"
+          >
             Regístrate
           </Link>
         </p>

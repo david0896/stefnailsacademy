@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { getSession } from 'next-auth/react';
 import CarrucelCharacteristics from "@/components/courses/CarrucelCharacteristics"
@@ -89,10 +89,13 @@ const Courses = ({ cursos, inscripciones = [], student = null }) => {
     // Mapa { courseId → estado del botón } basado en las inscripciones del alumno
     const enrollmentMap = useMemo(() => buildEnrollmentMap(inscripciones), [inscripciones]);
 
-    // Auth guard + defensa contra doble-inscripción
+    // Auth guard + defensa contra doble-inscripción.
+    // Si no hay sesión, preservamos la intención: el callbackUrl incluye el
+    // curso al que quería inscribirse, para reabrir el modal al volver.
     const openInscripcionModal = (isPrincipal, index, cursoId) => {
       if (!student) {
-        router.push({ pathname: '/login', query: { callbackUrl: '/Courses' } });
+        const callbackUrl = cursoId ? `/Courses?inscribir=${cursoId}` : '/Courses';
+        router.push({ pathname: '/login', query: { callbackUrl } });
         return;
       }
       if (cursoId && enrollmentMap[cursoId]) {
@@ -121,6 +124,37 @@ const Courses = ({ cursos, inscripciones = [], student = null }) => {
 
     const handlePrev = () => setPage((p) => Math.max(0, p - 1));
     const handleNext = () => setPage((p) => Math.min(totalPages - 1, p + 1));
+
+    // Auto-apertura del modal cuando se vuelve del login/registro con
+    // ?inscribir=<cursoId> (preservación de intención). Se ejecuta una vez.
+    const autoOpenedRef = useRef(false);
+    useEffect(() => {
+      if (autoOpenedRef.current) return;
+      const cursoId = typeof router.query.inscribir === 'string' ? router.query.inscribir : null;
+      if (!cursoId || !student) return;
+      if (!cursosProcesados.length) return; // esperar a que carguen los cursos
+
+      autoOpenedRef.current = true;
+
+      // Limpia el query param para que un refresh no reabra el modal
+      router.replace('/Courses', undefined, { shallow: true });
+
+      // Si ya está inscrito, no abrimos (el botón ya refleja el estado)
+      if (enrollmentMap[cursoId]) return;
+
+      if (ProximoCurso && ProximoCurso.id === cursoId) {
+        setPrincipalCurso(true);
+        setIndexData(0);
+        setIsOpen(true);
+        return;
+      }
+      const idx = otrosCursos.findIndex((c) => c.id === cursoId);
+      if (idx >= 0) {
+        setPrincipalCurso(false);
+        setIndexData(idx);
+        setIsOpen(true);
+      }
+    }, [router, router.query.inscribir, student, cursosProcesados, ProximoCurso, otrosCursos, enrollmentMap]);
 
     return (
         <div className="w-11/12 sm:w-10/12 mx-auto pb-10">

@@ -57,6 +57,11 @@ export default function RegistroPage() {
         return;
       }
 
+      // Destino tras registro: preservamos la intención (curso a inscribir)
+      const callbackUrl = typeof router.query.callbackUrl === 'string'
+        ? router.query.callbackUrl
+        : '/Courses';
+
       // Auto-login tras registro exitoso
       const loginRes = await signIn('student-credentials', {
         redirect: false,
@@ -65,12 +70,12 @@ export default function RegistroPage() {
       });
 
       if (loginRes?.error) {
-        // Registro exitoso pero auto-login falló: mandamos al login manual
-        router.push('/login');
+        // Registro exitoso pero auto-login falló: al login manual conservando el destino
+        router.push({ pathname: '/login', query: { callbackUrl } });
         return;
       }
 
-      router.push('/Courses');
+      router.push(callbackUrl);
     } catch {
       setError('Error de conexión');
       setLoading(false);
@@ -157,7 +162,13 @@ export default function RegistroPage() {
 
         <p className="text-sm text-gray-600 text-center mt-6">
           ¿Ya tienes cuenta?{' '}
-          <Link href="/login" className="text-[#ff5a5f] font-medium hover:underline">
+          <Link
+            href={{
+              pathname: '/login',
+              query: router.query.callbackUrl ? { callbackUrl: router.query.callbackUrl } : {},
+            }}
+            className="text-[#ff5a5f] font-medium hover:underline"
+          >
             Inicia sesión
           </Link>
         </p>

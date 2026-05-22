@@ -47,6 +47,7 @@ model Course {
   diasDeClases    Int?
   instructor      String?
   sede            String?
+  deletedAt       DateTime?
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
@@ -70,6 +71,7 @@ model Student {
   country         String           @default("Venezuela")
   experienceLevel ExperienceLevel?
   password        String?
+  deletedAt       DateTime?
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 
@@ -95,6 +97,7 @@ model Enrollment {
   notes           String?
   enrolledAt      DateTime         @default(now())
   confirmedAt     DateTime?
+  deletedAt       DateTime?
   updatedAt       DateTime         @updatedAt
 
   course  Course  @relation(fields: [courseId], references: [id])

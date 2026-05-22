@@ -13,6 +13,12 @@ const navItems = [
   { label: 'Contenido',      href: '/backoffice/contenido' },
 ];
 
+const papeleraItems = [
+  { label: 'Cursos',        href: '/backoffice/papelera/cursos' },
+  { label: 'Alumnos',       href: '/backoffice/papelera/alumnos' },
+  { label: 'Inscripciones', href: '/backoffice/papelera/inscripciones' },
+];
+
 export default function BOLayout({ children }) {
   const router = useRouter();
   const { data: session } = useSession();
@@ -125,6 +131,30 @@ export default function BOLayout({ children }) {
               </Link>
             );
           })}
+
+          {/* Grupo Papelera */}
+          <div className="pt-4 mt-2 border-t border-gray-100">
+            <p className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
+              Papelera
+            </p>
+            {papeleraItems.map((item) => {
+              const isActive = router.pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={clsx(
+                    'block px-3 py-2.5 rounded-lg text-sm transition-colors',
+                    isActive
+                      ? 'bg-gray-900 text-white font-medium'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  )}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </div>
         </nav>
 
         <div className="px-4 py-4 border-t border-gray-100">

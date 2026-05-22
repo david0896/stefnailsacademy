@@ -2,14 +2,10 @@ import { PrismaStudentRepository } from '@/infrastructure/repositories/PrismaStu
 
 const studentRepository = new PrismaStudentRepository();
 
-/**
- * Soft delete: mueve el alumno a la papelera (deletedAt).
- * Reversible; sus inscripciones quedan como histórico.
- */
-export const deleteStudent = async (id) => {
+export const restoreStudent = async (id) => {
   const existing = await studentRepository.findById(id);
   if (!existing) {
     throw new Error('Alumno no encontrado');
   }
-  return studentRepository.delete(id);
+  return studentRepository.restore(id);
 };

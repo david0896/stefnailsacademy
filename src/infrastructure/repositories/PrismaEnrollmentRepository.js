@@ -3,7 +3,7 @@ import { IEnrollmentRepository } from '@/domain/repositories/IEnrollmentReposito
 
 export class PrismaEnrollmentRepository extends IEnrollmentRepository {
   async findAll(filters = {}) {
-    const where = {};
+    const where = { deletedAt: null };
     if (filters.status) where.status = filters.status;
     if (filters.courseId) where.courseId = filters.courseId;
 
@@ -29,7 +29,7 @@ export class PrismaEnrollmentRepository extends IEnrollmentRepository {
 
   async findByCourse(courseId) {
     return prisma.enrollment.findMany({
-      where: { courseId },
+      where: { courseId, deletedAt: null },
       include: { student: true },
       orderBy: { enrolledAt: 'desc' },
     });
@@ -37,9 +37,18 @@ export class PrismaEnrollmentRepository extends IEnrollmentRepository {
 
   async findByStudent(studentId) {
     return prisma.enrollment.findMany({
-      where: { studentId },
+      where: { studentId, deletedAt: null },
       include: { course: true },
       orderBy: { enrolledAt: 'desc' },
+    });
+  }
+
+  // Inscripciones en la papelera
+  async findDeleted() {
+    return prisma.enrollment.findMany({
+      where: { deletedAt: { not: null } },
+      include: { student: true, course: true },
+      orderBy: { deletedAt: 'desc' },
     });
   }
 
@@ -57,7 +66,23 @@ export class PrismaEnrollmentRepository extends IEnrollmentRepository {
     });
   }
 
+  // Soft delete
+  async delete(id) {
+    return prisma.enrollment.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+  }
+
+  // Restaurar desde la papelera
+  async restore(id) {
+    return prisma.enrollment.update({
+      where: { id },
+      data: { deletedAt: null },
+    });
+  }
+
   async countByStatus(status) {
-    return prisma.enrollment.count({ where: { status } });
+    return prisma.enrollment.count({ where: { status, deletedAt: null } });
   }
 }

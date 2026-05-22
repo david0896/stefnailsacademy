@@ -22,7 +22,7 @@ export default function CursosPage({ courses = [], loadError }) {
   const [error, setError] = useState(loadError || '');
 
   const handleDelete = async (id, title) => {
-    if (!confirm(`¿Eliminar el curso "${title}"? Esta acción no se puede deshacer.`)) return;
+    if (!confirm(`¿Mover el curso "${title}" a la papelera? Podrás restaurarlo después.`)) return;
 
     setDeleting(id);
     setError('');

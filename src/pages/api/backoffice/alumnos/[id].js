@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 import { getStudentById } from '@/application/students/getStudentById';
 import { updateStudent } from '@/application/students/updateStudent';
 import { deleteStudent } from '@/application/students/deleteStudent';
+import { restoreStudent } from '@/application/students/restoreStudent';
 
 // Tratar null / "" del form como undefined para que .optional() los acepte
 const nullishToUndef = (v) => (v === null || v === '' || v === undefined ? undefined : v);
@@ -61,10 +62,21 @@ export default async function handler(req, res) {
     }
   }
 
+  if (req.method === 'PATCH') {
+    // Restaurar desde la papelera
+    try {
+      const student = await restoreStudent(id);
+      if (student && student.password) delete student.password;
+      return res.status(200).json(student);
+    } catch (error) {
+      return res.status(422).json({ error: error.message });
+    }
+  }
+
   if (req.method === 'DELETE') {
     try {
       await deleteStudent(id);
-      return res.status(200).json({ message: 'Alumno eliminado correctamente' });
+      return res.status(200).json({ message: 'Alumno movido a la papelera' });
     } catch (error) {
       return res.status(422).json({ error: error.message });
     }

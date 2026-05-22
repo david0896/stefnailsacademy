@@ -56,13 +56,14 @@ export async function getServerSideProps(context) {
         enrolledAt:    e.enrolledAt,
         confirmedAt:   e.confirmedAt,
         course: {
-          id:       e.course.id,
-          title:    e.course.title,
-          type:     e.course.type,
-          date:     e.course.date,
-          imageUrl: e.course.imageUrl,
-          nivel:    e.course.nivel,
-          sede:     e.course.sede,
+          id:            e.course.id,
+          title:         e.course.title,
+          type:          e.course.type,
+          date:          e.course.date,
+          imageUrl:      e.course.imageUrl,
+          imageVariants: e.course.imageVariants,
+          nivel:         e.course.nivel,
+          sede:          e.course.sede,
         },
       }));
     } catch (err) {

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import ResponsiveImage from '@/components/ResponsiveImage';
 
 /**
  * Combina enrollment status + paymentStatus en UN solo badge legible
@@ -82,10 +83,12 @@ export default function MisInscripciones({ inscripciones }) {
               className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex gap-3">
-                {insc.course.imageUrl ? (
-                  <img
+                {(insc.course.imageVariants || insc.course.imageUrl) ? (
+                  <ResponsiveImage
+                    variants={insc.course.imageVariants}
                     src={insc.course.imageUrl}
                     alt={insc.course.title}
+                    sizes="80px"
                     className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
                   />
                 ) : (

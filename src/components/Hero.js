@@ -245,7 +245,9 @@ const Hero = ({ ProximoCurso, SiguienteCurso, slides = [], student = null, enrol
   const handleReservar = () => {
     if (!hayCurso) return;
     if (!isAuthenticated) {
-      router.push({ pathname: '/login', query: { callbackUrl: '/Courses' } });
+      // Preservar intención: llevamos el curso destacado en el callback
+      const callbackUrl = ProximoCurso?.id ? `/Courses?inscribir=${ProximoCurso.id}` : '/Courses';
+      router.push({ pathname: '/login', query: { callbackUrl } });
       return;
     }
     if (enrollmentState) return; // ya inscrito, ignorar

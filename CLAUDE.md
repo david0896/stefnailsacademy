@@ -63,6 +63,20 @@ NextAuth with Credentials provider (email + password). Config at `src/pages/api/
 - **Migrations**: `npx prisma migrate dev` (local), `npx prisma migrate deploy` (prod)
 - **Anti-pause**: Vercel Cron pings `/api/health` every 5 days to prevent Supabase free tier hibernation
 
+### ⚠️ DATABASE SAFETY RULE (NON-NEGOTIABLE)
+**NEVER execute any command that deletes or destroys data in the database.** This applies to
+local dev AND production, and to every tool (Supabase MCP `execute_sql`, `psql`, Prisma, raw SQL, etc.).
+- Forbidden: `DELETE`, `DROP TABLE`, `DROP COLUMN`, `TRUNCATE`, `DROP DATABASE`, hard deletes of any kind.
+- Destructive schema changes in migrations (dropping columns/tables) require **explicit human approval first**.
+- All record removal in the app is **soft delete only** (`deletedAt` timestamp). The "Eliminar" buttons in the BO
+  set `deletedAt`; they never remove rows. Records are recoverable from the **Papelera** section.
+- Reads, `INSERT`, non-destructive `UPDATE` (incl. setting/clearing `deletedAt`), and additive migrations are allowed.
+
+### Supabase health monitoring
+- Production project: **"mestefanie77@gmail.com Project"** (`ppyrwjszatjnhtsxlxpj`), `ACTIVE_HEALTHY`.
+- Health is checked **on-demand every ~5 days via command** (Supabase MCP `get_project` / a `SELECT 1` health query),
+  not by email. Supabase billing/pause emails go to `mestefanie77@gmail.com` (not the dev's inbox).
+
 ### Business Rules
 - Prices stored in **EUR** in DB; converted to **Bs** at display time using live BCV Euro rate
 - Enrollment status flow: `PENDING → CONFIRMED | CANCELLED`

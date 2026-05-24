@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { getCourseById } from '@/application/courses/getCourseById';
 import { updateCourse } from '@/application/courses/updateCourse';
 import { deleteCourse } from '@/application/courses/deleteCourse';
+import { restoreCourse } from '@/application/courses/restoreCourse';
 
 const nullToUndef = (v) => (v === null || v === undefined ? undefined : v);
 const nullOrEmpty = (v) => (v === null || v === '' || v === undefined ? undefined : v);
@@ -79,10 +80,20 @@ export default async function handler(req, res) {
     }
   }
 
+  if (req.method === 'PATCH') {
+    // Restaurar desde la papelera
+    try {
+      const course = await restoreCourse(id);
+      return res.status(200).json(course);
+    } catch (error) {
+      return res.status(422).json({ error: error.message });
+    }
+  }
+
   if (req.method === 'DELETE') {
     try {
       await deleteCourse(id);
-      return res.status(200).json({ message: 'Curso eliminado correctamente' });
+      return res.status(200).json({ message: 'Curso movido a la papelera' });
     } catch (error) {
       return res.status(422).json({ error: error.message });
     }

@@ -17,7 +17,7 @@ export default function AlumnosPage({ students }) {
   const [error, setError] = useState('');
 
   const handleDelete = async (id, name) => {
-    if (!confirm(`¿Eliminar al alumno "${name}"? Esta acción no se puede deshacer.`)) return;
+    if (!confirm(`¿Mover al alumno "${name}" a la papelera? Podrás restaurarlo después.`)) return;
 
     setDeleting(id);
     setError('');

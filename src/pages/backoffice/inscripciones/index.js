@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { getSession } from 'next-auth/react';
@@ -25,12 +26,33 @@ const filters = [
 
 export default function InscripcionesPage({ enrollments, currentStatus }) {
   const router = useRouter();
+  const [deleting, setDeleting] = useState(null);
+  const [error, setError] = useState('');
 
   const applyFilter = (status) => {
     router.push({
       pathname: '/backoffice/inscripciones',
       query: status ? { status } : {},
     });
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm('¿Mover esta inscripción a la papelera? Podrás restaurarla después.')) return;
+    setDeleting(id);
+    setError('');
+    try {
+      const res = await fetch(`/api/backoffice/inscripciones/${id}/eliminar`, { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Error al eliminar la inscripción');
+        return;
+      }
+      router.replace(router.asPath);
+    } catch {
+      setError('Error de conexión al eliminar la inscripción');
+    } finally {
+      setDeleting(null);
+    }
   };
 
   return (
@@ -66,6 +88,12 @@ export default function InscripcionesPage({ enrollments, currentStatus }) {
         ))}
       </div>
 
+      {error && (
+        <div className="mb-4 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+          <p className="text-sm text-red-600">{error}</p>
+        </div>
+      )}
+
       {enrollments.length === 0 ? (
         <div className="bg-white border border-gray-100 rounded-xl p-12 text-center">
           <p className="text-gray-400 text-sm">No hay inscripciones para mostrar.</p>
@@ -81,6 +109,7 @@ export default function InscripcionesPage({ enrollments, currentStatus }) {
                 <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Método</th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Monto</th>
                 <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Fecha</th>
+                <th className="px-4 py-3"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -104,6 +133,15 @@ export default function InscripcionesPage({ enrollments, currentStatus }) {
                   <td className="px-4 py-3.5 text-gray-600">€{e.amountEUR.toFixed(2)}</td>
                   <td className="px-4 py-3.5 text-gray-400 text-xs">
                     {new Date(e.enrolledAt).toLocaleDateString('es-VE')}
+                  </td>
+                  <td className="px-4 py-3.5 text-right" onClick={(ev) => ev.stopPropagation()}>
+                    <button
+                      onClick={() => handleDelete(e.id)}
+                      disabled={deleting === e.id}
+                      className="text-red-400 hover:text-red-600 transition-colors disabled:opacity-50"
+                    >
+                      {deleting === e.id ? 'Eliminando...' : 'Eliminar'}
+                    </button>
                   </td>
                 </tr>
               ))}

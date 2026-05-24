@@ -2,8 +2,10 @@ import prisma from '@/lib/prisma';
 import { ICourseRepository } from '@/domain/repositories/ICourseRepository';
 
 export class PrismaCourseRepository extends ICourseRepository {
+  // Lecturas: solo registros NO eliminados (deletedAt: null)
   async findAll() {
     return prisma.course.findMany({
+      where: { deletedAt: null },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -16,8 +18,16 @@ export class PrismaCourseRepository extends ICourseRepository {
 
   async findActive() {
     return prisma.course.findMany({
-      where: { status: 'ACTIVE' },
+      where: { status: 'ACTIVE', deletedAt: null },
       orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  // Cursos en la papelera (eliminados)
+  async findDeleted() {
+    return prisma.course.findMany({
+      where: { deletedAt: { not: null } },
+      orderBy: { deletedAt: 'desc' },
     });
   }
 
@@ -32,15 +42,25 @@ export class PrismaCourseRepository extends ICourseRepository {
     });
   }
 
+  // Soft delete: marca deletedAt en vez de borrar
   async delete(id) {
-    return prisma.course.delete({
+    return prisma.course.update({
       where: { id },
+      data: { deletedAt: new Date() },
+    });
+  }
+
+  // Restaurar desde la papelera
+  async restore(id) {
+    return prisma.course.update({
+      where: { id },
+      data: { deletedAt: null },
     });
   }
 
   async countConfirmedEnrollments(courseId) {
     return prisma.enrollment.count({
-      where: { courseId, status: 'CONFIRMED' },
+      where: { courseId, status: 'CONFIRMED', deletedAt: null },
     });
   }
 }

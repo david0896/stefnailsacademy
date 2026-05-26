@@ -94,6 +94,11 @@ model Enrollment {
   bankName        String?
   referenceNumber String?
   proofImageUrl   String?
+  // Comprobante de pago optimizado (WebP responsive). Guarda PATHS dentro
+  // del bucket privado 'comprobantes' (no URLs públicas — las signed URLs
+  // se generan on-demand en el BO). Shape:
+  //   { base, width, height, sizes: { "400": path, "800": path, ... } }
+  paymentProofVariants Json?
   notes           String?
   enrolledAt      DateTime         @default(now())
   confirmedAt     DateTime?

@@ -4,9 +4,21 @@
     transition: all 0.3s ease-in-out;
     z-index: 10;
   }
-  
+
   .fadeIn {
     transform: scale(1);
     opacity: 1;
   }
-  
+
+  /* Contenedor scrolleable interno: scrollea con rueda/touch pero sin barra visible.
+     overscroll-contain evita que el wheel se "escape" a la página cuando llega al tope. */
+  .scrollHidden {
+    overscroll-behavior: contain;
+    scrollbar-width: none;       /* Firefox */
+    -ms-overflow-style: none;    /* IE 10+ */
+  }
+  .scrollHidden::-webkit-scrollbar {
+    display: none;               /* Chrome, Safari, Edge */
+    width: 0;
+    height: 0;
+  }

@@ -41,6 +41,9 @@ export const createEnrollment = async (data) => {
     amountEUR:       course.priceEUR,
     bankName:        data.bankName        || null,
     referenceNumber: data.referenceNumber || null,
+    // Comprobante optimizado (4 variantes WebP) — paths del bucket privado.
+    // Opcional en el use case: el sitio público lo exige, el BO puede crear sin él.
+    paymentProofVariants: data.paymentProofVariants ?? null,
     notes:           data.notes           || null,
   });
 };

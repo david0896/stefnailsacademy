@@ -25,14 +25,21 @@ const truncateText = (text, limit) => {
 };
 
 const ModalHome = ({ isOpen, onClose, data, ProximoCurso, student }) => {
-    // Mientras el modal está abierto bloqueamos el scroll del body para
-    // ocultar la barra global, y el contenido del modal scrollea con su
-    // propia barra interna. Al cerrar/desmontar se restaura.
+    // Mientras el modal está abierto bloqueamos el scroll global:
+    // - body overflow:hidden suele bastar, pero algunos navegadores
+    //   (Chrome/Edge en Windows con "scrollbar-gutter") dejan el hueco
+    //   o muestran la barra aunque no scrollee → bloqueamos también html
+    // - guardamos los valores previos para restaurarlos al cerrar
     useEffect(() => {
         if (!isOpen) return;
-        const prev = document.body.style.overflow;
+        const prevBodyOverflow = document.body.style.overflow;
+        const prevHtmlOverflow = document.documentElement.style.overflow;
         document.body.style.overflow = 'hidden';
-        return () => { document.body.style.overflow = prev; };
+        document.documentElement.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = prevBodyOverflow;
+            document.documentElement.style.overflow = prevHtmlOverflow;
+        };
     }, [isOpen]);
 
     if (!isOpen) return null;

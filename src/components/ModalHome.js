@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import clsx from "clsx";
 import styles from "../styles/ModalHome.module.css";
 import MultiStepForm from "./MultiStepForm";
@@ -25,10 +25,16 @@ const truncateText = (text, limit) => {
 };
 
 const ModalHome = ({ isOpen, onClose, data, ProximoCurso, student }) => {
-    // No bloqueamos el overflow del body: queremos que la barra de scroll
-    // de la página siga visible mientras el modal está abierto. El scroll
-    // del contenido del modal se maneja con la rueda/touch dentro de su
-    // contenedor interno, sin barra visible (ver .scrollHidden).
+    // Mientras el modal está abierto bloqueamos el scroll del body para
+    // ocultar la barra global, y el contenido del modal scrollea con su
+    // propia barra interna. Al cerrar/desmontar se restaura.
+    useEffect(() => {
+        if (!isOpen) return;
+        const prev = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        return () => { document.body.style.overflow = prev; };
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     const character_limit = 100;
@@ -55,9 +61,8 @@ const ModalHome = ({ isOpen, onClose, data, ProximoCurso, student }) => {
                 >
                     &times;
                 </button>
-                {/* Contenido scrolleable interno — solo esto hace overflow, la X queda fija.
-                    .scrollHidden oculta la barra para dejar solo la barra global de la página. */}
-                <div className={clsx("overflow-y-auto flex-1", styles.scrollHidden)}>
+                {/* Contenido scrolleable interno — solo esto hace overflow, la X queda fija. */}
+                <div className="overflow-y-auto flex-1">
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
                     <div 
                         className={` hidden lg:block col-span-2 relative bg-[#ffddde] p-6`}    

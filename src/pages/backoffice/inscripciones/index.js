@@ -120,7 +120,18 @@ export default function InscripcionesPage({ enrollments, currentStatus }) {
                   className="hover:bg-gray-50 transition-colors cursor-pointer"
                 >
                   <td className="px-5 py-3.5">
-                    <p className="font-medium text-gray-900">{e.student.firstName} {e.student.lastName}</p>
+                    <p className="font-medium text-gray-900 flex items-center gap-1.5">
+                      <span>{e.student.firstName} {e.student.lastName}</span>
+                      {e.paymentProofVariants && (
+                        <span
+                          title="Comprobante de pago adjunto"
+                          aria-label="Con comprobante"
+                          className="text-green-600 text-xs"
+                        >
+                          📎
+                        </span>
+                      )}
+                    </p>
                     <p className="text-xs text-gray-400 mt-0.5">{e.student.email}</p>
                   </td>
                   <td className="px-4 py-3.5 text-gray-700">{e.course.title}</td>

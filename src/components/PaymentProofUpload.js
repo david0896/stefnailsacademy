@@ -121,27 +121,43 @@ export default function PaymentProofUpload({ value = null, onChange, required = 
       {/* Drop zone (oculta cuando ya hay archivo) */}
       {!hasFile && (
         <div
-          onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+          onDragOver={(e) => { if (!uploading) { e.preventDefault(); setDragOver(true); } }}
           onDragLeave={() => setDragOver(false)}
           onDrop={(e) => {
+            if (uploading) return;
             e.preventDefault();
             setDragOver(false);
             handleFile(e.dataTransfer.files?.[0]);
           }}
-          onClick={() => inputRef.current?.click()}
-          className={`border-2 border-dashed rounded-md p-5 text-center cursor-pointer transition-colors ${
-            dragOver ? 'border-[#ff5a5f] bg-[#ff5a5f]/5' : 'border-gray-300 hover:border-[#ff5a5f]/50'
+          onClick={() => { if (!uploading) inputRef.current?.click(); }}
+          aria-busy={uploading}
+          className={`border-2 border-dashed rounded-md p-5 text-center transition-colors ${
+            uploading
+              ? 'border-[#ff5a5f]/60 bg-[#ff5a5f]/5 cursor-wait'
+              : dragOver
+                ? 'border-[#ff5a5f] bg-[#ff5a5f]/5 cursor-pointer'
+                : 'border-gray-300 hover:border-[#ff5a5f]/50 cursor-pointer'
           }`}
         >
           <input
             ref={inputRef}
             type="file"
             accept="image/jpeg,image/png,image/webp"
+            disabled={uploading}
             className="hidden"
             onChange={(e) => handleFile(e.target.files?.[0])}
           />
           {uploading ? (
-            <p className="text-sm text-gray-500">Optimizando y subiendo...</p>
+            <div className="flex flex-col items-center gap-2 py-1">
+              {/* Spinner: anillo rosado con segmento blanco que gira */}
+              <span
+                role="status"
+                aria-label="Subiendo comprobante"
+                className="inline-block w-8 h-8 rounded-full border-[3px] border-[#ff5a5f]/30 border-t-[#ff5a5f] animate-spin"
+              />
+              <p className="text-sm text-gray-700">Optimizando y subiendo...</p>
+              <p className="text-xs text-gray-400">Convirtiendo a WebP en 4 tamaños</p>
+            </div>
           ) : (
             <>
               <p className="text-sm text-gray-600">Arrastra la foto del pago o haz click para elegirla</p>

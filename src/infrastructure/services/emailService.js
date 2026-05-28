@@ -119,7 +119,7 @@ export const sendBoth = async ({
 // ─── Helpers de alto nivel ─────────────────────────────────────────────────
 
 const boUrl = (path = '') => {
-  const base = process.env.BASE_URL || 'https://www.stefnailsacademy.com';
+  const base = process.env.BASE_URL || 'https://www.stefnails.com';
   return `${base.replace(/\/+$/, '')}${path}`;
 };
 

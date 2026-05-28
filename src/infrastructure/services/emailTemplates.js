@@ -19,7 +19,7 @@ const BRAND = {
   cardBg:      '#ffffff',
   border:      '#e5e7eb',
   logoUrl:     'https://i.postimg.cc/GpRdG1qP/logo-stefnails.png',
-  siteUrl:     'https://www.stefnailsacademy.com',
+  siteUrl:     'https://www.stefnails.com',
 };
 
 const stripHtml = (s = '') => String(s).replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();

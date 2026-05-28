@@ -19,7 +19,7 @@ const Field = ({ label, value }) => (
   </div>
 );
 
-export default function InscripcionPage({ enrollment }) {
+export default function InscripcionPage({ enrollment, paymentProofUrls }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(null); // 'confirmar' | 'cancelar'
   const [error, setError] = useState('');
@@ -143,6 +143,44 @@ export default function InscripcionPage({ enrollment }) {
             )}
           </div>
 
+          {/* Comprobante de pago */}
+          <div className="bg-white border border-gray-100 rounded-xl p-6">
+            <h2 className="text-sm font-semibold text-gray-700 mb-4">Comprobante de pago</h2>
+            {paymentProofUrls ? (
+              <div className="flex items-start gap-4">
+                <a
+                  href={paymentProofUrls.large}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Abrir comprobante en tamaño completo"
+                  className="block shrink-0"
+                >
+                  <img
+                    src={paymentProofUrls.thumb}
+                    alt="Comprobante de pago"
+                    className="w-48 max-h-64 object-contain rounded-md border border-gray-200 bg-gray-50 hover:opacity-90 transition-opacity"
+                  />
+                </a>
+                <div className="text-sm text-gray-600 space-y-2">
+                  <p>Imagen optimizada (WebP). Click sobre la imagen para abrirla en grande.</p>
+                  <a
+                    href={paymentProofUrls.large}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block text-xs text-gray-900 underline hover:text-gray-700"
+                  >
+                    Abrir en nueva pestaña ↗
+                  </a>
+                  <p className="text-xs text-gray-400">
+                    URL válida por 1 hora. Si caduca, refrescá la página.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-gray-400">Sin comprobante adjunto.</p>
+            )}
+          </div>
+
           {/* Fechas */}
           <div className="bg-white border border-gray-100 rounded-xl p-6">
             <h2 className="text-sm font-semibold text-gray-700 mb-4">Fechas</h2>
@@ -169,10 +207,33 @@ export async function getServerSideProps(context) {
   try {
     const { getEnrollmentById } = await import('@/application/enrollments/getEnrollmentById');
     const enrollment = await getEnrollmentById(id);
+
+    // Si la inscripción tiene comprobante, generamos signed URLs server-side
+    // para servir la imagen (el bucket es privado, no hay URL pública).
+    // Sólo necesitamos dos URLs: una para thumbnail y otra para el original.
+    let paymentProofUrls = null;
+    if (enrollment.paymentProofVariants?.sizes) {
+      const { getSignedUrl } = await import('@/infrastructure/services/supabaseStorage');
+      const sizes = enrollment.paymentProofVariants.sizes;
+      // Thumbnail: prefiere 800, fallback 400, fallback al base
+      const thumbPath = sizes['800'] || sizes['400'] || enrollment.paymentProofVariants.base;
+      // Grande: la más grande disponible
+      const largePath = sizes['1600'] || sizes['1200'] || sizes['800'] || enrollment.paymentProofVariants.base;
+      const [thumb, large] = await Promise.all([
+        getSignedUrl(thumbPath, 3600),
+        getSignedUrl(largePath, 3600),
+      ]);
+      paymentProofUrls = { thumb, large };
+    }
+
     return {
-      props: { enrollment: JSON.parse(JSON.stringify(enrollment)) },
+      props: {
+        enrollment: JSON.parse(JSON.stringify(enrollment)),
+        paymentProofUrls,
+      },
     };
-  } catch {
+  } catch (err) {
+    console.error('[backoffice/inscripciones/[id]] getServerSideProps error:', err);
     return { notFound: true };
   }
 }

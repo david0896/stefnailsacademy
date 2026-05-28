@@ -22,13 +22,13 @@ No unit test runner is configured. E2E tests only via Cypress.
 - **All dependency versions are pinned** (no `^`) — do not add `^` when installing packages.
 
 ### Data Flow — Public Site
-Courses are sourced from **Google Sheets**, not a database:
+Courses are sourced from **Prisma/Supabase** (single source of truth — Google Sheets retired in Fase 9). Whatever is created/edited in the BO is what the public site renders, and vice-versa:
 ```
-Google Sheets API → /api/sheets/infoCursos → useCursos hook → UI
+Public page (SSR) → application use case → Prisma repository → Supabase
 ```
-Exchange rates (BCV) are fetched from `api.dolarvzla.com` via `/api/tasaCambiaria/bcv` and `/api/tasaCambiaria/bcvEuro`. The `infoCursos` route calls both in parallel and returns prices converted to Bs.
+Exchange rates (BCV) are still fetched from `api.dolarvzla.com` via `/api/tasaCambiaria/bcv` and `/api/tasaCambiaria/bcvEuro` and used to convert EUR → Bs at display time.
 
-**Planned change (Fase 9):** courses will migrate to Prisma/Supabase. Prices will be stored in EUR and converted to Bs using the EUR/BCV rate.
+The legacy `/api/sheets/infoCursos` endpoint and the `useCursos` hook may still exist in the repo as historical artifacts — do not re-introduce them as the source of truth for courses.
 
 ### Email
 `src/utils/emailConfig.js` creates a Nodemailer transporter using **Gmail OAuth2** (not SMTP password). It calls `google.auth.OAuth2` with `CLIENT_ID`, `CLIENT_SECRET`, `REDIRECT_URI`, `REFRESH_TOKEN` env vars and fetches a fresh access token per send.
@@ -128,15 +128,21 @@ Built-in skills also active: `/review`, `/security-review`, `/simplify`, `/agent
 
 | Fase | Scope | Status |
 |------|-------|--------|
-| 0 | Prisma setup, schema, first migration | Pending |
-| 1 | NextAuth login, middleware, route protection | Pending |
-| 2 | Clean architecture folder structure | Pending |
-| 3 | Courses CRUD (API + BO UI) | Pending |
-| 4 | Students module | Pending |
-| 5 | Enrollments + payment confirmation + emails | Pending |
-| 6 | Content management | Pending |
-| 7 | Dashboard metrics | Pending |
-| 8 | Supabase migration + Vercel deploy + anti-pause cron | Pending |
-| 9 | Public site consumes BO APIs (replaces Google Sheets) | Pending |
+| 0 | Prisma setup, schema, first migration | ✅ Done |
+| 1 | NextAuth login, middleware, route protection | ✅ Done |
+| 2 | Clean architecture folder structure | ✅ Done |
+| 3 | Courses CRUD (API + BO UI) | ✅ Done |
+| 4 | Students module | ✅ Done |
+| 5 | Enrollments + payment confirmation + (basic) emails | ✅ Done |
+| 6 | Content management (BO side) | ✅ Done |
+| 7 | Dashboard metrics | ✅ Done |
+| 8 | Supabase migration + Vercel deploy + anti-pause cron | ✅ Done |
+| 9 | Public site consumes BO data (Google Sheets retired) | ✅ Done |
+| 9.5 | Responsive polish (public + BO mobile) | ✅ Done |
+| 10 | Image storage + WebP responsive variants | ✅ Done |
+| 11 | Soft delete (Papelera) for cursos, alumnos, inscripciones | ✅ Done |
+| 12 | Email notifications for every site/BO action + payment proof upload (optimized image) | 🚧 In progress |
+| — | Password recovery (real token flow) | ⏳ Pending |
+| — | Student-side content area (CONFIRMED enrollments see course content) | ⏳ Pending |
 
 Each fase = one PR to GitHub main branch.

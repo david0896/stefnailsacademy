@@ -21,11 +21,12 @@ export const confirmEnrollment = async (id) => {
     confirmedAt: new Date(),
   });
 
-  // Notificar al alumno por email
+  // Notificar al alumno + copia al admin (no rompe el caso de uso si Gmail falla)
   await sendEnrollmentConfirmed({
     studentEmail: data.student.email,
-    studentName: `${data.student.firstName} ${data.student.lastName}`,
-    courseName: data.course.title,
+    studentName:  `${data.student.firstName} ${data.student.lastName}`,
+    courseName:   data.course.title,
+    enrollmentId: id,
   });
 
   return updated;

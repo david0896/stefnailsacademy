@@ -8,6 +8,14 @@ const inscripcionSchema = z.object({
   courseId:        z.string().min(1, 'Curso requerido'),
   bankName:        z.string().min(1, 'Banco requerido'),
   referenceNumber: z.string().min(1, 'Referencia requerida'),
+  // Comprobante de pago: obligatorio desde el sitio público.
+  // Es el resultado de POST /api/student/upload-comprobante (paths en bucket privado).
+  paymentProofVariants: z.object({
+    base:   z.string().min(1),
+    width:  z.number().int().positive(),
+    height: z.number().int().positive(),
+    sizes:  z.record(z.string().min(1)),
+  }, { required_error: 'Comprobante de pago requerido' }),
   // Datos del perfil que el alumno puede completar al inscribirse
   firstName:       z.string().min(1).optional(),
   lastName:        z.string().min(1).optional(),
@@ -30,7 +38,16 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: parsed.error.flatten() });
   }
 
-  const { courseId, bankName, referenceNumber, firstName, lastName, phone, idNumber } = parsed.data;
+  const {
+    courseId,
+    bankName,
+    referenceNumber,
+    paymentProofVariants,
+    firstName,
+    lastName,
+    phone,
+    idNumber,
+  } = parsed.data;
   const studentId = session.user.id;
 
   try {
@@ -55,6 +72,7 @@ export default async function handler(req, res) {
       paymentMethod:   'TRANSFER',
       bankName,
       referenceNumber,
+      paymentProofVariants,
     });
 
     return res.status(201).json({

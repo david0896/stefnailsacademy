@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import clsx from "clsx";
 import styles from "../styles/ModalHome.module.css";
 import MultiStepForm from "./MultiStepForm";
@@ -25,6 +25,23 @@ const truncateText = (text, limit) => {
 };
 
 const ModalHome = ({ isOpen, onClose, data, ProximoCurso, student }) => {
+    // Mientras el modal está abierto bloqueamos el scroll global:
+    // - body overflow:hidden suele bastar, pero algunos navegadores
+    //   (Chrome/Edge en Windows con "scrollbar-gutter") dejan el hueco
+    //   o muestran la barra aunque no scrollee → bloqueamos también html
+    // - guardamos los valores previos para restaurarlos al cerrar
+    useEffect(() => {
+        if (!isOpen) return;
+        const prevBodyOverflow = document.body.style.overflow;
+        const prevHtmlOverflow = document.documentElement.style.overflow;
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = prevBodyOverflow;
+            document.documentElement.style.overflow = prevHtmlOverflow;
+        };
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     const character_limit = 100;
@@ -34,21 +51,25 @@ const ModalHome = ({ isOpen, onClose, data, ProximoCurso, student }) => {
     const displayDescription = truncateText(description, character_limit);
 
     return (
-        <div className={"fixed top-0 left-0 inset-0 flex items-center justify-center bg-black bg-opacity-80 z-[999]"}>
+        <div className={"fixed top-0 left-0 inset-0 flex items-center justify-center bg-black bg-opacity-80 z-[999] p-4"}>
             <div
                 className={clsx(
-                "bg-white w-full max-w-5xl rounded-lg shadow-lg overflow-hidden relative mx-6",
+                // max-h + flex column → permite que SOLO el área scrolleable haga scroll
+                // y la X quede siempre visible. overflow-hidden vuelve a la caja externa.
+                "bg-white w-full max-w-5xl rounded-lg shadow-lg overflow-hidden relative mx-2 max-h-[90vh] flex flex-col",
                 styles.modal,
                 styles.fadeIn
                 )}
             >
                 <button
                     onClick={onClose}
-                    className="text-gray-500 hover:text-gray-800 absolute top-2 right-4"
+                    className="text-gray-500 hover:text-gray-800 absolute top-2 right-4 z-10 bg-white/80 rounded-full w-7 h-7 flex items-center justify-center text-xl leading-none"
                     aria-label="Close modal"
                 >
                     &times;
                 </button>
+                {/* Contenido scrolleable interno — solo esto hace overflow, la X queda fija. */}
+                <div className="overflow-y-auto flex-1">
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
                     <div 
                         className={` hidden lg:block col-span-2 relative bg-[#ffddde] p-6`}    
@@ -113,6 +134,7 @@ const ModalHome = ({ isOpen, onClose, data, ProximoCurso, student }) => {
                             </p>
                         )}
                     </div>
+                </div>
                 </div>
             </div>
         </div>

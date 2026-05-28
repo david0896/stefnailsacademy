@@ -4,9 +4,8 @@
     transition: all 0.3s ease-in-out;
     z-index: 10;
   }
-  
+
   .fadeIn {
     transform: scale(1);
     opacity: 1;
   }
-  

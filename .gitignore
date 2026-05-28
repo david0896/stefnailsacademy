@@ -39,6 +39,9 @@ yarn-error.log*
 # git worktrees (carpetas de desarrollo temporales, no van a main)
 .claude/worktrees/
 
+# documentación interna / para NotebookLM / referencias del desarrollo (no va a main)
+docs/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

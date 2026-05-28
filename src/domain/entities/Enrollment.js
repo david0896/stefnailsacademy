@@ -3,7 +3,7 @@
  * Representa una inscripción con sus reglas de negocio
  */
 export class Enrollment {
-  constructor({ id, courseId, studentId, status, paymentMethod, paymentStatus, amountEUR, bankName, referenceNumber, proofImageUrl, notes, enrolledAt, confirmedAt, updatedAt }) {
+  constructor({ id, courseId, studentId, status, paymentMethod, paymentStatus, amountEUR, bankName, referenceNumber, proofImageUrl, paymentProofVariants, notes, enrolledAt, confirmedAt, updatedAt }) {
     this.id = id;
     this.courseId = courseId;
     this.studentId = studentId;
@@ -14,6 +14,8 @@ export class Enrollment {
     this.bankName = bankName ?? null;
     this.referenceNumber = referenceNumber ?? null;
     this.proofImageUrl = proofImageUrl ?? null;
+    // Comprobante optimizado (4 variantes WebP) — paths del bucket privado
+    this.paymentProofVariants = paymentProofVariants ?? null;
     this.notes = notes ?? null;
     this.enrolledAt = enrolledAt;
     this.confirmedAt = confirmedAt ?? null;

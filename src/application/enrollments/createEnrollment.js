@@ -1,6 +1,7 @@
 import { PrismaEnrollmentRepository } from '@/infrastructure/repositories/PrismaEnrollmentRepository';
 import { PrismaCourseRepository } from '@/infrastructure/repositories/PrismaCourseRepository';
 import { PrismaStudentRepository } from '@/infrastructure/repositories/PrismaStudentRepository';
+import { sendEnrollmentCreated } from '@/infrastructure/services/emailService';
 
 const enrollmentRepository = new PrismaEnrollmentRepository();
 const courseRepository     = new PrismaCourseRepository();
@@ -32,7 +33,7 @@ export const createEnrollment = async (data) => {
     }
   }
 
-  return enrollmentRepository.create({
+  const enrollment = await enrollmentRepository.create({
     studentId:       data.studentId,
     courseId:        data.courseId,
     status:          'PENDING',
@@ -41,6 +42,24 @@ export const createEnrollment = async (data) => {
     amountEUR:       course.priceEUR,
     bankName:        data.bankName        || null,
     referenceNumber: data.referenceNumber || null,
+    // Comprobante optimizado (4 variantes WebP) — paths del bucket privado.
+    // Opcional en el use case: el sitio público lo exige, el BO puede crear sin él.
+    paymentProofVariants: data.paymentProofVariants ?? null,
     notes:           data.notes           || null,
   });
+
+  // Notificar al alumno (acuse) + al admin (alerta para verificar el pago).
+  // Non-blocking: si Gmail falla, la inscripción ya quedó creada.
+  await sendEnrollmentCreated({
+    studentEmail:         enrollment.student.email,
+    studentName:          enrollment.student.firstName,
+    courseName:           enrollment.course.title,
+    enrollmentId:         enrollment.id,
+    amountEUR:            enrollment.amountEUR,
+    bankName:             enrollment.bankName,
+    referenceNumber:      enrollment.referenceNumber,
+    paymentProofVariants: enrollment.paymentProofVariants,
+  });
+
+  return enrollment;
 };

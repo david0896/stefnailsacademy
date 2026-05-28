@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { z, ZodError } from 'zod';
 import { useMutation } from '@tanstack/react-query';
+import PaymentProofUpload from '@/components/PaymentProofUpload';
 
 // Convierte cadena monetaria local (con coma/punto) a Number
 const cleanMonetaryString = (value) => {
@@ -42,6 +43,7 @@ const MultiStepForm = ({ cursoId, nombreCurso, precio, student, onClose }) => {
     bancoEmisor:    '',
     referencia:     '',
     monto:          '',
+    paymentProofVariants: null,
     aceptoTerminos: false,
   });
 
@@ -73,6 +75,15 @@ const MultiStepForm = ({ cursoId, nombreCurso, precio, student, onClose }) => {
       }, {
         message: `El monto ingresado debe coincidir con el precio exacto (${precio}).`,
       }),
+    paymentProofVariants: z
+      .object({
+        base:   z.string().min(1),
+        width:  z.number(),
+        height: z.number(),
+        sizes:  z.record(z.string()),
+      })
+      .nullable()
+      .refine((v) => v !== null, { message: 'Adjunta el comprobante de pago' }),
     aceptoTerminos: z.literal(true, {
       errorMap: () => ({ message: 'Debe aceptar los términos' }),
     }),
@@ -92,6 +103,7 @@ const MultiStepForm = ({ cursoId, nombreCurso, precio, student, onClose }) => {
           lastName:        data.apellido,
           phone:           data.telefono,
           idNumber:        data.cedula,
+          paymentProofVariants: data.paymentProofVariants,
         }),
       });
 
@@ -327,6 +339,22 @@ const MultiStepForm = ({ cursoId, nombreCurso, precio, student, onClose }) => {
                 }
               />
               {errors.monto && <p className="text-red-500 text-sm mt-1">{errors.monto}</p>}
+            </div>
+
+            <div className="mt-1">
+              <PaymentProofUpload
+                value={formData.paymentProofVariants}
+                onChange={(variants) => {
+                  setFormData((prev) => ({ ...prev, paymentProofVariants: variants }));
+                  if (errors.paymentProofVariants) {
+                    setErrors((prev) => ({ ...prev, paymentProofVariants: '' }));
+                  }
+                }}
+                required
+              />
+              {errors.paymentProofVariants && (
+                <p className="text-red-500 text-sm mt-1">{errors.paymentProofVariants}</p>
+              )}
             </div>
 
             <div className="mt-2">

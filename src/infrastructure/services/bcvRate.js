@@ -15,11 +15,21 @@ const TIMEOUT_MS = 5000;
 
 /**
  * Devuelve la tasa BCV EUR vigente (Bs por 1 EUR) o null si no se pudo.
+ *
+ * IMPORTANTE: la API de dolarvzla requiere el header `Referer` apuntando
+ * a su dominio; sin él responde 401 "Missing API key". Esto cambió en su
+ * versión actual — antes la API era abierta.
+ *
  * @returns {Promise<number|null>}
  */
 export async function getCurrentBcvEurRate() {
   try {
     const r = await fetch(UPSTREAM, {
+      headers: {
+        'Referer': 'https://www.dolarvzla.com',
+        'Origin':  'https://www.dolarvzla.com',
+        'Accept':  'application/json',
+      },
       // Evita colgar el use case si dolarvzla anda lento
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });

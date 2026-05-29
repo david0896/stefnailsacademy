@@ -4,7 +4,15 @@ export default async function handler(req, res) {
   try {
     const url = `https://api.dolarvzla.com/public/exchange-rate`;
 
-    const response = await fetch(url);
+    // dolarvzla cambió su API: ahora exige Referer/Origin de su dominio
+    // o un API key. Sin esto devuelve 401 "Missing API key".
+    const response = await fetch(url, {
+      headers: {
+        'Referer': 'https://www.dolarvzla.com',
+        'Origin':  'https://www.dolarvzla.com',
+        'Accept':  'application/json',
+      },
+    });
 
     if (!response.ok) {
       throw new Error(`bcv API error: ${response.statusText}`);

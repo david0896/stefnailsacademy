@@ -112,6 +112,28 @@ model Enrollment {
 }
 
 // =============================================
+// GENERIC — Catálogos genéricos (bancos, estados, niveles, etc.)
+// =============================================
+// Tabla de listas de referencia. Cada categoría agrupa items relacionados
+// (ej: category="BANK_VE" para bancos venezolanos). Se consulta vía
+// GET /api/generics/:category. Editable manualmente desde la DB por ahora;
+// si en el futuro hace falta editar desde el BO, se monta un CRUD.
+model Generic {
+  id        String   @id @default(cuid())
+  category  String   // Ej: "BANK_VE", "STATE_VE", etc.
+  code      String   // Identificador estable dentro de la categoría (ej: código SUDEBAN "0134" para Banesco)
+  label     String   // Nombre legible (ej: "Banesco Banco Universal")
+  order     Int      @default(0)   // Orden de display dentro de la categoría
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([category, code])
+  @@index([category, active])
+  @@map("generics")
+}
+
+// =============================================
 // CONTENT — Contenido editable del sitio
 // =============================================
 model Content {

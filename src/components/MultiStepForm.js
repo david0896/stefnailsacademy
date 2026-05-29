@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { z, ZodError } from 'zod';
 import { useMutation } from '@tanstack/react-query';
 import PaymentProofUpload from '@/components/PaymentProofUpload';
+import BankSelect from '@/components/BankSelect';
 
 // Convierte cadena monetaria local (con coma/punto) a Number
 const cleanMonetaryString = (value) => {
@@ -61,7 +62,11 @@ const MultiStepForm = ({ cursoId, nombreCurso, precio, student, onClose }) => {
 
   const step2Schema = z.object({
     bancoEmisor: z.string().min(1, 'Banco requerido'),
-    referencia:  z.string().min(1, 'Referencia requerida'),
+    // Referencia: exactamente 12 dígitos, solo números (sin signo, sin espacios).
+    referencia:  z
+      .string()
+      .min(1, 'Referencia requerida')
+      .regex(/^\d{12}$/, 'La referencia debe tener exactamente 12 dígitos'),
     monto: z.number({
       required_error:     'Monto requerido',
       invalid_type_error: 'Debe ser un número',
@@ -123,6 +128,15 @@ const MultiStepForm = ({ cursoId, nombreCurso, precio, student, onClose }) => {
   // ── Handlers ──────────────────────────────────────────────────
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+
+    // Referencia: solo dígitos, máx 12. Si el alumno pega "Ref: 00611-93-4408 6"
+    // queda limpio "006119344086". Si pasa de 12, se trunca.
+    if (name === 'referencia') {
+      const digitsOnly = value.replace(/\D/g, '').slice(0, 12);
+      setFormData((prev) => ({ ...prev, referencia: digitsOnly }));
+      if (errors.referencia) setErrors((prev) => ({ ...prev, referencia: '' }));
+      return;
+    }
 
     if (name === 'monto') {
       const digitsOnly = value.replace(/\D/g, '');
@@ -306,20 +320,32 @@ const MultiStepForm = ({ cursoId, nombreCurso, precio, student, onClose }) => {
 
           <div className="flex flex-col gap-2">
             <div>
-              <input
-                name="bancoEmisor" type="text" placeholder="Banco desde el que transfiere"
-                className={`w-full p-3 border ${errors.bancoEmisor ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff5a5f]`}
-                onChange={handleChange} value={formData.bancoEmisor}
+              <BankSelect
+                value={formData.bancoEmisor}
+                error={errors.bancoEmisor}
+                onChange={(bank) => {
+                  setFormData((prev) => ({ ...prev, bancoEmisor: bank }));
+                  if (errors.bancoEmisor) setErrors((prev) => ({ ...prev, bancoEmisor: '' }));
+                }}
               />
               {errors.bancoEmisor && <p className="text-red-500 text-sm mt-1">{errors.bancoEmisor}</p>}
             </div>
 
             <div>
               <input
-                name="referencia" type="number" placeholder="Número de referencia de la transferencia"
-                className={`w-full p-3 border ${errors.referencia ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff5a5f]`}
-                onChange={handleChange} value={formData.referencia}
+                name="referencia"
+                type="text"
+                inputMode="numeric"
+                pattern="\d{12}"
+                maxLength={12}
+                placeholder="Número de referencia (12 dígitos)"
+                className={`w-full p-3 border ${errors.referencia ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff5a5f] font-mono`}
+                onChange={handleChange}
+                value={formData.referencia}
               />
+              <p className="text-xs text-gray-400 mt-1">
+                {formData.referencia ? `${String(formData.referencia).length}/12 dígitos` : 'Solo números, sin espacios ni guiones'}
+              </p>
               {errors.referencia && <p className="text-red-500 text-sm mt-1">{errors.referencia}</p>}
             </div>
 

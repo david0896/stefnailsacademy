@@ -13,6 +13,27 @@ npm run cypress:open # Open Cypress E2E test runner
 
 No unit test runner is configured. E2E tests only via Cypress.
 
+## 🚦 Workflow obligatorio: local → visto bueno → producción
+
+**Toda fase / sub-fase / fix se valida en localhost ANTES de tocar producción.** Sin excepciones.
+
+Flujo estándar para cualquier cambio:
+
+1. **Implementar y commitear** en la rama de la fase actual.
+2. **Probar en local** (`npm run dev`, `http://localhost:3000`): el cliente recorre los flujos afectados y confirma que funciona.
+3. **Esperar el visto bueno explícito** del cliente (ej. "todo bien en local", "ok dale", etc.).
+4. **Solo entonces**: `git push`, abrir PR, mergear a `main`, verificar deploy en Vercel.
+
+**Nunca hacer push/merge/deploy "para adelantar" sin confirmación.** Si una fase tiene varias sub-fases acumuladas, probar al final de cada sub-fase visible (UI/flujo) y al cierre de la fase. Sub-fases puramente backend (schema, refactor) pueden agruparse, pero la última sub-fase de cada PR siempre exige smoke test.
+
+Smoke test mínimo antes de marcar una fase como "lista para deploy":
+- `npm run build` pasa sin errores.
+- El flujo nuevo se recorre en el navegador local sin romper flujos existentes.
+- Si hay envío de emails, llega al menos uno al inbox de testing (no spam).
+- Si hay cambios de schema, verificar que no rompe inscripciones/cursos existentes.
+
+Si algo falla en local, se itera en la misma rama hasta arreglar — no se "promete arreglar en prod".
+
 ## Architecture
 
 ### Current Stack

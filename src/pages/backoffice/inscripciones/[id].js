@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { getSession } from 'next-auth/react';
 import { clsx } from 'clsx';
 import BOLayout from '@/components/backoffice/BOLayout';
+import { formatEur, formatBs, formatBcvEurRate } from '@/utils/formatMoney';
 
 const statusLabel = {
   PENDING:   { text: 'Pendiente',  style: 'bg-yellow-50 text-yellow-700' },
@@ -120,7 +121,26 @@ export default function InscripcionPage({ enrollment, paymentProofUrls }) {
             <div className="grid grid-cols-2 gap-4">
               <Field label="Título" value={enrollment.course.title} />
               <Field label="Tipo" value={enrollment.course.type === 'PRESENCIAL' ? 'Presencial' : 'Online'} />
-              <Field label="Monto pagado" value={`€${enrollment.amountEUR.toFixed(2)}`} />
+              <Field label="Monto pagado" value={formatEur(enrollment.amountEUR)} />
+              {/* Conversión Bs que vio el alumno en el site al momento del pago,
+                  con la tasa BCV vigente ese día. */}
+              <div>
+                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                  Conversión vista por el cliente
+                </p>
+                {enrollment.amountBs != null ? (
+                  <>
+                    <p className="text-sm text-gray-900">{formatBs(enrollment.amountBs)}</p>
+                    {enrollment.bcvEurRate != null && (
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        Tasa BCV del día: {formatBcvEurRate(enrollment.bcvEurRate)}
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <p className="text-sm text-gray-400 italic">Sin tasa registrada</p>
+                )}
+              </div>
               {enrollment.confirmedAt && (
                 <Field label="Confirmada el" value={new Date(enrollment.confirmedAt).toLocaleDateString('es-VE')} />
               )}
@@ -135,6 +155,13 @@ export default function InscripcionPage({ enrollment, paymentProofUrls }) {
               <Field label="Estado del pago" value={enrollment.paymentStatus === 'PAID' ? 'Pagado' : enrollment.paymentStatus === 'REFUNDED' ? 'Reembolsado' : 'Pendiente'} />
               {enrollment.bankName      && <Field label="Banco" value={enrollment.bankName} />}
               {enrollment.referenceNumber && <Field label="N° referencia" value={enrollment.referenceNumber} />}
+              {/* Monto Bs que el alumno realmente depositó (= la conversión del site,
+                  porque el form no permite divergir). Redundante pero útil para verificar
+                  contra el extracto bancario sin tener que recalcular. */}
+              <Field
+                label="Monto pagado (Bs)"
+                value={enrollment.amountBs != null ? formatBs(enrollment.amountBs) : '—'}
+              />
             </div>
             {enrollment.notes && (
               <div className="mt-4">

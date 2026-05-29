@@ -91,6 +91,13 @@ model Enrollment {
   paymentMethod   PaymentMethod
   paymentStatus   PaymentStatus    @default(PENDING)
   amountEUR       Float
+  // Snapshot de la tasa BCV EUR del día del pago (Bs por 1 EUR) y el monto
+  // convertido a Bs en ese momento. Capturados al crear la inscripción.
+  // Permiten mostrar al admin "€5.00 ≈ Bs 1.250" con la tasa del PAGO,
+  // no la del día en que el admin abre el detalle.
+  // Pueden ser null para inscripciones viejas o si la API de tasa falló.
+  bcvEurRate      Float?
+  amountBs        Float?
   bankName        String?
   referenceNumber String?
   proofImageUrl   String?
@@ -109,6 +116,28 @@ model Enrollment {
   student Student @relation(fields: [studentId], references: [id])
 
   @@map("enrollments")
+}
+
+// =============================================
+// GENERIC — Catálogos genéricos (bancos, estados, niveles, etc.)
+// =============================================
+// Tabla de listas de referencia. Cada categoría agrupa items relacionados
+// (ej: category="BANK_VE" para bancos venezolanos). Se consulta vía
+// GET /api/generics/:category. Editable manualmente desde la DB por ahora;
+// si en el futuro hace falta editar desde el BO, se monta un CRUD.
+model Generic {
+  id        String   @id @default(cuid())
+  category  String   // Ej: "BANK_VE", "STATE_VE", etc.
+  code      String   // Identificador estable dentro de la categoría (ej: código SUDEBAN "0134" para Banesco)
+  label     String   // Nombre legible (ej: "Banesco Banco Universal")
+  order     Int      @default(0)   // Orden de display dentro de la categoría
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([category, code])
+  @@index([category, active])
+  @@map("generics")
 }
 
 // =============================================

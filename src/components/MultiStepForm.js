@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { z, ZodError } from 'zod';
 import { useMutation } from '@tanstack/react-query';
 import PaymentProofUpload from '@/components/PaymentProofUpload';
+import BankSelect from '@/components/BankSelect';
 
 // Convierte cadena monetaria local (con coma/punto) a Number
 const cleanMonetaryString = (value) => {
@@ -306,10 +307,13 @@ const MultiStepForm = ({ cursoId, nombreCurso, precio, student, onClose }) => {
 
           <div className="flex flex-col gap-2">
             <div>
-              <input
-                name="bancoEmisor" type="text" placeholder="Banco desde el que transfiere"
-                className={`w-full p-3 border ${errors.bancoEmisor ? 'border-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff5a5f]`}
-                onChange={handleChange} value={formData.bancoEmisor}
+              <BankSelect
+                value={formData.bancoEmisor}
+                error={errors.bancoEmisor}
+                onChange={(bank) => {
+                  setFormData((prev) => ({ ...prev, bancoEmisor: bank }));
+                  if (errors.bancoEmisor) setErrors((prev) => ({ ...prev, bancoEmisor: '' }));
+                }}
               />
               {errors.bancoEmisor && <p className="text-red-500 text-sm mt-1">{errors.bancoEmisor}</p>}
             </div>

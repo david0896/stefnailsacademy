@@ -2,6 +2,7 @@ import { PrismaEnrollmentRepository } from '@/infrastructure/repositories/Prisma
 import { PrismaCourseRepository } from '@/infrastructure/repositories/PrismaCourseRepository';
 import { PrismaStudentRepository } from '@/infrastructure/repositories/PrismaStudentRepository';
 import { sendEnrollmentCreated } from '@/infrastructure/services/emailService';
+import { getCurrentBcvEurRate } from '@/infrastructure/services/bcvRate';
 
 const enrollmentRepository = new PrismaEnrollmentRepository();
 const courseRepository     = new PrismaCourseRepository();
@@ -33,6 +34,14 @@ export const createEnrollment = async (data) => {
     }
   }
 
+  // Snapshot de la tasa BCV EUR en el momento del pago. Non-blocking:
+  // si dolarvzla no responde, persistimos null y el BO mostrará "—" para
+  // los Bs. La inscripción nunca se rompe por un servicio externo.
+  const bcvEurRate = await getCurrentBcvEurRate();
+  const amountBs   = bcvEurRate
+    ? Math.round(course.priceEUR * bcvEurRate * 100) / 100  // 2 decimales
+    : null;
+
   const enrollment = await enrollmentRepository.create({
     studentId:       data.studentId,
     courseId:        data.courseId,
@@ -40,6 +49,8 @@ export const createEnrollment = async (data) => {
     paymentMethod:   data.paymentMethod,
     paymentStatus:   'PENDING',
     amountEUR:       course.priceEUR,
+    bcvEurRate,
+    amountBs,
     bankName:        data.bankName        || null,
     referenceNumber: data.referenceNumber || null,
     // Comprobante optimizado (4 variantes WebP) — paths del bucket privado.

@@ -91,6 +91,13 @@ model Enrollment {
   paymentMethod   PaymentMethod
   paymentStatus   PaymentStatus    @default(PENDING)
   amountEUR       Float
+  // Snapshot de la tasa BCV EUR del día del pago (Bs por 1 EUR) y el monto
+  // convertido a Bs en ese momento. Capturados al crear la inscripción.
+  // Permiten mostrar al admin "€5.00 ≈ Bs 1.250" con la tasa del PAGO,
+  // no la del día en que el admin abre el detalle.
+  // Pueden ser null para inscripciones viejas o si la API de tasa falló.
+  bcvEurRate      Float?
+  amountBs        Float?
   bankName        String?
   referenceNumber String?
   proofImageUrl   String?

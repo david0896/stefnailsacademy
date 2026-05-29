@@ -3,7 +3,7 @@
  * Representa una inscripción con sus reglas de negocio
  */
 export class Enrollment {
-  constructor({ id, courseId, studentId, status, paymentMethod, paymentStatus, amountEUR, bankName, referenceNumber, proofImageUrl, paymentProofVariants, notes, enrolledAt, confirmedAt, updatedAt }) {
+  constructor({ id, courseId, studentId, status, paymentMethod, paymentStatus, amountEUR, bcvEurRate, amountBs, bankName, referenceNumber, proofImageUrl, paymentProofVariants, notes, enrolledAt, confirmedAt, updatedAt }) {
     this.id = id;
     this.courseId = courseId;
     this.studentId = studentId;
@@ -11,6 +11,9 @@ export class Enrollment {
     this.paymentMethod = paymentMethod; // TRANSFER | GATEWAY
     this.paymentStatus = paymentStatus; // PENDING | PAID | REFUNDED
     this.amountEUR = amountEUR;
+    // Snapshot histórico de tasa BCV EUR y monto en Bs al momento del pago
+    this.bcvEurRate = bcvEurRate ?? null;
+    this.amountBs = amountBs ?? null;
     this.bankName = bankName ?? null;
     this.referenceNumber = referenceNumber ?? null;
     this.proofImageUrl = proofImageUrl ?? null;

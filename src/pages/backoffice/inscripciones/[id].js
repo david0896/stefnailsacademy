@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { getSession } from 'next-auth/react';
 import { clsx } from 'clsx';
 import BOLayout from '@/components/backoffice/BOLayout';
+import { formatEur, formatBs, formatBcvEurRate } from '@/utils/formatMoney';
 
 const statusLabel = {
   PENDING:   { text: 'Pendiente',  style: 'bg-yellow-50 text-yellow-700' },
@@ -120,7 +121,22 @@ export default function InscripcionPage({ enrollment, paymentProofUrls }) {
             <div className="grid grid-cols-2 gap-4">
               <Field label="Título" value={enrollment.course.title} />
               <Field label="Tipo" value={enrollment.course.type === 'PRESENCIAL' ? 'Presencial' : 'Online'} />
-              <Field label="Monto pagado" value={`€${enrollment.amountEUR.toFixed(2)}`} />
+              <div>
+                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Monto pagado</p>
+                <p className="text-sm text-gray-900">{formatEur(enrollment.amountEUR)}</p>
+                {enrollment.amountBs != null ? (
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    ≈ {formatBs(enrollment.amountBs)}
+                    {enrollment.bcvEurRate != null && (
+                      <span className="ml-1.5 text-gray-400">
+                        (tasa BCV del pago: {formatBcvEurRate(enrollment.bcvEurRate)})
+                      </span>
+                    )}
+                  </p>
+                ) : (
+                  <p className="text-xs text-gray-400 italic mt-0.5">Sin tasa registrada</p>
+                )}
+              </div>
               {enrollment.confirmedAt && (
                 <Field label="Confirmada el" value={new Date(enrollment.confirmedAt).toLocaleDateString('es-VE')} />
               )}

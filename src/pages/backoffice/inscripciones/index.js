@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { getSession } from 'next-auth/react';
 import { clsx } from 'clsx';
 import BOLayout from '@/components/backoffice/BOLayout';
+import { formatEur, formatBs } from '@/utils/formatMoney';
 
 const statusLabel = {
   PENDING:   { text: 'Pendiente',  style: 'bg-yellow-50 text-yellow-700' },
@@ -141,7 +142,12 @@ export default function InscripcionesPage({ enrollments, currentStatus }) {
                     </span>
                   </td>
                   <td className="px-4 py-3.5 text-gray-600">{methodLabel[e.paymentMethod]}</td>
-                  <td className="px-4 py-3.5 text-gray-600">€{e.amountEUR.toFixed(2)}</td>
+                  <td className="px-4 py-3.5 text-gray-600">
+                    <div>{formatEur(e.amountEUR)}</div>
+                    {e.amountBs != null && (
+                      <div className="text-xs text-gray-400 mt-0.5">≈ {formatBs(e.amountBs)}</div>
+                    )}
+                  </td>
                   <td className="px-4 py-3.5 text-gray-400 text-xs">
                     {new Date(e.enrolledAt).toLocaleDateString('es-VE')}
                   </td>

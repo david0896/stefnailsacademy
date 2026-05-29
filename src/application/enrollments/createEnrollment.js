@@ -67,6 +67,8 @@ export const createEnrollment = async (data) => {
     courseName:           enrollment.course.title,
     enrollmentId:         enrollment.id,
     amountEUR:            enrollment.amountEUR,
+    amountBs:             enrollment.amountBs,
+    bcvEurRate:           enrollment.bcvEurRate,
     bankName:             enrollment.bankName,
     referenceNumber:      enrollment.referenceNumber,
     paymentProofVariants: enrollment.paymentProofVariants,

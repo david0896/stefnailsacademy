@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import { google } from 'googleapis';
 import { wrapTemplate } from './emailTemplates';
 import { getSignedUrl } from './supabaseStorage';
+import { formatEur, formatBs, formatBcvEurRate } from '@/utils/formatMoney';
 
 /**
  * emailService — envío de emails con Gmail OAuth2 y plantillas de marca.
@@ -260,6 +261,8 @@ export const sendEnrollmentCreated = async ({
   courseName,
   enrollmentId,
   amountEUR,
+  amountBs,           // Float | null — snapshot del momento del pago
+  bcvEurRate,         // Float | null — tasa BCV EUR usada para el snapshot
   bankName,
   referenceNumber,
   paymentProofVariants, // shape: { base, sizes: { "400": path, ... } } o null
@@ -304,7 +307,16 @@ export const sendEnrollmentCreated = async ({
         <li><strong>Alumno:</strong> ${studentName}</li>
         <li><strong>Email:</strong> ${studentEmail}</li>
         <li><strong>Curso:</strong> ${courseName}</li>
-        <li><strong>Monto:</strong> €${Number(amountEUR ?? 0).toFixed(2)}</li>
+        <li>
+          <strong>Monto:</strong> ${formatEur(amountEUR)}
+          ${amountBs != null
+            ? `<span style="color:#6b7280;"> &nbsp;≈ ${formatBs(amountBs)}${
+                bcvEurRate != null
+                  ? ` <span style="color:#9ca3af; font-size:12px;">(${formatBcvEurRate(bcvEurRate)})</span>`
+                  : ''
+              }</span>`
+            : '<span style="color:#9ca3af; font-size:12px;"> (sin tasa registrada)</span>'}
+        </li>
         <li><strong>Banco:</strong> ${bankName || '—'}</li>
         <li><strong>Referencia:</strong> ${referenceNumber || '—'}</li>
       </ul>

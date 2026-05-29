@@ -7,7 +7,11 @@ import prisma from '@/lib/prisma';
 const inscripcionSchema = z.object({
   courseId:        z.string().min(1, 'Curso requerido'),
   bankName:        z.string().min(1, 'Banco requerido'),
-  referenceNumber: z.string().min(1, 'Referencia requerida'),
+  // Referencia: exactamente 12 dígitos, solo números. Defensa server-side
+  // por si alguien evita la validación del cliente (curl/Postman/etc.).
+  referenceNumber: z
+    .string()
+    .regex(/^\d{12}$/, 'La referencia debe tener exactamente 12 dígitos numéricos'),
   // Comprobante de pago: obligatorio desde el sitio público.
   // Es el resultado de POST /api/student/upload-comprobante (paths en bucket privado).
   paymentProofVariants: z.object({
